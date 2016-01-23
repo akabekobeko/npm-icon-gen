@@ -1,0 +1,35 @@
+{
+  "name": "icon-gen",
+  "description": "Icon file generator for Windows, OS X, ...etc",
+  "version": "1.0.0",
+  "author": "akabeko (http://akabeko.me/)",
+  "license": "MIT",
+  "homepage": "https://github.com/akabekobeko/npm-icon-gen#readme",
+  "main": "index.js",
+  "keywords": [
+    "Icon",
+    "Generator",
+    "SVG",
+    "CLI"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/akabekobeko/npm-icon-gen.git"
+  },
+  "bugs": {
+    "url": "https://github.com/akabekobeko/npm-icon-gen/issues"
+  },
+  "scripts": {
+    "test": "mocha --compilers js:espower-babel/guess test/**/*.test.js"
+  },
+  "dependencies": {
+    "svg2png": "^3.0.0"
+  },
+  "devDependencies": {
+    "babel-preset-es2015": "^6.3.13",
+    "esdoc": "^0.4.3",
+    "espower-babel": "^4.0.1",
+    "mocha": "^2.3.4",
+    "power-assert": "^1.2.0"
+  }
+}
