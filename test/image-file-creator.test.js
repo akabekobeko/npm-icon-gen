@@ -12,7 +12,6 @@ describe( 'ImageFileCreator', () => {
       imageFileCreator.deleteImages();
       done();
     } );
-
   } );
 
   /** @test {ImageFileCreator#_setupWorkDir} */

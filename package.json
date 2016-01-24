@@ -25,7 +25,7 @@
     "url": "https://github.com/akabekobeko/npm-icon-gen/issues"
   },
   "scripts": {
-    "test": "mocha --compilers js:espower-babel/guess test/**/*.test.js"
+    "test": "mocha --timeout 50000 --compilers js:espower-babel/guess test/**/*.test.js"
   },
   "dependencies": {
     "del": "^2.2.0",
