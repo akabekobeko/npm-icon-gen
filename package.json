@@ -28,6 +28,7 @@
     "test": "mocha --compilers js:espower-babel/guess test/**/*.test.js"
   },
   "dependencies": {
+    "del": "^2.2.0",
     "node-uuid": "^1.4.7",
     "svg2png": "^3.0.0"
   },

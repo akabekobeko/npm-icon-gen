@@ -3,6 +3,15 @@ import ImageFileCreator from '../lib/image-file-creator.js';
 
 /** @test {ImageFileCreator} */
 describe( 'ImageFileCreator', () => {
+  /** @test {ImageFileCreator#_setupWorkDir} */
+  it( '_setupWorkDir', () => {
+    const imageFileCreator = new ImageFileCreator();
+    const dir              = imageFileCreator._setupWorkDir();
+    assert( dir );
+
+    imageFileCreator.deleteImages();
+  } );
+
   /** @test {ImageFileCreator#_setupSizes} */
   it( '_setupSizes', () => {
     const imageFileCreator = new ImageFileCreator();
