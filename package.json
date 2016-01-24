@@ -6,6 +6,11 @@
   "license": "MIT",
   "homepage": "https://github.com/akabekobeko/npm-icon-gen#readme",
   "main": "index.js",
+  "files": [
+    "bin",
+    "lib",
+    "src"
+  ],
   "keywords": [
     "Icon",
     "Generator",
@@ -23,6 +28,7 @@
     "test": "mocha --compilers js:espower-babel/guess test/**/*.test.js"
   },
   "dependencies": {
+    "node-uuid": "^1.4.7",
     "svg2png": "^3.0.0"
   },
   "devDependencies": {
