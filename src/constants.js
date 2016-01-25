@@ -53,3 +53,12 @@ export const ImageSizes = {
     1024
   ]
 };
+
+/**
+ * Defines constants for the ICO file.
+ * @type {Object}
+ */
+export const ICOSpec = {
+  headerSize: 6,
+  directorySize: 16
+};
