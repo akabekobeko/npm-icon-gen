@@ -2,17 +2,18 @@ import assert from 'power-assert';
 import Fs from 'fs';
 import Path from 'path';
 import ICOEditor from '../src/ico-editor.js';
-import { ICOSpec } from '../src/constants.js';
+import { ICOSpec, ImageSizes } from '../src/constants.js';
 
 /** @test {ICOEditor} */
 describe( 'ICOEditor', () => {
   /** @test {ICOEditor#generate} */
   it( 'generate', ( done ) => {
-    const path    = Path.resolve( './test/16.png' );
-    const stat    = Fs.statSync( path );
-    const targets = [ { size: 16, path: path, stat: stat } ];
-    const dest    = Path.resolve( './test/test.ico' );
+    const targets = ImageSizes.windows.map( ( size ) => {
+      const path = Path.resolve(  './test/' + size + '.png' );
+      return { size: size, path: path, stat: Fs.statSync( path ) };
+    } );
 
+    const dest    = Path.resolve( './test/test.ico' );
     ICOEditor.write( targets, dest, ( err ) => {
       assert( !( err ) );
       Fs.unlinkSync( dest );
@@ -48,5 +49,21 @@ describe( 'ICOEditor', () => {
     ICOEditor.writeDirectory( buffer, 0, actual );
     const expected = ICOEditor.readDirectory( buffer, 0 );
     assert.deepEqual( expected, actual );
+  } );
+
+  it( 'Header & Directory', () => {
+    const targets = [
+      { size:  16, stat: { size:  701 } },
+      { size:  24, stat: { size: 1164 } },
+      { size:  32, stat: { size: 1633 } },
+      { size:  48, stat: { size: 2766 } },
+      { size:  64, stat: { size: 3853 } },
+      { size: 128, stat: { size: 8477 } },
+      { size: 256, stat: { size: 17540 } }
+    ];
+
+    const buffer = new Buffer( ICOSpec.headerSize + ( ICOSpec.directorySize * targets.length ) );
+    ICOEditor.writeHeader( buffer, 1, targets.length );
+    ICOEditor.writeDirectories( buffer, targets );
   } );
 } );

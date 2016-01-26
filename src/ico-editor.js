@@ -9,9 +9,9 @@ export default class ICOEditor {
   /**
    * Write a ico file from PNG images.
    *
-   * @param {Array.<ImageInfo>} images File informations.
-   * @param {String}            dest   Destination ico file path.
-   * @param {Function} cb Callback function.
+   * @param {Array.<ImageInfo>} targets File informations.
+   * @param {String}            dest    Destination ico file path.
+   * @param {Function}          cb      Callback function.
    */
   static write( targets, dest, cb = () => {} ) {
     if( !( targets.length ) ) {
@@ -49,14 +49,14 @@ export default class ICOEditor {
     let imgOffset = ICOSpec.headerSize + ( ICOSpec.directorySize * targets.length );
     targets.forEach( ( target ) => {
       ICOEditor.writeDirectory( buffer, dirOffset, {
-        width: target.size,
-        height: target.size,
-        colors: 0,
+        width:    ( 256 <= target.size ? 0 : target.size ),
+        height:   ( 256 <= target.size ? 0 : target.size ),
+        colors:   0,
         reserved: 0,
-        planes: 1,
-        bpp: 32,
-        size: target.stat.size,
-        offset: imgOffset
+        planes:   1,
+        bpp:      32,
+        size:     target.stat.size,
+        offset:   imgOffset
       } );
 
       dirOffset += ICOSpec.directorySize;
@@ -111,9 +111,9 @@ export default class ICOEditor {
    */
   static readHeader( buffer ) {
     return {
-      reserved: buffer.readInt16LE( 0 ),
-      type:     buffer.readInt16LE( 2 ),
-      count:    buffer.readInt16LE( 4 )
+      reserved: buffer.readUInt16LE( 0 ),
+      type:     buffer.readUInt16LE( 2 ),
+      count:    buffer.readUInt16LE( 4 )
     };
   }
 
@@ -127,14 +127,14 @@ export default class ICOEditor {
    */
   static readDirectory( buffer, offset ) {
     return {
-      width:    buffer.readInt8( 0 ),
-      height:   buffer.readInt8(    offset +  1 ),
-      colors:   buffer.readInt8(    offset +  2 ),
-      reserved: buffer.readInt8(    offset +  3 ),
-      planes:   buffer.readInt16LE( offset +  4 ),
-      bpp:      buffer.readInt16LE( offset +  6 ),
-      size:     buffer.readInt32LE( offset +  8 ),
-      offset:   buffer.readInt32LE( offset + 12 )
+      width:    buffer.readUInt8( 0 ),
+      height:   buffer.readUInt8(    offset +  1 ),
+      colors:   buffer.readUInt8(    offset +  2 ),
+      reserved: buffer.readUInt8(    offset +  3 ),
+      planes:   buffer.readUInt16LE( offset +  4 ),
+      bpp:      buffer.readUInt16LE( offset +  6 ),
+      size:     buffer.readUInt32LE( offset +  8 ),
+      offset:   buffer.readUInt32LE( offset + 12 )
     };
   }
 
@@ -146,9 +146,9 @@ export default class ICOEditor {
    * @param {Number} count  Specifies number of images in the file.
    */
   static writeHeader( buffer, type, count ) {
-    buffer.writeInt16LE( 0,     0 );
-    buffer.writeInt16LE( type,  2 );
-    buffer.writeInt16LE( count, 4 );
+    buffer.writeUInt16LE( 0,     0 );
+    buffer.writeUInt16LE( type,  2 );
+    buffer.writeUInt16LE( count, 4 );
   }
 
   /**
@@ -159,14 +159,14 @@ export default class ICOEditor {
    * @param {ICODirectory} directory Directory data.
    */
   static writeDirectory( buffer, offset, directory ) {
-    buffer.writeInt8(   directory.width,   offset );
-    buffer.writeInt8(   directory.height,  offset +  1 );
-    buffer.writeInt8(   directory.colors,  offset +  2 );
-    buffer.writeInt8(   0,                 offset +  3 ); // reserved, should be 0
-    buffer.writeInt16LE( directory.planes, offset +  4 );
-    buffer.writeInt16LE( directory.bpp,    offset +  6 );
-    buffer.writeInt32LE( directory.size,   offset +  8 );
-    buffer.writeInt32LE( directory.offset, offset + 12 );
+    buffer.writeUInt8(   directory.width,   offset );
+    buffer.writeUInt8(   directory.height,  offset +  1 );
+    buffer.writeUInt8(   directory.colors,  offset +  2 );
+    buffer.writeUInt8(   0,                 offset +  3 ); // reserved, should be 0
+    buffer.writeUInt16LE( directory.planes, offset +  4 );
+    buffer.writeUInt16LE( directory.bpp,    offset +  6 );
+    buffer.writeUInt32LE( directory.size,   offset +  8 );
+    buffer.writeUInt32LE( directory.offset, offset + 12 );
   }
 
   /**
