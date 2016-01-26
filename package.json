@@ -26,6 +26,8 @@
   },
   "scripts": {
     "test": "mocha --timeout 50000 --compilers js:espower-babel/guess test/**/*.test.js",
+    "start": "npm run watch",
+    "esdoc": "esdoc -c esdoc.json",
     "build": "babel src --out-dir lib --source-maps",
     "watch": "babel src --out-dir lib --watch --source-maps",
     "prepublish": "npm run build"
