@@ -1,20 +1,23 @@
 import assert from 'power-assert';
 import Fs from 'fs';
 import Path from 'path';
-import ICOEditor from '../src/ico-editor.js';
-import { ICOSpec, ImageSizes } from '../src/constants.js';
+import IcoEditor from '../src/ico-editor.js';
+import { IcoSpec, IcoImageSizes } from '../src/ico-editor.js';
 
-/** @test {ICOEditor} */
-describe( 'ICOEditor', () => {
-  /** @test {ICOEditor#generate} */
-  it( 'generate', ( done ) => {
-    const targets = ImageSizes.windows.map( ( size ) => {
-      const path = Path.resolve(  './test/' + size + '.png' );
+/** @test {IcoEditor} */
+describe( 'IcoEditor', () => {
+  const rootDir = Path.resolve( './test' );
+  const dataDir = Path.join( rootDir, 'data' );
+
+  /** @test {ICOEditor#write} */
+  it( 'write', ( done ) => {
+    const targets = IcoImageSizes.map( ( size ) => {
+      const path = Path.join( dataDir, size + '.png' );
       return { size: size, path: path, stat: Fs.statSync( path ) };
     } );
 
-    const dest    = Path.resolve( './test/test.ico' );
-    ICOEditor.write( targets, dest, ( err ) => {
+    const dest = Path.join( rootDir, 'sample.ico' );
+    IcoEditor.write( targets, dest, ( err ) => {
       assert( !( err ) );
       Fs.unlinkSync( dest );
       done();
@@ -23,10 +26,10 @@ describe( 'ICOEditor', () => {
 
   /** @test {ICOEditor#writeHeader} */
   it( 'writeHeader', () => {
-    const buffer = new Buffer( ICOSpec.headerSize );
-    ICOEditor.writeHeader( buffer, 1, 7 );
+    const buffer = new Buffer( IcoSpec.headerSize );
+    IcoEditor.writeHeader( buffer, 1, 7 );
 
-    const header = ICOEditor.readHeader( buffer );
+    const header = IcoEditor.readHeader( buffer );
     assert( header.reserved === 0 );
     assert( header.type     === 1 );
     assert( header.count    === 7 );
@@ -34,7 +37,7 @@ describe( 'ICOEditor', () => {
 
   /** @test {ICOEditor#writeDirectory} */
   it( 'writeDirectory', () => {
-    const buffer = new Buffer( ICOSpec.directorySize );
+    const buffer = new Buffer( IcoSpec.directorySize );
     const actual = {
       width:     16,
       height:    16,
@@ -46,8 +49,8 @@ describe( 'ICOEditor', () => {
       offset:     0
     };
 
-    ICOEditor.writeDirectory( buffer, 0, actual );
-    const expected = ICOEditor.readDirectory( buffer, 0 );
+    IcoEditor.writeDirectory( buffer, 0, actual );
+    const expected = IcoEditor.readDirectory( buffer, 0 );
     assert.deepEqual( expected, actual );
   } );
 
@@ -62,8 +65,8 @@ describe( 'ICOEditor', () => {
       { size: 256, stat: { size: 17540 } }
     ];
 
-    const buffer = new Buffer( ICOSpec.headerSize + ( ICOSpec.directorySize * targets.length ) );
-    ICOEditor.writeHeader( buffer, 1, targets.length );
-    ICOEditor.writeDirectories( buffer, targets );
+    const buffer = new Buffer( IcoSpec.headerSize + ( IcoSpec.directorySize * targets.length ) );
+    IcoEditor.writeHeader( buffer, 1, targets.length );
+    IcoEditor.writeDirectories( buffer, targets );
   } );
 } );

@@ -1,11 +1,33 @@
-import { ImageSizes, ICOSpec } from './constants.js';
 import Fs from 'fs';
 import Path from 'path';
 
 /**
+ * Sizes required for the Windows of the ICO file.
+ * @type {Array.<Number>}
+ */
+export const IcoImageSizes = [
+  16,
+  24,
+  32,
+  48,
+  64,
+  128,
+  256
+];
+
+/**
+ * Defines constants for the ICO file.
+ * @type {Object}
+ */
+export const IcoSpec = {
+  headerSize: 6,
+  directorySize: 16
+};
+
+/**
  * Generate a ico file from PNG images.
  */
-export default class ICOEditor {
+export default class IcoEditor {
   /**
    * Write a ico file from PNG images.
    *
@@ -28,14 +50,14 @@ export default class ICOEditor {
       }
     }
 
-    const buffer = new Buffer( ICOSpec.headerSize + ( ICOSpec.directorySize * targets.length ) );
-    ICOEditor.writeHeader( buffer, 1, targets.length );
-    ICOEditor.writeDirectories( buffer, targets );
+    const buffer = new Buffer( IcoSpec.headerSize + ( IcoSpec.directorySize * targets.length ) );
+    IcoEditor.writeHeader( buffer, 1, targets.length );
+    IcoEditor.writeDirectories( buffer, targets );
 
     const stream = Fs.createWriteStream( dest );
     stream.write( buffer, 'binary' );
 
-    ICOEditor.writeImages( stream, targets, cb );
+    IcoEditor.writeImages( stream, targets, cb );
   }
 
   /**
@@ -45,10 +67,10 @@ export default class ICOEditor {
    * @param {Array.<ImageInfo>} targets Image file infromations.
    */
   static writeDirectories( buffer, targets ) {
-    let dirOffset = ICOSpec.headerSize;
-    let imgOffset = ICOSpec.headerSize + ( ICOSpec.directorySize * targets.length );
+    let dirOffset = IcoSpec.headerSize;
+    let imgOffset = IcoSpec.headerSize + ( IcoSpec.directorySize * targets.length );
     targets.forEach( ( target ) => {
-      ICOEditor.writeDirectory( buffer, dirOffset, {
+      IcoEditor.writeDirectory( buffer, dirOffset, {
         width:    ( 256 <= target.size ? 0 : target.size ),
         height:   ( 256 <= target.size ? 0 : target.size ),
         colors:   0,
@@ -59,7 +81,7 @@ export default class ICOEditor {
         offset:   imgOffset
       } );
 
-      dirOffset += ICOSpec.directorySize;
+      dirOffset += IcoSpec.directorySize;
       imgOffset += target.stat.size;
     } );
   }
@@ -181,7 +203,7 @@ export default class ICOEditor {
 
     return images.filter( ( image ) => {
       let exists = false;
-      ImageSizes.windows.some( ( size ) => {
+      IcoImageSizes.some( ( size ) => {
         if( image.size === size ) {
           exists = true;
           return true;

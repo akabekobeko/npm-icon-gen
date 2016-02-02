@@ -2,21 +2,23 @@ import assert from 'power-assert';
 import Fs from 'fs';
 import Path from 'path';
 import ImageFileCreator from '../src/image-file-creator.js';
-
 /** @test {ImageFileCreator} */
 describe( 'ImageFileCreator', () => {
+  const rootDir = Path.resolve( './test' );
+  const dataDir = Path.join( rootDir, 'data' );
+
   /** @test {ImageFileCreator#createImage} */
   it( 'createImage', () => {
-    const svg = Fs.readFileSync( Path.resolve( './test/test.svg' ) );
+    const svg = Fs.readFileSync( Path.join( dataDir, 'sample.svg' ) );
     assert( svg );
 
     const imageFileCreator = new ImageFileCreator();
-    return imageFileCreator.createImage( svg, 16, Path.resolve( './test' ) )
+    return imageFileCreator.createImage( svg, 16, rootDir )
     .then( ( result ) => {
       assert( result.size === 16 );
       assert( result.stat );
 
-      const path = Path.join( Path.resolve( './test' ), '16.png' );
+      const path = Path.join( rootDir, '16.png' );
       assert( result.path === path );
       Fs.unlinkSync( result.path );
     } );

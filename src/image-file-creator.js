@@ -4,7 +4,9 @@ import Path from 'path';
 import UUID from 'node-uuid';
 import SVG2PNG from 'svg2png';
 import Del from 'del';
-import { ImageSizes } from './constants.js';
+import { FaviconImageSizes } from './favicon-editor.js';
+import { IcoImageSizes } from './ico-editor.js';
+import { IcnsImageSIzes } from './icns-editor.js';
 
 /**
  * Create a image ( PNG ) files from SVG file.
@@ -122,13 +124,7 @@ export default class ImageFileCreator {
    * @return {Array.<Number>} collection of the required image size.
    */
   getRequiredSizes() {
-    const keys  = Object.keys( ImageSizes );
-    let   sizes = [];
-
-    keys.forEach( ( key ) => {
-      sizes = sizes.concat( ImageSizes[ key ] );
-    } );
-
+    const sizes = FaviconImageSizes.concat( IcoImageSizes ).concat( IcnsImageSIzes );
     return sizes.filter( ( value, index, array ) => {
       return ( array.indexOf( value ) === index );
     } );
