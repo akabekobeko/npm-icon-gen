@@ -4,9 +4,9 @@ import Path from 'path';
 import UUID from 'node-uuid';
 import SVG2PNG from 'svg2png';
 import Del from 'del';
-import { FaviconImageSizes } from './favicon-editor.js';
-import { IcoImageSizes } from './ico-editor.js';
-import { IcnsImageSIzes } from './icns-editor.js';
+import { FaviconConstants } from './favicon-editor.js';
+import { IcoConstants } from './ico-editor.js';
+import { IcnsConstants } from './icns-editor.js';
 
 /**
  * Create a image ( PNG ) files from SVG file.
@@ -124,9 +124,15 @@ export default class ImageFileCreator {
    * @return {Array.<Number>} collection of the required image size.
    */
   getRequiredSizes() {
-    const sizes = FaviconImageSizes.concat( IcoImageSizes ).concat( IcnsImageSIzes );
-    return sizes.filter( ( value, index, array ) => {
+    const sizes = FaviconConstants.imageSizes.concat( IcoConstants.imageSizes ).concat( IcnsConstants.imageSizes );
+
+    return sizes
+    .filter( ( value, index, array ) => {
       return ( array.indexOf( value ) === index );
+    } )
+    .sort( ( a, b ) => {
+      // Always ensure the ascending order
+      return ( a - b );
     } );
   }
 }

@@ -34,6 +34,7 @@ node_modules
 .node_repl_history
 
 test.js
+*.sample.js
 *.ico
 lib/
 esdoc/
