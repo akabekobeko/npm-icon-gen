@@ -2,6 +2,7 @@ import assert from 'power-assert';
 import Fs from 'fs';
 import Path from 'path';
 import ImageFileCreator from '../src/image-file-creator.js';
+
 /** @test {ImageFileCreator} */
 describe( 'ImageFileCreator', () => {
   const rootDir = Path.resolve( './test' );

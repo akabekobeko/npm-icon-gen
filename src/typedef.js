@@ -15,8 +15,8 @@
  *
  * @typedef {Object} ImageInfo
  * @property {Number} size Image size ( width/height ).
- * @property {String} Path File path.
- * @property {Stats}   stat File status.
+ * @property {String} path File path.
+ * @property {Stats}  stat File status.
  */
 
  /**

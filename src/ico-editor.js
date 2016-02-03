@@ -2,25 +2,26 @@ import Fs from 'fs';
 import Path from 'path';
 
 /**
- * Sizes required for the Windows of the ICO file.
- * @type {Array.<Number>}
- */
-export const IcoImageSizes = [
-  16,
-  24,
-  32,
-  48,
-  64,
-  128,
-  256
-];
-
-/**
- * Defines constants for the ICO file.
+ * It defines constants for the ICO.
  * @type {Object}
  */
-export const IcoSpec = {
+export const IcoConstants = {
+  /**
+   * Sizes required for the ICO file.
+   * @type {Array}
+   */
+  imageSizes: [ 16, 24, 32, 48, 64, 128, 256 ],
+
+  /**
+   * Size of the file header.
+   * @type {Number}
+   */
   headerSize: 6,
+
+  /**
+   * Size of the icon directory.
+   * @type {Number}
+   */
   directorySize: 16
 };
 
@@ -50,7 +51,7 @@ export default class IcoEditor {
       }
     }
 
-    const buffer = new Buffer( IcoSpec.headerSize + ( IcoSpec.directorySize * targets.length ) );
+    const buffer = new Buffer( IcoConstants.headerSize + ( IcoConstants.directorySize * targets.length ) );
     IcoEditor.writeHeader( buffer, 1, targets.length );
     IcoEditor.writeDirectories( buffer, targets );
 
@@ -67,8 +68,8 @@ export default class IcoEditor {
    * @param {Array.<ImageInfo>} targets Image file infromations.
    */
   static writeDirectories( buffer, targets ) {
-    let dirOffset = IcoSpec.headerSize;
-    let imgOffset = IcoSpec.headerSize + ( IcoSpec.directorySize * targets.length );
+    let dirOffset = IcoConstants.headerSize;
+    let imgOffset = IcoConstants.headerSize + ( IcoConstants.directorySize * targets.length );
     targets.forEach( ( target ) => {
       IcoEditor.writeDirectory( buffer, dirOffset, {
         width:    ( 256 <= target.size ? 0 : target.size ),
@@ -81,7 +82,7 @@ export default class IcoEditor {
         offset:   imgOffset
       } );
 
-      dirOffset += IcoSpec.directorySize;
+      dirOffset += IcoConstants.directorySize;
       imgOffset += target.stat.size;
     } );
   }
@@ -203,7 +204,7 @@ export default class IcoEditor {
 
     return images.filter( ( image ) => {
       let exists = false;
-      IcoImageSizes.some( ( size ) => {
+      IcoConstants.imageSizes.some( ( size ) => {
         if( image.size === size ) {
           exists = true;
           return true;

@@ -2,7 +2,7 @@ import assert from 'power-assert';
 import Fs from 'fs';
 import Path from 'path';
 import IcoEditor from '../src/ico-editor.js';
-import { IcoSpec, IcoImageSizes } from '../src/ico-editor.js';
+import { IcoConstants } from '../src/ico-editor.js';
 
 /** @test {IcoEditor} */
 describe( 'IcoEditor', () => {
@@ -11,7 +11,7 @@ describe( 'IcoEditor', () => {
 
   /** @test {ICOEditor#write} */
   it( 'write', ( done ) => {
-    const targets = IcoImageSizes.map( ( size ) => {
+    const targets = IcoConstants.imageSizes.map( ( size ) => {
       const path = Path.join( dataDir, size + '.png' );
       return { size: size, path: path, stat: Fs.statSync( path ) };
     } );
@@ -26,7 +26,7 @@ describe( 'IcoEditor', () => {
 
   /** @test {ICOEditor#writeHeader} */
   it( 'writeHeader', () => {
-    const buffer = new Buffer( IcoSpec.headerSize );
+    const buffer = new Buffer( IcoConstants.headerSize );
     IcoEditor.writeHeader( buffer, 1, 7 );
 
     const header = IcoEditor.readHeader( buffer );
@@ -37,7 +37,7 @@ describe( 'IcoEditor', () => {
 
   /** @test {ICOEditor#writeDirectory} */
   it( 'writeDirectory', () => {
-    const buffer = new Buffer( IcoSpec.directorySize );
+    const buffer = new Buffer( IcoConstants.directorySize );
     const actual = {
       width:     16,
       height:    16,
@@ -65,7 +65,7 @@ describe( 'IcoEditor', () => {
       { size: 256, stat: { size: 17540 } }
     ];
 
-    const buffer = new Buffer( IcoSpec.headerSize + ( IcoSpec.directorySize * targets.length ) );
+    const buffer = new Buffer( IcoConstants.headerSize + ( IcoConstants.directorySize * targets.length ) );
     IcoEditor.writeHeader( buffer, 1, targets.length );
     IcoEditor.writeDirectories( buffer, targets );
   } );
