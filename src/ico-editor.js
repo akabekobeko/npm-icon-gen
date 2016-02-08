@@ -1,5 +1,5 @@
 import Fs from 'fs';
-import Path from 'path';
+import { PNG } from 'pngjs';
 
 /**
  * It defines constants for the ICO.
@@ -22,7 +22,19 @@ export const IcoConstants = {
    * Size of the icon directory.
    * @type {Number}
    */
-  directorySize: 16
+  directorySize: 16,
+
+  /**
+   * Size of the BITMAPINFOHEADER.
+   * @type {Number}
+   */
+  BitmapInfoHeaderSize: 40,
+
+  /**
+   * Color mode.
+   * @type {Number}
+   */
+  BI_RGB: 0
 };
 
 /**
@@ -30,190 +42,132 @@ export const IcoConstants = {
  */
 export default class IcoEditor {
   /**
-   * Write a ico file from PNG images.
+   * Create the ICO file from a PNG images.
    *
-   * @param {Array.<ImageInfo>} targets File informations.
-   * @param {String}            dest    Destination ico file path.
-   * @param {Function}          cb      Callback function.
+   * @param {Array.<ImageInfo>} images File informations..
+   * @param {String}            dest   Output destination The path of ICO file.
+   * @param {Function}          cb     Callback function.
    */
-  static write( targets, dest, cb = () => {} ) {
-    if( !( targets.length ) ) {
-      cb( new Error( 'Invalid arguments: It does not contain the information necessary for the "images".' ) );
-      return;
-    }
+  static create( images, dest, cb ) {
+    try {
+      const stream = Fs.createWriteStream( dest );
+      stream.write( IcoEditor.createFileHeader( images.length ), 'binary' );
 
-    {
-      const dirname = Path.dirname( dest );
-      const stat    = Fs.statSync( dirname );
-      if( !( stat && stat.isDirectory ) ) {
-        cb( new Error( 'Invalid arguments: "dest" of the parent directory does not exist.' ) );
-        return;
-      }
-    }
-
-    const buffer = new Buffer( IcoConstants.headerSize + ( IcoConstants.directorySize * targets.length ) );
-    IcoEditor.writeHeader( buffer, 1, targets.length );
-    IcoEditor.writeDirectories( buffer, targets );
-
-    const stream = Fs.createWriteStream( dest );
-    stream.write( buffer, 'binary' );
-
-    IcoEditor.writeImages( stream, targets, cb );
-  }
-
-  /**
-   * Write a directories.
-   *
-   * @param {Buffer}            buffer  File buffer.
-   * @param {Array.<ImageInfo>} targets Image file infromations.
-   */
-  static writeDirectories( buffer, targets ) {
-    let dirOffset = IcoConstants.headerSize;
-    let imgOffset = IcoConstants.headerSize + ( IcoConstants.directorySize * targets.length );
-    targets.forEach( ( target ) => {
-      IcoEditor.writeDirectory( buffer, dirOffset, {
-        width:    ( 256 <= target.size ? 0 : target.size ),
-        height:   ( 256 <= target.size ? 0 : target.size ),
-        colors:   0,
-        reserved: 0,
-        planes:   1,
-        bpp:      32,
-        size:     target.stat.size,
-        offset:   imgOffset
+      const pngs = images.map( ( image ) => {
+        const data = Fs.readFileSync( image.path );
+        return PNG.sync.read( data );
       } );
 
-      dirOffset += IcoConstants.directorySize;
-      imgOffset += target.stat.size;
-    } );
-  }
-
-  /**
-   * Write a images.
-   *
-   * @param {WritableStream}    stream  File stream.
-   * @param {Array.<ImageInfo>} targets Image file infromations.
-   * @param {Function}          cb Callback function.
-   */
-  static writeImages( stream, targets, cb ) {
-    const writeImage = ( target ) => {
-      return new Promise( ( resolve, reject ) => {
-        Fs.readFile( target.path, ( err, data ) => {
-          if( err ) {
-            reject( err );
-            return;
-          }
-
-          stream.write( data, 'binary' );
-          resolve();
-        } );
+      let offset = IcoConstants.headerSize + ( IcoConstants.directorySize * images.length );
+      pngs.forEach( ( png ) => {
+        const directory = IcoEditor.createDirectory( png, offset );
+        stream.write( directory, 'binary' );
+        offset += png.data.length + IcoConstants.BitmapInfoHeaderSize;
       } );
-    };
 
-    const tasks = targets.map( ( target ) => {
-      return writeImage( target );
-    } );
+      pngs.forEach( ( png ) => {
+        const header = IcoEditor.createBitmapInfoHeader( png, IcoConstants.BI_RGB );
+        stream.write( header, 'binary' );
+        stream.write( IcoEditor.convertRGBAtoBGRA( png.data ), 'binary' );
+      } );
 
-    tasks
-    .reduce( ( prev, current ) => {
-      return prev.then( current );
-    }, Promise.resolve() )
-    .then( () => {
       cb();
-    } )
-    .catch( ( err ) => {
+
+    } catch( err ) {
       cb( err );
-    } );
+    }
   }
 
   /**
-   * Read a header.
+   * Create the ICO file header.
    *
-   * @param {Buffer} buffer File buffer.
+   * @param {Number} count  Specifies number of images in the file.
    *
-   * @return {ICOHeader} Header data.
+   * @return {Buffer} Header data.
    */
-  static readHeader( buffer ) {
-    return {
-      reserved: buffer.readUInt16LE( 0 ),
-      type:     buffer.readUInt16LE( 2 ),
-      count:    buffer.readUInt16LE( 4 )
-    };
+  static createFileHeader( count ) {
+    const b = new Buffer( IcoConstants.headerSize );
+    b.writeUInt16LE( 0, 0 );     // 2 Reserved
+    b.writeUInt16LE( 1,  2 );    // 2 Type
+    b.writeUInt16LE( count, 4 ); // 2 Image count
+
+    return b;
   }
 
   /**
-   * Read a directory.
+   * Create the Icon entry.
    *
-   * @param {Buffer} buffer File buffer.
+   * @param {Object} png    PNG image.
    * @param {Number} offset The offset of directory data from the beginning of the ICO/CUR file
    *
-   * @return {ICODirectory} Directory data.
+   * @return {Buffer} Directory data.
    */
-  static readDirectory( buffer, offset ) {
-    return {
-      width:    buffer.readUInt8( 0 ),
-      height:   buffer.readUInt8(    offset +  1 ),
-      colors:   buffer.readUInt8(    offset +  2 ),
-      reserved: buffer.readUInt8(    offset +  3 ),
-      planes:   buffer.readUInt16LE( offset +  4 ),
-      bpp:      buffer.readUInt16LE( offset +  6 ),
-      size:     buffer.readUInt32LE( offset +  8 ),
-      offset:   buffer.readUInt32LE( offset + 12 )
-    };
+  static createDirectory( png, offset ) {
+    const b      = new Buffer( IcoConstants.directorySize );
+    const size   = png.data.length + IcoConstants.BitmapInfoHeaderSize;
+    const width  = ( 256 <= png.width ? 0 : png.width );
+    const height = ( 256 <= png.height ? 0 : png.height );
+    const bpp    = png.bpp * 8;
+
+    b.writeUInt8( width, 0 );      // 1 Image width
+    b.writeUInt8( height, 1 );     // 1 Image height
+    b.writeUInt8( 0, 2 );          // 1 Colors
+    b.writeUInt8( 0, 3 );          // 1 Reserved
+    b.writeUInt16LE( 1, 4 );       // 2 Color planes
+    b.writeUInt16LE( bpp, 6 );     // 2 Bit per pixel
+    b.writeUInt32LE( size, 8 );    // 4 Bitmap ( DIB ) size
+    b.writeUInt32LE( offset, 12 ); // 4 Offset
+
+    return b;
   }
 
   /**
-   * Write a header.
+   * Create the BITMAPINFOHEADER.
    *
-   * @param {Buffer} buffer File buffer.
-   * @param {Number} type   Specifies image type: 1 for icon (.ICO) image, 2 for cursor (.CUR) image. Other values are invalid.
-   * @param {Number} count  Specifies number of images in the file.
+   * @param {Object} png         PNG image.
+   * @param {Number} compression Compression mode
+   *
+   * @return {Buffer} BITMAPINFOHEADER data.
    */
-  static writeHeader( buffer, type, count ) {
-    buffer.writeUInt16LE( 0,     0 );
-    buffer.writeUInt16LE( type,  2 );
-    buffer.writeUInt16LE( count, 4 );
+  static createBitmapInfoHeader( png, compression ) {
+    const b = new Buffer( IcoConstants.BitmapInfoHeaderSize );
+    b.writeUInt32LE( IcoConstants.BitmapInfoHeaderSize, 0 ); // 4 DWORD biSize
+    b.writeInt32LE( png.width, 4 );                          // 4 LONG  biWidth
+    b.writeInt32LE( png.height * 2, 8 );                     // 4 LONG  biHeight
+    b.writeUInt16LE( 1, 12 );                                // 2 WORD  biPlanes
+    b.writeUInt16LE( png.bpp * 8, 14 );                      // 2 WORD  biBitCount
+    b.writeUInt32LE( compression, 16 );                      // 4 DWORD biCompression
+    b.writeUInt32LE( png.data.length, 20 );                  // 4 DWORD biSizeImage
+    b.writeInt32LE( 0, 24 );                                 // 4 LONG  biXPelsPerMeter
+    b.writeInt32LE( 0, 28 );                                 // 4 LONG  biYPelsPerMeter
+    b.writeUInt32LE( 0, 32  );                               // 4 DWORD biClrUsed
+    b.writeUInt32LE( 0, 36 );                                // 4 DWORD biClrImportant
+
+    return b;
   }
 
   /**
-   * Write a directory.
+   * To convert the image from RGBA to GBRA.
    *
-   * @param {Buffer}       buffer    File buffer.
-   * @param {Number}       offset    The offset of directory data from the beginning of the ICO/CUR file
-   * @param {ICODirectory} directory Directory data.
+   * @param {Buffer} src Target image.
+   *
+   * @return {Buffer} Converted image
    */
-  static writeDirectory( buffer, offset, directory ) {
-    buffer.writeUInt8(   directory.width,   offset );
-    buffer.writeUInt8(   directory.height,  offset +  1 );
-    buffer.writeUInt8(   directory.colors,  offset +  2 );
-    buffer.writeUInt8(   0,                 offset +  3 ); // reserved, should be 0
-    buffer.writeUInt16LE( directory.planes, offset +  4 );
-    buffer.writeUInt16LE( directory.bpp,    offset +  6 );
-    buffer.writeUInt32LE( directory.size,   offset +  8 );
-    buffer.writeUInt32LE( directory.offset, offset + 12 );
-  }
+  static convertRGBAtoBGRA( src ) {
+    const dest = new Buffer( src.length );
+    for( let i = 0, max = src.length; i < max; ++i ) {
+      let pos = i;
+      const r = src.readUInt8( i );
+      const g = src.readUInt8( ++i );
+      const b = src.readUInt8( ++i );
+      const a = src.readUInt8( ++i );
 
-  /**
-   * Select the data necessary for the ICO file from the image informations.
-   *
-   * @param {Array.<ImageInfo>} images Image file infromations.
-   *
-   * @return {Array.<ImageInfo>} filtered array
-   */
-  static filter( images ) {
-    if( !( images && 0 < images.length ) ) { return []; }
+      dest.writeUInt8( g, pos );
+      dest.writeUInt8( b, ++pos );
+      dest.writeUInt8( r, ++pos );
+      dest.writeUInt8( a, ++pos );
+    }
 
-    return images.filter( ( image ) => {
-      let exists = false;
-      IcoConstants.imageSizes.some( ( size ) => {
-        if( image.size === size ) {
-          exists = true;
-          return true;
-        }
-
-        return false;
-      } );
-
-      return exists;
-    } );
+    return dest;
   }
 }

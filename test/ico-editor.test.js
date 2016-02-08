@@ -9,64 +9,81 @@ describe( 'IcoEditor', () => {
   const rootDir = Path.resolve( './test' );
   const dataDir = Path.join( rootDir, 'data' );
 
-  /** @test {ICOEditor#write} */
-  it( 'write', ( done ) => {
+  /** @test {ICOEditor#create} */
+  it( 'create', ( done ) => {
     const targets = IcoConstants.imageSizes.map( ( size ) => {
       const path = Path.join( dataDir, size + '.png' );
       return { size: size, path: path, stat: Fs.statSync( path ) };
     } );
 
     const dest = Path.join( rootDir, 'sample.ico' );
-    IcoEditor.write( targets, dest, ( err ) => {
-      assert( !( err ) );
+    IcoEditor.create( targets, dest, ( err ) => {
+      if( err ) {
+        console.error( err );
+        assert( false );
+      }
+
       Fs.unlinkSync( dest );
       done();
     } );
   } );
 
-  /** @test {ICOEditor#writeHeader} */
-  it( 'writeHeader', () => {
-    const buffer = new Buffer( IcoConstants.headerSize );
-    IcoEditor.writeHeader( buffer, 1, 7 );
+  /** @test {ICOEditor#createFileHeader} */
+  it( 'createFileHeader', () => {
+    const count = 7;
+    const b = IcoEditor.createFileHeader( count );
 
-    const header = IcoEditor.readHeader( buffer );
-    assert( header.reserved === 0 );
-    assert( header.type     === 1 );
-    assert( header.count    === 7 );
+    assert( b.readUInt16LE( 0 ) === 0 );
+    assert( b.readUInt16LE( 2 ) === 1 );
+    assert( b.readUInt16LE( 4 ) === count );
   } );
 
-  /** @test {ICOEditor#writeDirectory} */
-  it( 'writeDirectory', () => {
-    const buffer = new Buffer( IcoConstants.directorySize );
-    const actual = {
-      width:     16,
-      height:    16,
-      colors:     0, // 256 colors or more, 32bit
-      reserved:   0,
-      planes:     1, // ICO file
-      bpp:       32, // Alpha PNG
-      size:     701,
-      offset:     0
+  /** @test {ICOEditor#createDirectory} */
+  it( 'createDirectory', () => {
+    const png = {
+      width: 16,
+      height: 16,
+      bpp: 4,
+      data: {
+        length: 1024
+      }
     };
 
-    IcoEditor.writeDirectory( buffer, 0, actual );
-    const expected = IcoEditor.readDirectory( buffer, 0 );
-    assert.deepEqual( expected, actual );
+    const offset = IcoConstants.headerSize + IcoConstants.directorySize;
+    const b      = IcoEditor.createDirectory( png, offset );
+
+    assert( b.readUInt8( 0 ) === png.width );
+    assert( b.readUInt8( 1 ) === png.height );
+    assert( b.readUInt8( 2 ) === 0 );
+    assert( b.readUInt8( 3 ) === 0 );
+    assert( b.readUInt16LE( 4 ) === 1 );
+    assert( b.readUInt16LE( 6 ) === png.bpp * 8 );
+    assert( b.readUInt32LE( 8 ) === png.data.length + IcoConstants.BitmapInfoHeaderSize );
+    assert( b.readUInt32LE( 12 ) === offset );
   } );
 
-  it( 'Header & Directory', () => {
-    const targets = [
-      { size:  16, stat: { size:  701 } },
-      { size:  24, stat: { size: 1164 } },
-      { size:  32, stat: { size: 1633 } },
-      { size:  48, stat: { size: 2766 } },
-      { size:  64, stat: { size: 3853 } },
-      { size: 128, stat: { size: 8477 } },
-      { size: 256, stat: { size: 17540 } }
-    ];
+  /** @test {ICOEditor#createBitmapInfoHeader} */
+  it( 'createBitmapInfoHeader', () => {
+    const png = {
+      width: 16,
+      height: 16,
+      bpp: 4,
+      data: {
+        length: 1024
+      }
+    };
 
-    const buffer = new Buffer( IcoConstants.headerSize + ( IcoConstants.directorySize * targets.length ) );
-    IcoEditor.writeHeader( buffer, 1, targets.length );
-    IcoEditor.writeDirectories( buffer, targets );
+    const b = IcoEditor.createBitmapInfoHeader( png, IcoConstants.BI_RGB );
+    assert( b.readUInt32LE( 0 ) === IcoConstants.BitmapInfoHeaderSize );
+    assert( b.readInt32LE( 4 ) === png.width );
+    assert( b.readInt32LE( 8 ) === png.height * 2 );
+    assert( b.readUInt16LE( 12 ) === 1 );
+    assert( b.readUInt16LE( 14 ) === png.bpp * 8 );
+    assert( b.readUInt32LE( 16 ) === IcoConstants.BI_RGB );
+    assert( b.readUInt32LE( 20 ) === png.data.length );
+    assert( b.readInt32LE( 24 ) === 0 );
+    assert( b.readInt32LE( 28 ) === 0 );
+    assert( b.readUInt32LE( 32 ) === 0 );
+    assert( b.readUInt32LE( 36 ) === 0 );
   } );
 } );
