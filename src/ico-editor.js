@@ -68,7 +68,9 @@ export default class IcoEditor {
       pngs.forEach( ( png ) => {
         const header = IcoEditor.createBitmapInfoHeader( png, IcoConstants.BI_RGB );
         stream.write( header, 'binary' );
-        stream.write( IcoEditor.convertRGBAtoBGRA( png.data ), 'binary' );
+
+        const dib = IcoEditor.convertPNGtoDIB( png.data, png.width, png.height, png.bpp );
+        stream.write( dib, 'binary' );
       } );
 
       cb();
@@ -147,25 +149,42 @@ export default class IcoEditor {
   }
 
   /**
-   * To convert the image from RGBA to GBRA.
+   * Convert a PNG of the byte array to the DIB ( Device Independent Bitmap ) format.
    *
-   * @param {Buffer} src Target image.
+   * PNG in color RGBA ( and more ), the coordinate structure is the Top/Left to Bottom/Right.
+   * DIB in color BGRA, the coordinate structure is the Bottom/Left to Top/Right.
+   *
+   * @param {Buffer} src    Target image.
+   * @param {Number} width  The width of the image.
+   * @param {Number} height The height of the image.
+   * @param {Number} bpp    The bit per pixel of the image.
    *
    * @return {Buffer} Converted image
+   *
+   * @see https://en.wikipedia.org/wiki/BMP_file_format
    */
-  static convertRGBAtoBGRA( src ) {
-    const dest = new Buffer( src.length );
-    for( let i = 0, max = src.length; i < max; ++i ) {
-      let pos = i;
-      const r = src.readUInt8( i );
-      const g = src.readUInt8( ++i );
-      const b = src.readUInt8( ++i );
-      const a = src.readUInt8( ++i );
+  static convertPNGtoDIB( src, width, height, bpp ) {
+    const cols   = ( width * bpp );
+    const rows   = ( height * cols );
+    const rowEnd = ( rows - cols );
+    const dest   = new Buffer( src.length );
 
-      dest.writeUInt8( g, pos );
-      dest.writeUInt8( b, ++pos );
-      dest.writeUInt8( r, ++pos );
-      dest.writeUInt8( a, ++pos );
+    for( let row = 0; row < rows; row += cols ) {
+      for( let col = 0; col < cols; col += bpp ) {
+        // RGBA: Top/Left -> Bottom/Right
+        let pos = row + col;
+        const r = src.readUInt8( pos );
+        const g = src.readUInt8( pos + 1 );
+        const b = src.readUInt8( pos + 2 );
+        const a = src.readUInt8( pos + 3 );
+
+        // BGRA: Right/Left -> Top/Right
+        pos = ( rowEnd - row ) + col;
+        dest.writeUInt8( b, pos );
+        dest.writeUInt8( g, pos + 1 );
+        dest.writeUInt8( r, pos + 2 );
+        dest.writeUInt8( a, pos + 3 );
+      }
     }
 
     return dest;
