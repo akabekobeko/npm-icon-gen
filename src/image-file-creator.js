@@ -76,19 +76,13 @@ export default class ImageFileCreator {
       }
 
       const dest = Path.join( dir, size + '.png' );
-      console.log( 'Create: ' + dest );
       Fs.writeFile( dest, buffer, ( err ) => {
         if( err ) {
           reject( err );
           return;
         }
 
-        const stat = Fs.statSync( dest );
-        resolve( {
-          size: size,
-          path: dest,
-          stat: stat
-        } );
+        resolve( { size: size, path: dest } );
       } );
     } );
   }

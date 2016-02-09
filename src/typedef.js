@@ -3,10 +3,6 @@
  */
 
 /**
- * @external {Stats} https://nodejs.org/api/fs.html
- */
-
-/**
  * @external {WritableStream} https://nodejs.org/api/stream.html
  */
 
@@ -16,7 +12,6 @@
  * @typedef {Object} ImageInfo
  * @property {Number} size Image size ( width/height ).
  * @property {String} path File path.
- * @property {Stats}  stat File status.
  */
 
  /**

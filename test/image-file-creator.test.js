@@ -17,7 +17,6 @@ describe( 'ImageFileCreator', () => {
     return imageFileCreator.createImage( svg, 16, rootDir )
     .then( ( result ) => {
       assert( result.size === 16 );
-      assert( result.stat );
 
       const path = Path.join( rootDir, '16.png' );
       assert( result.path === path );
