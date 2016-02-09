@@ -1,6 +1,11 @@
-import ImageFileCreator from './image-file-creator.js';
-import ICOEditor from './ico-editor.js';
 import Path from 'path';
+import ImageFileCreator from './image-file-creator.js';
+import IcoEditor from './ico-editor.js';
+import { IcoConstants } from './ico-editor.js';
+import IcnsEditor from './icns-editor.js';
+import { IcnsConstants } from './icns-editor.js';
+import FaviconEditor from './favicon-editor.js';
+import { FaviconConstants } from './favicon-editor.js';
 
 /**
  * Generate an icons.
@@ -40,7 +45,10 @@ export default class IconGenerator {
 
     const dir = Path.resolve( dest );
     const tasks = [
-      IconGenerator._generateICO( ICOEditor.filter( targets ), Path.join( dir, 'app.ico' ) )
+      IconGenerator.generate( IcoEditor, targets, IcoConstants.imageSizes, Path.join( dir, 'app.ico' ) ),
+      IconGenerator.generate( IcnsEditor, targets, IcnsConstants.imageSizes, Path.join( dir, 'app.icns' ) ),
+      IconGenerator.generate( FaviconEditor, targets, FaviconConstants.imageSizes, dir ),
+      IconGenerator.generate( IcoEditor, targets, FaviconConstants.icoImageSizes, Path.join( dir, 'favicon.ico' ) )
     ];
 
     Promise
@@ -54,39 +62,40 @@ export default class IconGenerator {
   }
 
   /**
-   * Generate the ico file from the image file infromations.
+   * Genereta the icons from iamge informations.
    *
-   * @param {Array.<ImageInfo>} targets Image file informations.
-   * @param {String}            dest    Destination ico file path.
-   * @param {Function}          cb      Callback function.
+   * @param {IcoEditor|IcnsEditor|FaviconEditor} editor  Icon editor.
+   * @param {Array.<ImageInfo>}                  targets Image informations.
+   * @param {Array.<Number>}                     sizes   The sizes of the image to be used.
+   * @param {String}                             dest    The path of the output icon file or directory.
+   *
+   * @return {Promise} Icon generation task.
    */
-  static generateICO( targets, dest, cb ) {
-    IconGenerator._generateICO()
-    .then( () => {
-      cb();
-    } )
-    .catch( ( err ) => {
-      cb( err );
+  static generate( editor, targets, sizes, dest ) {
+    return new Promise( ( resolve, reject ) => {
+      editor.create( IconGenerator.filter( targets, sizes ), dest, ( err ) => {
+        return ( err ? reject( err ) : resolve() );
+      } );
     } );
   }
 
   /**
-   * Generate an ico file from an image file infromations.
+   * Filter by size to the specified image informations.
    *
    * @param {Array.<ImageInfo>} targets Image file informations.
-   * @param {String}            dest    Destination ico file path.
+   * @param {Array.<Number>}    sizes   Sizes.
+   *
+   * @return {Array.<ImageInfo>} Filtered image informations.
    */
-  static _generateICO( targets, dest ) {
-    return new Promise( ( resolve, reject ) => {
-      ICOEditor.write( targets, dest, ( err ) => {
-        if( err ) {
-          reject( err );
-          return;
-        }
-
-        console.log( 'Output: ' + dest );
-        resolve();
+  static filter( targets, sizes ) {
+    return targets
+    .filter( ( target ) => {
+      return sizes.some( ( size ) => {
+        return ( target.size === size );
       } );
+    } )
+    .sort( ( a, b ) => {
+      return ( a.size - b.size );
     } );
   }
 }

@@ -13,6 +13,12 @@ export const FaviconConstants = {
   imageSizes:  [ 32, 57, 72, 96, 120, 128, 144, 152, 195, 228 ],
 
   /**
+   * Sizes required for the FAVICON ICO file.
+   * @type {Array.<Number>}
+   */
+  icoImageSizes: [ 16, 24, 32, 48, 64 ],
+
+  /**
    * Collection of the file name and size of the icon.
    * @type {Array.<Object>}
    * @see https://github.com/audreyr/favicon-cheat-sheet
@@ -42,7 +48,7 @@ export default class FaviconEditor {
    * @param {String}            dest   Output destination The path of directory.
    * @param {Function}          cb     Callback function.
    */
-  static createImages( images, dest, cb ) {
+  static create( images, dest, cb ) {
     const tasks = images.map( ( image ) => {
       return FaviconEditor.copyImage( image, dest );
     } );

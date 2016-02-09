@@ -27,14 +27,14 @@ describe( 'FaviconEditor', () => {
   const testDir = Path.resolve( './test' );
   const dataDir = Path.join( testDir, 'data' );
 
-  /** @test {FaviconEditor#createImages} */
-  it( 'createImages', ( done ) => {
+  /** @test {FaviconEditor#create} */
+  it( 'create', ( done ) => {
     const images = FaviconConstants.imageSizes.map( ( size ) => {
       const path = Path.join( dataDir, size + '.png' );
       return { size: size, path: path, stat: Fs.statSync( path ) };
     } );
 
-    FaviconEditor.createImages( images, testDir, ( err, results ) => {
+    FaviconEditor.create( images, testDir, ( err, results ) => {
       assert( !( err ) );
       assert( results );
       assert( 0 < results.length );
