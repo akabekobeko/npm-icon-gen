@@ -181,7 +181,8 @@ export default class IcnsEditor {
   static fileSizeFromImages( images ) {
     let size = 0;
     images.forEach( ( image ) => {
-      size += image.stat.size;
+      const stat = Fs.statSync( image.path );
+      size += stat.size;
     } );
 
     return size + IcnsConstants.headerSize + ( IcnsConstants.headerSize * images.length );
