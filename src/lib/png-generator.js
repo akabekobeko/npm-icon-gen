@@ -3,46 +3,31 @@ import Fs from 'fs';
 import Path from 'path';
 import UUID from 'node-uuid';
 import SVG2PNG from 'svg2png';
-import Del from 'del';
-import { FaviconConstants } from './favicon-editor.js';
-import { IcoConstants } from './ico-editor.js';
-import { IcnsConstants } from './icns-editor.js';
+import { FaviconConstants } from './favicon-generator.js';
+import { IcoConstants } from './ico-generator.js';
+import { IcnsConstants } from './icns-generator.js';
 
 /**
- * Create a image ( PNG ) files from SVG file.
+ * Generate the PNG files from SVG file.
  */
-export default class ImageFileCreator {
+export default class PngGenerator {
   /**
-   * Initialize instance.
-   */
-  constructor() {
-    this._workDir = null;
-  }
-
-  /**
-   * Create a image ( PNG ) files from SVG file.
+   * Generate the PNG files from the SVG file.
    *
    * @param {String}   src SVG file path.
+   * @param {String}   dir Output destination The path of directory.
    * @param {Function} cb  Callback function.
    */
-  createImages( src, cb ) {
-    const path = Path.resolve( src );
-    Fs.readFile( path, ( err, svg ) => {
+  static generate( src, dir, cb ) {
+    Fs.readFile( src, ( err, svg ) => {
       if( err ) {
-        cb( err );
-        return;
+        return cb( err );
       }
 
-      this.createWorkDir();
-      if( !( this._workDir ) ) {
-        cb( new Error( 'Failed to setup the work directory.' ) );
-        return;
-      }
-
-      const sizes = this.getRequiredSizes();
+      const sizes = PngGenerator.getRequiredImageSizes();
       Promise
       .all( sizes.map( ( size ) => {
-        return this.createImage( svg, size, this._workDir );
+        return PngGenerator.generetePNG( svg, size, dir );
       } ) )
       .then( ( results ) => {
         cb( null, results );
@@ -54,22 +39,22 @@ export default class ImageFileCreator {
   }
 
   /**
-   * Create a image ( PNG ) file from SVG data.
+   * Generate the PNG file from the SVG data.
    *
-   * @param {Buffer} src  SVG data.
-   * @param {Number} size Image's width and height.
+   * @param {Buffer} svg  SVG data that has been parse by svg2png.
+   * @param {Number} size The size ( width/height ) of the image.
    * @param {String} dir  Path of the file output directory.
    *
-   * @return {Promise} Promise object.
+   * @return {Promise} Image generation task.
    */
-  createImage( src, size, dir ) {
+  static generetePNG( svg, size, dir ) {
     return new Promise( ( resolve, reject ) => {
-      if( !( src && 0 < size && dir ) ) {
+      if( !( svg && 0 < size && dir ) ) {
         reject( new Error( 'Invalid parameters.' ) );
         return;
       }
 
-      const buffer = SVG2PNG.sync( src, { width: size, height: size } );
+      const buffer = SVG2PNG.sync( svg, { width: size, height: size } );
       if( !( buffer ) ) {
         reject( new Error( 'Faild to write the image, ' + size + 'x' + size ) );
         return;
@@ -88,36 +73,24 @@ export default class ImageFileCreator {
   }
 
   /**
-   * Setup the work directory.
+   * Create the work directory.
+   *
+   * @return {String} The path of the created directory, failure is null.
    */
-  createWorkDir() {
-    this.deleteWorkDir();
-
+  static createWorkDir() {
     const dir = Path.join( OS.tmpdir(), UUID.v4() );
     Fs.mkdirSync( dir );
 
     const stat = Fs.statSync( dir );
-    this._workDir = ( stat && stat.isDirectory() ? dir : null );
-
-    return this._workDir;
+    return ( stat && stat.isDirectory() ? dir : null );
   }
 
   /**
-   * Delete a temporary image files.
-   */
-  deleteWorkDir() {
-    if( this._workDir ) {
-      Del.sync( [ this._workDir ], { force: true } );
-      this._workDir = null;
-    }
-  }
-
-  /**
-   * Setup a collection of the required image size.
+   * Gets the size of the images needed to create an icon.
    *
-   * @return {Array.<Number>} collection of the required image size.
+   * @return {Array.<Number>} The sizes of the image.
    */
-  getRequiredSizes() {
+  static getRequiredImageSizes() {
     const sizes = FaviconConstants.imageSizes.concat( IcoConstants.imageSizes ).concat( IcnsConstants.imageSizes );
 
     return sizes

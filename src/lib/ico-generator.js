@@ -38,20 +38,20 @@ export const IcoConstants = {
 };
 
 /**
- * Generate a ico file from PNG images.
+ * Generate the ICO file from PNG images.
  */
-export default class IcoEditor {
+export default class IcoGenerator {
   /**
-   * Create the ICO file from a PNG images.
+   * Generate the ICO file from a PNG images.
    *
    * @param {Array.<ImageInfo>} images File informations..
    * @param {String}            dest   Output destination The path of ICO file.
    * @param {Function}          cb     Callback function.
    */
-  static create( images, dest, cb ) {
+  static generate( images, dest, cb ) {
     try {
       const stream = Fs.createWriteStream( dest );
-      stream.write( IcoEditor.createFileHeader( images.length ), 'binary' );
+      stream.write( IcoGenerator.createFileHeader( images.length ), 'binary' );
 
       const pngs = images.map( ( image ) => {
         const data = Fs.readFileSync( image.path );
@@ -60,16 +60,16 @@ export default class IcoEditor {
 
       let offset = IcoConstants.headerSize + ( IcoConstants.directorySize * images.length );
       pngs.forEach( ( png ) => {
-        const directory = IcoEditor.createDirectory( png, offset );
+        const directory = IcoGenerator.createDirectory( png, offset );
         stream.write( directory, 'binary' );
         offset += png.data.length + IcoConstants.BitmapInfoHeaderSize;
       } );
 
       pngs.forEach( ( png ) => {
-        const header = IcoEditor.createBitmapInfoHeader( png, IcoConstants.BI_RGB );
+        const header = IcoGenerator.createBitmapInfoHeader( png, IcoConstants.BI_RGB );
         stream.write( header, 'binary' );
 
-        const dib = IcoEditor.convertPNGtoDIB( png.data, png.width, png.height, png.bpp );
+        const dib = IcoGenerator.convertPNGtoDIB( png.data, png.width, png.height, png.bpp );
         stream.write( dib, 'binary' );
       } );
 

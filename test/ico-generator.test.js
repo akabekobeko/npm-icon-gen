@@ -1,23 +1,23 @@
 import assert from 'power-assert';
 import Fs from 'fs';
 import Path from 'path';
-import IcoEditor from '../src/ico-editor.js';
-import { IcoConstants } from '../src/ico-editor.js';
+import IcoGenerator from '../src/lib/ico-generator.js';
+import { IcoConstants } from '../src/lib/ico-generator.js';
 
-/** @test {IcoEditor} */
+/** @test {IcoGenerator} */
 describe( 'IcoEditor', () => {
   const rootDir = Path.resolve( './test' );
   const dataDir = Path.join( rootDir, 'data' );
 
-  /** @test {ICOEditor#create} */
-  it( 'create', ( done ) => {
+  /** @test {IcoGenerator#generate} */
+  it( 'generate', ( done ) => {
     const targets = IcoConstants.imageSizes.map( ( size ) => {
       const path = Path.join( dataDir, size + '.png' );
       return { size: size, path: path, stat: Fs.statSync( path ) };
     } );
 
     const dest = Path.join( rootDir, 'sample.ico' );
-    IcoEditor.create( targets, dest, ( err ) => {
+    IcoGenerator.generate( targets, dest, ( err ) => {
       if( err ) {
         console.error( err );
         assert( false );
@@ -28,17 +28,17 @@ describe( 'IcoEditor', () => {
     } );
   } );
 
-  /** @test {ICOEditor#createFileHeader} */
+  /** @test {IcoGenerator#createFileHeader} */
   it( 'createFileHeader', () => {
     const count = 7;
-    const b = IcoEditor.createFileHeader( count );
+    const b = IcoGenerator.createFileHeader( count );
 
     assert( b.readUInt16LE( 0 ) === 0 );
     assert( b.readUInt16LE( 2 ) === 1 );
     assert( b.readUInt16LE( 4 ) === count );
   } );
 
-  /** @test {ICOEditor#createDirectory} */
+  /** @test {IcoGenerator#createDirectory} */
   it( 'createDirectory', () => {
     const png = {
       width: 16,
@@ -50,7 +50,7 @@ describe( 'IcoEditor', () => {
     };
 
     const offset = IcoConstants.headerSize + IcoConstants.directorySize;
-    const b      = IcoEditor.createDirectory( png, offset );
+    const b      = IcoGenerator.createDirectory( png, offset );
 
     assert( b.readUInt8( 0 ) === png.width );
     assert( b.readUInt8( 1 ) === png.height );
@@ -62,7 +62,7 @@ describe( 'IcoEditor', () => {
     assert( b.readUInt32LE( 12 ) === offset );
   } );
 
-  /** @test {ICOEditor#createBitmapInfoHeader} */
+  /** @test {IcoGenerator#createBitmapInfoHeader} */
   it( 'createBitmapInfoHeader', () => {
     const png = {
       width: 16,
@@ -73,7 +73,7 @@ describe( 'IcoEditor', () => {
       }
     };
 
-    const b = IcoEditor.createBitmapInfoHeader( png, IcoConstants.BI_RGB );
+    const b = IcoGenerator.createBitmapInfoHeader( png, IcoConstants.BI_RGB );
     assert( b.readUInt32LE( 0 ) === IcoConstants.BitmapInfoHeaderSize );
     assert( b.readInt32LE( 4 ) === png.width );
     assert( b.readInt32LE( 8 ) === png.height * 2 );

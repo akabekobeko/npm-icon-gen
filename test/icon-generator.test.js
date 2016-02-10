@@ -1,16 +1,15 @@
 import assert from 'power-assert';
-import IconGenerator from '../src/icon-generator.js';
-import ImageFileCreator from '../src/image-file-creator.js';
-import { IcoConstants } from '../src/ico-editor.js';
-import { IcnsConstants } from '../src/icns-editor.js';
-import { FaviconConstants } from '../src/favicon-editor.js';
+import IconGenerator from '../src/lib/icon-generator.js';
+import PngGenerator from '../src/lib/png-generator.js';
+import { IcoConstants } from '../src/lib/ico-generator.js';
+import { IcnsConstants } from '../src/lib/icns-generator.js';
+import { FaviconConstants } from '../src/lib/favicon-generator.js';
 
 /** @test {IconGenerator} */
 describe( 'IconGenerator', () => {
   /** @test {IconGenerator#filter} */
   it( 'filter', () => {
-    const imageFileCreator = new ImageFileCreator();
-    const targets = imageFileCreator.getRequiredSizes().map( ( size ) => {
+    const targets = PngGenerator.getRequiredImageSizes().map( ( size ) => {
       return { size: size };
     } );
 

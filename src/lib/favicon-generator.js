@@ -1,9 +1,10 @@
 import Fs from 'fs';
 import Path from 'path';
+import IcoGenerator from './ico-generator.js';
 
 /**
  * size required for the FAVICON.
- * @type {Array.<Number>}
+ * @type {Object}
  */
 export const FaviconConstants = {
   /**
@@ -17,6 +18,12 @@ export const FaviconConstants = {
    * @type {Array.<Number>}
    */
   icoImageSizes: [ 16, 24, 32, 48, 64 ],
+
+  /**
+   * File name of the FAVICON file.
+   * @type {String}
+   */
+  icoFileName: 'favicon.ico',
 
   /**
    * Collection of the file name and size of the icon.
@@ -38,20 +45,25 @@ export const FaviconConstants = {
 };
 
 /**
- * Create a FAVICON files from a PNG images.
+ * Generate a FAVICON files from a PNG images.
  */
-export default class FaviconEditor {
+export default class FaviconGenerator {
   /**
    * Create a FAVICON image files from a PNG images.
    *
-   * @param {Array.<ImageInfo>} images File informations..
-   * @param {String}            dest   Output destination The path of directory.
-   * @param {Function}          cb     Callback function.
+   * @param {Array.<ImageInfo>} images    File information for the PNG files generation.
+   * @param {Array.<ImageInfo>} icoImages File information for ICO file generation.
+   * @param {String}            dir       Output destination The path of directory.
+   * @param {Function}          cb        Callback function.
    */
-  static create( images, dest, cb ) {
+  static generate( images, icoImages, dir, cb ) {
+    // PNG
     const tasks = images.map( ( image ) => {
-      return FaviconEditor.copyImage( image, dest );
+      return FaviconGenerator.copyImage( image, dir );
     } );
+
+    // favicon.ico
+    tasks.push( FaviconGenerator.generateICO( icoImages, dir ) );
 
     Promise
     .all( tasks )
@@ -67,13 +79,13 @@ export default class FaviconEditor {
    * Copy to image.
    *
    * @param {ImageInfo} image Image information.
-   * @param {String}    dir   The path of the copied image file.
+   * @param {String}    dir   Output destination The path of directory.
    *
    * @return {Promise} Task to copy an image.
    */
   static copyImage( image, dir ) {
     return new Promise( ( resolve, reject ) => {
-      const fileName = FaviconEditor.fileNameFromSize( image.size );
+      const fileName = FaviconGenerator.fileNameFromSize( image.size );
       if( !( fileName ) ) {
         // Unknown target is ignored
         return resolve( '' );
@@ -94,6 +106,23 @@ export default class FaviconEditor {
       } );
 
       reader.pipe( writer );
+    } );
+  }
+
+  /**
+   * Generete the ICO file.
+   *
+   * @param {Array.<ImageInfo>} images File information for ICO file generation.
+   * @param {String}            dir    Output destination The path of directory.
+   *
+   * @return {Promise} Task to genereta the ICO file.
+   */
+  static generateICO( images, dir ) {
+    return new Promise( ( resolve, reject ) => {
+      const dest = Path.join( dir, FaviconConstants.icoFileName );
+      IcoGenerator.generate( images, dest, ( err ) => {
+        return ( err ? reject( err ) : resolve( dest ) );
+      } );
     } );
   }
 

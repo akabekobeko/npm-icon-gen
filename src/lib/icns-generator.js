@@ -40,25 +40,25 @@ export const IcnsConstants = {
 };
 
 /**
- * Create a ICNS file from a PNG images.
+ * Generate the ICNS file from a PNG images.
  * However, Mac OS 8.x is unsupported.
  */
-export default class IcnsEditor {
+export default class IcnsGenerator {
   /**
-   * Create a ICNS file from a PNG images.
+   * Create the ICNS file from a PNG images.
    *
    * @param {Array.<ImageInfo>} images File informations..
    * @param {String}            dest   Output destination The path of ICNS file.
    * @param {Function}          cb     Callback function.
    */
-  static create( images, dest, cb ) {
+  static generate( images, dest, cb ) {
     try {
       const stream = Fs.createWriteStream( dest );
 
-      const size = IcnsEditor.fileSizeFromImages( images );
-      stream.write( IcnsEditor.createFileHeader( size ), 'binary' );
+      const size = IcnsGenerator.fileSizeFromImages( images );
+      stream.write( IcnsGenerator.createFileHeader( size ), 'binary' );
 
-      IcnsEditor.writeImages( images, stream, cb );
+      IcnsGenerator.writeImages( images, stream, cb );
     } catch( err ) {
       cb( err );
     }
@@ -73,7 +73,7 @@ export default class IcnsEditor {
    */
   static writeImages( images, stream, cb ) {
     const tasks = IcnsConstants.iconIDs.map( ( iconID ) => {
-      return IcnsEditor.writeImage( iconID, images, stream );
+      return IcnsGenerator.writeImage( iconID, images, stream );
     } );
 
     tasks
@@ -99,7 +99,7 @@ export default class IcnsEditor {
    */
   static writeImage( iconID, images, stream ) {
     return new Promise( ( resolve, reject ) => {
-      const image = IcnsEditor.imageFromIconID( iconID, images );
+      const image = IcnsGenerator.imageFromIconID( iconID, images );
       if( !( image ) ) {
         // Unknown target is ignored
         return resolve();
@@ -110,7 +110,7 @@ export default class IcnsEditor {
           return reject( err );
         }
 
-        const header = IcnsEditor.createIconHeader( iconID, data.length );
+        const header = IcnsGenerator.createIconHeader( iconID, data.length );
         stream.write( header, 'binary' );
         stream.write( data, 'binary' );
         resolve();

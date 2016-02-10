@@ -1,8 +1,8 @@
 import assert from 'power-assert';
 import Fs from 'fs';
 import Path from 'path';
-import FaviconEditor from '../src/favicon-editor.js';
-import { FaviconConstants } from '../src/favicon-editor.js';
+import FaviconGenerator from '../src/lib/favicon-generator.js';
+import { FaviconConstants } from '../src/lib/favicon-generator.js';
 
 /**
  * Delete an image files.
@@ -22,19 +22,24 @@ function deleteImages( images ) {
   } );
 }
 
-/** @test {FaviconEditor} */
+/** @test {FaviconGenerator} */
 describe( 'FaviconEditor', () => {
   const testDir = Path.resolve( './test' );
   const dataDir = Path.join( testDir, 'data' );
 
-  /** @test {FaviconEditor#create} */
-  it( 'create', ( done ) => {
+  /** @test {FaviconGenerator#generate} */
+  it( 'generate', ( done ) => {
     const images = FaviconConstants.imageSizes.map( ( size ) => {
       const path = Path.join( dataDir, size + '.png' );
-      return { size: size, path: path, stat: Fs.statSync( path ) };
+      return { size: size, path: path };
     } );
 
-    FaviconEditor.create( images, testDir, ( err, results ) => {
+    const icoImages = FaviconConstants.icoImageSizes.map( ( size ) => {
+      const path = Path.join( dataDir, size + '.png' );
+      return { size: size, path: path };
+    } );
+
+    FaviconGenerator.generate( images, icoImages, testDir, ( err, results ) => {
       assert( !( err ) );
       assert( results );
       assert( 0 < results.length );

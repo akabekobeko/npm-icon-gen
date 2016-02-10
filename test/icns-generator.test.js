@@ -1,23 +1,23 @@
 import assert from 'power-assert';
 import Fs from 'fs';
 import Path from 'path';
-import IcnsEditor from '../src/icns-editor.js';
-import { IcnsConstants } from '../src/icns-editor.js';
+import IcnsGenerator from '../src/lib/icns-generator.js';
+import { IcnsConstants } from '../src/lib/icns-generator.js';
 
-/** @test {IcnsEditor} */
+/** @test {IcnsGenerator} */
 describe( 'IcnsEditor', () => {
   const testDir = Path.resolve( './test' );
   const dataDir = Path.join( testDir, 'data' );
 
-  /** @test {IcnsEditor#create} */
-  it( 'create', ( done ) => {
+  /** @test {IcnsGenerator#generate} */
+  it( 'generate', ( done ) => {
     const images = IcnsConstants.imageSizes.map( ( size ) => {
       const path = Path.join( dataDir, size + '.png' );
-      return { size: size, path: path, stat: Fs.statSync( path ) };
+      return { size: size, path: path };
     } );
 
     const dest = Path.join( testDir, 'sample.icns' );
-    IcnsEditor.create( images, dest, ( err ) => {
+    IcnsGenerator.generate( images, dest, ( err ) => {
       if( err ) {
         console.error( err );
       }
@@ -28,9 +28,9 @@ describe( 'IcnsEditor', () => {
     } );
   } );
 
-  /** @test {IcnsEditor#createFileHeader} */
+  /** @test {IcnsGenerator#createFileHeader} */
   it( 'createFileHeader', () => {
-    const header = IcnsEditor.createFileHeader( 32 );
+    const header = IcnsGenerator.createFileHeader( 32 );
 
     // In ASCII "icns"
     assert( header.readUInt8( 0 ) === 0x69 );
@@ -42,9 +42,9 @@ describe( 'IcnsEditor', () => {
     assert( header.readUInt32BE( 4 ) === 32 );
   } );
 
-  /** @test {IcnsEditor#createIconHeader} */
+  /** @test {IcnsGenerator#createIconHeader} */
   it( 'createIconHeader', () => {
-    const header = IcnsEditor.createIconHeader( IcnsConstants.iconIDs[ 0 ], 128 );
+    const header = IcnsGenerator.createIconHeader( IcnsConstants.iconIDs[ 0 ], 128 );
 
     // In ASCII "ic07"
     assert( header.readUInt8( 0 ) === 0x69 );

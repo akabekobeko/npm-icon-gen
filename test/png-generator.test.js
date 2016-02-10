@@ -1,43 +1,48 @@
 import assert from 'power-assert';
 import Fs from 'fs';
 import Path from 'path';
-import ImageFileCreator from '../src/image-file-creator.js';
+import Del from 'del';
+import PngGenerator from '../src/lib/png-generator.js';
 
-/** @test {ImageFileCreator} */
-describe( 'ImageFileCreator', () => {
+/** @test {PngGenerator} */
+describe( 'PngGenerator', () => {
   const rootDir = Path.resolve( './test' );
   const dataDir = Path.join( rootDir, 'data' );
 
-  /** @test {ImageFileCreator#createImage} */
-  it( 'createImage', () => {
+  /** @test {PngGenerator#generetePNG} */
+  it( 'generetePNG', () => {
     const svg = Fs.readFileSync( Path.join( dataDir, 'sample.svg' ) );
     assert( svg );
 
-    const imageFileCreator = new ImageFileCreator();
-    return imageFileCreator.createImage( svg, 16, rootDir )
-    .then( ( result ) => {
-      assert( result.size === 16 );
+    const dir = PngGenerator.createWorkDir();
+    assert( dir );
 
-      const path = Path.join( rootDir, '16.png' );
-      assert( result.path === path );
-      Fs.unlinkSync( result.path );
+    const size = 16;
+    PngGenerator
+    .generetePNG( svg, size, dir )
+    .then( ( result ) => {
+      assert( result.size === size );
+      Del.sync( [ dir ], { force: true } );
+    } )
+    .catch( ( err ) => {
+      console.error( err );
+      assert();
+      Del.sync( [ dir ], { force: true } );
     } );
   } );
 
-  /** @test {ImageFileCreator#createWorkDir} */
+  /** @test {PngGenerator#createWorkDir} */
   it( 'createWorkDir', () => {
-    const imageFileCreator = new ImageFileCreator();
-    const dir              = imageFileCreator.createWorkDir();
+    const dir = PngGenerator.createWorkDir();
     assert( dir );
 
-    imageFileCreator.deleteWorkDir();
+    Del.sync( [ dir ], { force: true } );
   } );
 
-  /** @test {ImageFileCreator#getRequiredSizes} */
-  it( 'getRequiredSizes', () => {
-    const imageFileCreator = new ImageFileCreator();
-    const expected         = imageFileCreator.getRequiredSizes();
-    const actual           = [ 16, 24, 32, 48, 57, 64, 72, 96, 120, 128, 144, 152, 195, 228, 256, 512, 1024 ];
+  /** @test {PngGenerator#getRequiredImageSizes} */
+  it( 'getRequiredImageSizes', () => {
+    const expected = PngGenerator.getRequiredImageSizes();
+    const actual   = [ 16, 24, 32, 48, 57, 64, 72, 96, 120, 128, 144, 152, 195, 228, 256, 512, 1024 ];
 
     assert( expected.length === actual.length );
     assert.deepEqual( expected, actual );
