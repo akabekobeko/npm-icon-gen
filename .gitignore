@@ -33,8 +33,8 @@ node_modules
 # Optional REPL history
 .node_repl_history
 
-test.js
-*.sample.js
-*.ico
-lib/
-esdoc/
+/bin
+/lib
+/esdoc
+/temp
+/test.js

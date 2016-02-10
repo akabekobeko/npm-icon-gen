@@ -6,10 +6,11 @@
   "license": "MIT",
   "homepage": "https://github.com/akabekobeko/npm-icon-gen#readme",
   "main": "index.js",
+  "bin": "bin/main.js",
   "files": [
     "bin",
     "lib",
-    "src"
+    "index.js"
   ],
   "keywords": [
     "Icon",
@@ -28,8 +29,8 @@
     "test": "mocha --timeout 50000 --compilers js:espower-babel/guess test/**/*.test.js",
     "start": "npm run watch",
     "esdoc": "esdoc -c esdoc.json",
-    "build": "babel src --out-dir lib --source-maps",
-    "watch": "babel src --out-dir lib --watch --source-maps",
+    "build": "babel src --out-dir ./",
+    "watch": "babel src --out-dir ./ --watch",
     "prepublish": "npm run build"
   },
   "dependencies": {
