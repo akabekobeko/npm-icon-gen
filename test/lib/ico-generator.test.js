@@ -1,8 +1,8 @@
 import assert from 'power-assert';
 import Fs from 'fs';
 import Path from 'path';
-import IcoGenerator from '../src/lib/ico-generator.js';
-import { IcoConstants } from '../src/lib/ico-generator.js';
+import IcoGenerator from '../../src/lib/ico-generator.js';
+import { IcoConstants } from '../../src/lib/ico-generator.js';
 
 /** @test {IcoGenerator} */
 describe( 'IcoEditor', () => {

@@ -1,8 +1,8 @@
 import assert from 'power-assert';
 import Fs from 'fs';
 import Path from 'path';
-import FaviconGenerator from '../src/lib/favicon-generator.js';
-import { FaviconConstants } from '../src/lib/favicon-generator.js';
+import FaviconGenerator from '../../src/lib/favicon-generator.js';
+import { FaviconConstants } from '../../src/lib/favicon-generator.js';
 
 /**
  * Delete an image files.

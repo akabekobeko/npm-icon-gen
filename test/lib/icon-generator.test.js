@@ -1,9 +1,9 @@
 import assert from 'power-assert';
-import IconGenerator from '../src/lib/icon-generator.js';
-import PngGenerator from '../src/lib/png-generator.js';
-import { IcoConstants } from '../src/lib/ico-generator.js';
-import { IcnsConstants } from '../src/lib/icns-generator.js';
-import { FaviconConstants } from '../src/lib/favicon-generator.js';
+import IconGenerator from '../../src/lib/icon-generator.js';
+import PngGenerator from '../../src/lib/png-generator.js';
+import { IcoConstants } from '../../src/lib/ico-generator.js';
+import { IcnsConstants } from '../../src/lib/icns-generator.js';
+import { FaviconConstants } from '../../src/lib/favicon-generator.js';
 
 /** @test {IconGenerator} */
 describe( 'IconGenerator', () => {

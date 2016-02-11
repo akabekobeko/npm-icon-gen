@@ -2,7 +2,7 @@ import assert from 'power-assert';
 import Fs from 'fs';
 import Path from 'path';
 import Del from 'del';
-import PngGenerator from '../src/lib/png-generator.js';
+import PngGenerator from '../../src/lib/png-generator.js';
 
 /** @test {PngGenerator} */
 describe( 'PngGenerator', () => {

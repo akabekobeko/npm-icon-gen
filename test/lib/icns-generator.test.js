@@ -1,8 +1,8 @@
 import assert from 'power-assert';
 import Fs from 'fs';
 import Path from 'path';
-import IcnsGenerator from '../src/lib/icns-generator.js';
-import { IcnsConstants } from '../src/lib/icns-generator.js';
+import IcnsGenerator from '../../src/lib/icns-generator.js';
+import { IcnsConstants } from '../../src/lib/icns-generator.js';
 
 /** @test {IcnsGenerator} */
 describe( 'IcnsEditor', () => {
