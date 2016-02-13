@@ -1,3 +1,4 @@
+import Fs from 'fs';
 import Path from 'path';
 import Del from 'del';
 import PngGenerator from './png-generator.js';
@@ -17,35 +18,78 @@ export default class IconGenerator {
    *
    * @param {String}   src SVG file path.
    * @param {String}   dir Destination directory path.
-   * @param {Function} cb  Callback function.
+   *
+   * @return {Promise} Promise object.
    */
-  static fromSVG( src, dir, cb ) {
-    const workDir = PngGenerator.createWorkDir();
-    if( !( workDir ) ) {
-      return cb( new Error( 'Failed to create the working directory.' ) );
-    }
-
-    PngGenerator.generate( src, dir, ( err, images ) => {
-      if( err ) {
-        console.error( err );
-        Del.sync( [ workDir ], { force: true } );
-        return cb( err );
+  static fromSVG( src, dir ) {
+    return new Promise( ( resolve, reject ) => {
+      const workDir = PngGenerator.createWorkDir();
+      if( !( workDir ) ) {
+        return reject( new Error( 'Failed to create the working directory.' ) );
       }
 
-      IconGenerator.generateAll( images, dir, cb );
+      PngGenerator.generate( Path.resolve( src ), workDir, ( err, images ) => {
+        if( err ) {
+          Del.sync( [ workDir ], { force: true } );
+          return reject( err );
+        }
+
+        IconGenerator.generateAll( images, Path.resolve( dir ), resolve, reject, workDir );
+      } );
+    } );
+  }
+
+  /**
+   * Generate an icon from the SVG file.
+   *
+   * @param {Array.<String>} src PNG files path.
+   * @param {String}         dir Destination directory path.
+   *
+   * @return {Promise} Promise object.
+   */
+  static fromPNG( src, dir ) {
+    const dataDir = Path.resolve( src );
+    const paths = PngGenerator.getRequiredImageSizes().map( ( size ) => {
+      return Path.join( dataDir, size + '.png' );
+    } );
+
+    return new Promise( ( resolve, reject ) => {
+      const images = paths.map( ( path ) => {
+        const size = Number( Path.basename( path, '.png' ) );
+        return { path, size };
+      } );
+
+      let notExistsFile = null;
+      images.some( ( image ) => {
+        const stat = Fs.statSync( image.path );
+        if( !( stat && stat.isFile() ) ) {
+          notExistsFile = Path.basename( image.path );
+          return true;
+        }
+
+        return false;
+      } );
+
+      if( notExistsFile ) {
+        return reject( new Error( '"' + notExistsFile + '" does not exist.' ) );
+      }
+
+      IconGenerator.generateAll( images, dir, resolve, reject );
     } );
   }
 
   /**
    * Generate an icon from the image file infromations.
    *
-   * @param {Array.<ImageInfo>} images Image file informations.
-   * @param {String}            dest   Destination directory path.
-   * @param {Function}          cb     Callback function.
+   * @param {Array.<ImageInfo>} images  Image file informations.
+   * @param {String}            dest    Destination directory path.
+   * @param {Function}          resolve Callback function.
+   * @param {Function}          reject  Callback function fro error.
+   * @param {String}            workDir Work directory path. Defalt is undefined.
    */
-  static generateAll( images, dest, cb ) {
+  static generateAll( images, dest, resolve, reject, workDir ) {
     if( !( images && 0 < images.length ) ) {
-      return cb( new Error( 'Targets is empty.' ) );
+      return reject( new Error( 'Targets is empty.' ) );
     }
 
     const dir = Path.resolve( dest );
@@ -57,12 +101,44 @@ export default class IconGenerator {
 
     Promise
     .all( tasks )
-    .then( () => {
-      cb();
+    .then( ( results ) => {
+      if( workDir ) {
+        Del.sync( [ workDir ], { force: true } );
+      }
+
+      resolve( IconGenerator.flattenValues( results ) );
     } )
     .catch( ( err ) => {
-      cb( err );
+      if( workDir ) {
+        Del.sync( [ workDir ], { force: true } );
+      }
+
+      reject( err );
     } );
+  }
+
+  /**
+   * Convert a values to a flat array.
+   *
+   * @param  {Array.<String|Array>} values Values ( [ 'A', 'B', [ 'C', 'D' ] ] ).
+   *
+   * @return {Array.<String>} Flat array ( [ 'A', 'B', 'C', 'D' ] ).
+   */
+  static flattenValues( values ) {
+    const paths = [];
+    values.forEach( ( value ) => {
+      if( !( value ) ) { return; }
+
+      if( Array.isArray( value ) ) {
+        value.forEach( ( path ) => {
+          paths.push( path );
+        } );
+      } else {
+        paths.push( value );
+      }
+    } );
+
+    return paths;
   }
 
   /**
@@ -78,7 +154,7 @@ export default class IconGenerator {
   static generate( editor, images, sizes, dest ) {
     return new Promise( ( resolve, reject ) => {
       editor.generate( IconGenerator.filter( images, sizes ), dest, ( err ) => {
-        return ( err ? reject( err ) : resolve() );
+        return ( err ? reject( err ) : resolve( dest ) );
       } );
     } );
   }
@@ -96,8 +172,8 @@ export default class IconGenerator {
       const favImages = IconGenerator.filter( images, FaviconConstants.imageSizes );
       const icoImages = IconGenerator.filter( images, FaviconConstants.icoImageSizes );
 
-      FaviconGenerator.generate( favImages, icoImages, dir, ( err ) => {
-        return ( err ? reject( err ) : resolve() );
+      FaviconGenerator.generate( favImages, icoImages, dir, ( err, results ) => {
+        return ( err ? reject( err ) : resolve( results ) );
       } );
     } );
   }

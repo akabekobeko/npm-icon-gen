@@ -1,4 +1,6 @@
 import assert from 'power-assert';
+import Path from 'path';
+import TestUtil from '../test-util.js';
 import IconGenerator from '../../src/lib/icon-generator.js';
 import PngGenerator from '../../src/lib/png-generator.js';
 import { IcoConstants } from '../../src/lib/ico-generator.js';
@@ -7,6 +9,38 @@ import { FaviconConstants } from '../../src/lib/favicon-generator.js';
 
 /** @test {IconGenerator} */
 describe( 'IconGenerator', () => {
+  const testDir = Path.resolve( './test' );
+  const dataDir = Path.join( testDir, 'data' );
+
+  //
+  /** @test {IconGenerator#fromSVG} */
+  /*
+  it( 'fromSVG', () => {
+    return IconGenerator.fromSVG( './test/data/sample.svg', './test' )
+    .then( () => {
+      assert( true );
+      TestUtil.deleteFiles( results );
+    } );
+  } );
+  */
+
+  /** @test {IconGenerator#fromPNG} */
+  it( 'fromPNG', () => {
+    return IconGenerator.fromPNG( dataDir, './test' )
+    .then( ( results ) => {
+      assert( true );
+      TestUtil.deleteFiles( results );
+    } );
+  } );
+
+  it( 'flattenValues', () => {
+    const values   = [ 'A', 'B', [ 'C', 'D' ] ];
+    const actual   = [ 'A', 'B',  'C', 'D' ];
+    const expected = IconGenerator.flattenValues( values );
+
+    assert.deepEqual( expected, actual );
+  } );
+
   /** @test {IconGenerator#filter} */
   it( 'filter', () => {
     const targets = PngGenerator.getRequiredImageSizes().map( ( size ) => {
