@@ -1,5 +1,7 @@
 # npm-icon-gen
 
+[![Build Status](https://travis-ci.org/akabekobeko/npm-icon-gen.svg?branch=master)](https://travis-ci.org/akabekobeko/npm-icon-gen)
+
 Generate an icon from the **SVG** or **PNG** file.
 
 ## Support formats
