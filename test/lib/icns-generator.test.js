@@ -5,7 +5,7 @@ import IcnsGenerator from '../../src/lib/icns-generator.js';
 import { IcnsConstants } from '../../src/lib/icns-generator.js';
 
 /** @test {IcnsGenerator} */
-describe( 'IcnsEditor', () => {
+describe( 'IcnsGenerator', () => {
   const testDir = Path.resolve( './test' );
   const dataDir = Path.join( testDir, 'data' );
 

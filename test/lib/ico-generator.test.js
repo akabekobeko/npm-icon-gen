@@ -5,7 +5,7 @@ import IcoGenerator from '../../src/lib/ico-generator.js';
 import { IcoConstants } from '../../src/lib/ico-generator.js';
 
 /** @test {IcoGenerator} */
-describe( 'IcoEditor', () => {
+describe( 'IcoGenerator', () => {
   const rootDir = Path.resolve( './test' );
   const dataDir = Path.join( rootDir, 'data' );
 
