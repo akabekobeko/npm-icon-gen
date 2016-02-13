@@ -73,7 +73,7 @@ export default class IcoGenerator {
         stream.write( dib, 'binary' );
       } );
 
-      cb();
+      cb( null, dest );
 
     } catch( err ) {
       cb( err );

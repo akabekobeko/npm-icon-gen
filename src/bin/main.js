@@ -1,14 +1,18 @@
 #!/usr/bin/env node
 
 import Path from 'path';
+import IconGenerator from '../lib/icon-generator.js';
 
 /**
  * Show the help text.
  *
  * @param {WritableStream} stream Target stream.
+ *
+ * @return {Promise} Promise object.
  */
 function showHelp( stream ) {
-  stream.write( `
+  return new Promise( ( resolve ) => {
+    stream.write( `
 Usage: icon-gen [OPTIONS]
 
 Generate an icon from the SVG or PNG file.
@@ -35,25 +39,34 @@ Examples:
 
 See also:
   https://github.com/akabekobeko/npm-icon-gen
-  ` );
+` );
+
+    resolve();
+  } );
 }
 
 /**
  * Show the version number.
  *
  * @param {WritableStream} stream Target stream.
+ *
+ * @return {Promise} Promise object.
  */
 function showVersion( stream ) {
-  const read = ( path ) => {
-    try {
-      return require( path ).version;
-    } catch( err ) {
-      return null;
-    }
-  };
+  return new Promise( ( resolve ) => {
+    const read = ( path ) => {
+      try {
+        return require( path ).version;
+      } catch( err ) {
+        return null;
+      }
+    };
 
-  const version = read( '../package.json' ) || read( '../../package.json' );
-  stream.write( 'v' + version + '\n' );
+    const version = read( '../package.json' ) || read( '../../package.json' );
+    stream.write( 'v' + version + '\n' );
+
+    resolve();
+  } );
 }
 
 /**
@@ -85,7 +98,7 @@ function parseArgs( args ) {
       case '-t':
       case '--type':
         if( index + 1 < args.length ) {
-          options.type = Path.resolve( args[ index + 1 ] );
+          options.type = args[ index + 1 ];
         }
         break;
 
@@ -99,7 +112,7 @@ function parseArgs( args ) {
     }
   } );
 
-  if( !( options.type ) || options.type !== 'svg' || options.type !== 'png' ) {
+  if( !( options.type ) || ( options.type !== 'svg' && options.type !== 'png' ) ) {
     options.type = 'svg';
   }
 
@@ -110,21 +123,28 @@ function parseArgs( args ) {
  * Main process.
  *
  * @param {Array.<String>} args   Arguments of the command line.
+ *
+ * @return {Promise} Promise object.
  */
-function mainProcess( args ) {
-  try {
+function execute( args ) {
+  return new Promise( ( resolve, reject ) => {
     const options = parseArgs( args );
     if( !( options.input ) ) {
-      throw new Error( '' );
+      return reject( new Error( '"-i" or "--input" has not been specified. This parameter is required.' ) );
     }
 
     if( !( options.output ) ) {
-      throw new Error( '' );
+      return reject( new Error( '"-o" or "--output" has not been specified. This parameter is required.' ) );
     }
 
-  } catch( err ) {
-    console.error( err );
-  }
+    switch( options.type ) {
+      case 'png':
+        return IconGenerator.fromPNG( options.input, options.output );
+
+      default:
+        return IconGenerator.fromSVG( options.input, options.output );
+    }
+  } );
 }
 
 /**
@@ -132,6 +152,8 @@ function mainProcess( args ) {
  *
  * @param {Array.<String>} args   Arguments of the command line.
  * @param {WritableStream} stdout Standard output.
+ *
+ * @return {Promise} Promise object.
  */
 function main( args, stdout ) {
   switch( args[ 0 ] ) {
@@ -140,13 +162,17 @@ function main( args, stdout ) {
     case '--help':
       return showHelp( stdout );
 
-    case '--v':
-    case '-version':
+    case '-v':
+    case '--version':
       return showVersion( stdout );
 
     default:
-      return mainProcess( args );
+      return execute( args );
   }
 }
 
-main( process.argv.slice( 2 ), process.stdout );
+main( process.argv.slice( 2 ), process.stdout )
+.then()
+.catch( ( err ) => {
+  console.error( err );
+} );
