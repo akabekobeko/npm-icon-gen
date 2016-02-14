@@ -49,7 +49,6 @@ export default class IcnsGenerator {
    *
    * @param {Array.<ImageInfo>} images File informations..
    * @param {String}            dest   Output destination The path of ICNS file.
-   * @param {Function}          cb     Callback function.
    * @param {Logger}            logger Logger.
    *
    * @return {Promise} Promise object.

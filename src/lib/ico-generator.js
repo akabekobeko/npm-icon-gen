@@ -46,7 +46,6 @@ export default class IcoGenerator {
    *
    * @param {Array.<ImageInfo>} images File informations..
    * @param {String}            dest   Output destination The path of ICO file.
-   * @param {Function}          cb     Callback function.
    * @param {Logger}            logger Logger.
    *
    * @return {Promise} Promise object.
