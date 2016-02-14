@@ -50,42 +50,35 @@ export default class IcnsGenerator {
    * @param {Array.<ImageInfo>} images File informations..
    * @param {String}            dest   Output destination The path of ICNS file.
    * @param {Function}          cb     Callback function.
+   * @param {Logger}            logger Logger.
    */
-  static generate( images, dest, cb ) {
+  static generate( images, dest, cb, logger ) {
     try {
       const stream = Fs.createWriteStream( dest );
 
       const size = IcnsGenerator.fileSizeFromImages( images );
       stream.write( IcnsGenerator.createFileHeader( size ), 'binary' );
 
-      IcnsGenerator.writeImages( images, stream, cb );
+      const tasks = IcnsConstants.iconIDs.map( ( iconID ) => {
+        return IcnsGenerator.writeImage( iconID, images, stream );
+      } );
+
+      logger.log( 'ICNS:' );
+
+      tasks
+      .reduce( ( prev, current ) => {
+        return prev.then( current );
+      }, Promise.resolve() )
+      .then( () => {
+        logger.log( '  Create: ' + dest );
+        cb( null, dest );
+      } )
+      .catch( ( err ) => {
+        cb( err );
+      } );
     } catch( err ) {
       cb( err );
     }
-  }
-
-  /**
-   * Write the images.
-   *
-   * @param {Array.<ImageInfo>} images File informations..
-   * @param {WritableStream}    stream Target stream.
-   * @param {Function}          cb     Callback function.
-   */
-  static writeImages( images, stream, cb ) {
-    const tasks = IcnsConstants.iconIDs.map( ( iconID ) => {
-      return IcnsGenerator.writeImage( iconID, images, stream );
-    } );
-
-    tasks
-    .reduce( ( prev, current ) => {
-      return prev.then( current );
-    }, Promise.resolve() )
-    .then( () => {
-      cb();
-    } )
-    .catch( ( err ) => {
-      cb( err );
-    } );
   }
 
   /**

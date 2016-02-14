@@ -1,4 +1,5 @@
-const IconGenerator = require( './icon-generator.js' );
+const IconGenerator = require( './lib/icon-generator.js' );
+const Logger = require( './lib/logger.js' );
 
 /**
  * Generate an icon from the SVG file.
@@ -8,11 +9,12 @@ const IconGenerator = require( './icon-generator.js' );
  * @param {Object} options Options.
  */
 module.exports = function( src, dest, options = { type: 'svg', report: false } ) {
+  const logger = new Logger( options.report );
   switch( options.type ) {
     case 'png':
-      return IconGenerator.fromPNG( src, dest );
+      return IconGenerator.fromPNG( src, dest, logger );
 
     default:
-      return IconGenerator.fromSVG( src, dest );
+      return IconGenerator.fromSVG( src, dest, logger );
   }
 };

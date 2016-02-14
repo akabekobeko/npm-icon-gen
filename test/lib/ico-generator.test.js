@@ -1,6 +1,7 @@
 import assert from 'power-assert';
 import Fs from 'fs';
 import Path from 'path';
+import Logger from '../../src/lib/logger.js';
 import IcoGenerator from '../../src/lib/ico-generator.js';
 import { IcoConstants } from '../../src/lib/ico-generator.js';
 
@@ -25,7 +26,7 @@ describe( 'IcoGenerator', () => {
 
       Fs.unlinkSync( dest );
       done();
-    } );
+    }, new Logger() );
   } );
 
   /** @test {IcoGenerator#createFileHeader} */

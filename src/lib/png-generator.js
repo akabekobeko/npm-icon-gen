@@ -14,20 +14,23 @@ export default class PngGenerator {
   /**
    * Generate the PNG files from the SVG file.
    *
-   * @param {String}   src SVG file path.
-   * @param {String}   dir Output destination The path of directory.
-   * @param {Function} cb  Callback function.
+   * @param {String}   src    SVG file path.
+   * @param {String}   dir    Output destination The path of directory.
+   * @param {Function} cb     Callback function.
+   * @param {Logger}   logger Logger.
    */
-  static generate( src, dir, cb ) {
+  static generate( src, dir, cb, logger ) {
     Fs.readFile( src, ( err, svg ) => {
       if( err ) {
         return cb( err );
       }
 
+      logger.log( 'SVG to PNG:' );
+
       const sizes = PngGenerator.getRequiredImageSizes();
       Promise
       .all( sizes.map( ( size ) => {
-        return PngGenerator.generetePNG( svg, size, dir );
+        return PngGenerator.generetePNG( svg, size, dir, logger );
       } ) )
       .then( ( results ) => {
         cb( null, results );
@@ -41,13 +44,14 @@ export default class PngGenerator {
   /**
    * Generate the PNG file from the SVG data.
    *
-   * @param {Buffer} svg  SVG data that has been parse by svg2png.
-   * @param {Number} size The size ( width/height ) of the image.
-   * @param {String} dir  Path of the file output directory.
+   * @param {Buffer} svg    SVG data that has been parse by svg2png.
+   * @param {Number} size   The size ( width/height ) of the image.
+   * @param {String} dir    Path of the file output directory.
+   * @param {Logger} logger Logger.
    *
    * @return {Promise} Image generation task.
    */
-  static generetePNG( svg, size, dir ) {
+  static generetePNG( svg, size, dir, logger ) {
     return new Promise( ( resolve, reject ) => {
       if( !( svg && 0 < size && dir ) ) {
         reject( new Error( 'Invalid parameters.' ) );
@@ -67,6 +71,7 @@ export default class PngGenerator {
           return;
         }
 
+        logger.log( '  Create: ' + dest );
         resolve( { size: size, path: dest } );
       } );
     } );

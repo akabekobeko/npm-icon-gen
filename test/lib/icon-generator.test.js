@@ -1,6 +1,7 @@
 import assert from 'power-assert';
 import Path from 'path';
 import TestUtil from '../test-util.js';
+import Logger from '../../src/lib/logger.js';
 import IconGenerator from '../../src/lib/icon-generator.js';
 import PngGenerator from '../../src/lib/png-generator.js';
 import { IcoConstants } from '../../src/lib/ico-generator.js';
@@ -16,7 +17,7 @@ describe( 'IconGenerator', () => {
   /** @test {IconGenerator#fromSVG} */
   /*
   it( 'fromSVG', () => {
-    return IconGenerator.fromSVG( './test/data/sample.svg', './test' )
+    return IconGenerator.fromSVG( './test/data/sample.svg', './test', new Logger() )
     .then( () => {
       assert( true );
       TestUtil.deleteFiles( results );
@@ -26,7 +27,7 @@ describe( 'IconGenerator', () => {
 
   /** @test {IconGenerator#fromPNG} */
   it( 'fromPNG', () => {
-    return IconGenerator.fromPNG( dataDir, './test' )
+    return IconGenerator.fromPNG( dataDir, './test', new Logger() )
     .then( ( results ) => {
       assert( true );
       TestUtil.deleteFiles( results );

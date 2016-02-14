@@ -2,6 +2,7 @@ import assert from 'power-assert';
 import Fs from 'fs';
 import Path from 'path';
 import Del from 'del';
+import Logger from '../../src/lib/logger.js';
 import PngGenerator from '../../src/lib/png-generator.js';
 
 /** @test {PngGenerator} */
@@ -19,7 +20,7 @@ describe( 'PngGenerator', () => {
 
     const size = 16;
     PngGenerator
-    .generetePNG( svg, size, dir )
+    .generetePNG( svg, size, dir, new Logger() )
     .then( ( result ) => {
       assert( result.size === size );
       Del.sync( [ dir ], { force: true } );

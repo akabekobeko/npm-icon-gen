@@ -47,9 +47,12 @@ export default class IcoGenerator {
    * @param {Array.<ImageInfo>} images File informations..
    * @param {String}            dest   Output destination The path of ICO file.
    * @param {Function}          cb     Callback function.
+   * @param {Logger}            logger Logger.
    */
-  static generate( images, dest, cb ) {
+  static generate( images, dest, cb, logger ) {
     try {
+      logger.log( 'ICO:' );
+
       const stream = Fs.createWriteStream( dest );
       stream.write( IcoGenerator.createFileHeader( images.length ), 'binary' );
 
@@ -73,6 +76,7 @@ export default class IcoGenerator {
         stream.write( dib, 'binary' );
       } );
 
+      logger.log( '  Create: ' + dest );
       cb( null, dest );
 
     } catch( err ) {

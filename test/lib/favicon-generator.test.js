@@ -1,6 +1,7 @@
 import assert from 'power-assert';
 import Path from 'path';
 import TestUtil from '../test-util.js';
+import Logger from '../../src/lib/logger.js';
 import FaviconGenerator from '../../src/lib/favicon-generator.js';
 import { FaviconConstants } from '../../src/lib/favicon-generator.js';
 
@@ -28,6 +29,6 @@ describe( 'FaviconGenerator', () => {
 
       TestUtil.deleteFiles( results );
       done();
-    } );
+    }, new Logger() );
   } );
 } );

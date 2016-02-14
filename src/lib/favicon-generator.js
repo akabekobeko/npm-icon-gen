@@ -1,5 +1,6 @@
 import Fs from 'fs';
 import Path from 'path';
+import Logger from './logger.js';
 import IcoGenerator from './ico-generator.js';
 
 /**
@@ -55,15 +56,18 @@ export default class FaviconGenerator {
    * @param {Array.<ImageInfo>} icoImages File information for ICO file generation.
    * @param {String}            dir       Output destination The path of directory.
    * @param {Function}          cb        Callback function.
+   * @param {Logger}            logger    Logger.
    */
-  static generate( images, icoImages, dir, cb ) {
+  static generate( images, icoImages, dir, cb, logger ) {
     // PNG
     const tasks = images.map( ( image ) => {
-      return FaviconGenerator.copyImage( image, dir );
+      return FaviconGenerator.copyImage( image, dir, logger );
     } );
 
     // favicon.ico
-    tasks.push( FaviconGenerator.generateICO( icoImages, dir ) );
+    tasks.push( FaviconGenerator.generateICO( icoImages, dir, logger ) );
+
+    logger.log( 'Favicon:' );
 
     Promise
     .all( tasks )
@@ -78,12 +82,13 @@ export default class FaviconGenerator {
   /**
    * Copy to image.
    *
-   * @param {ImageInfo} image Image information.
-   * @param {String}    dir   Output destination The path of directory.
+   * @param {ImageInfo} image  Image information.
+   * @param {String}    dir    Output destination The path of directory.
+   * @param {Logger}    logger Logger.
    *
    * @return {Promise} Task to copy an image.
    */
-  static copyImage( image, dir ) {
+  static copyImage( image, dir, logger ) {
     return new Promise( ( resolve, reject ) => {
       const fileName = FaviconGenerator.fileNameFromSize( image.size );
       if( !( fileName ) ) {
@@ -102,6 +107,7 @@ export default class FaviconGenerator {
         reject( err );
       } )
       .on( 'close', () => {
+        logger.log( '  Create: ' + dest );
         resolve( dest );
       } );
 
@@ -114,15 +120,21 @@ export default class FaviconGenerator {
    *
    * @param {Array.<ImageInfo>} images File information for ICO file generation.
    * @param {String}            dir    Output destination The path of directory.
+   * @param {Logger}            logger Logger.
    *
    * @return {Promise} Task to genereta the ICO file.
    */
-  static generateICO( images, dir ) {
+  static generateICO( images, dir, logger ) {
     return new Promise( ( resolve, reject ) => {
       const dest = Path.join( dir, FaviconConstants.icoFileName );
       IcoGenerator.generate( images, dest, ( err ) => {
-        return ( err ? reject( err ) : resolve( dest ) );
-      } );
+        if( err ) {
+          return reject( err );
+        }
+
+        logger.log( '  Create: ' + dest );
+        return resolve( dest );
+      }, new Logger() );
     } );
   }
 
