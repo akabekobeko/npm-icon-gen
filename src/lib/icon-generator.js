@@ -113,7 +113,7 @@ export default class IconGenerator {
     const tasks = [
       IconGenerator.generate( IcoGenerator, images, IcoConstants.imageSizes, Path.join( dir, 'app.ico' ), logger ),
       IconGenerator.generate( IcnsGenerator, images, IcnsConstants.imageSizes, Path.join( dir, 'app.icns' ), logger ),
-      IconGenerator.generateFAVICON( images, dir, logger ),
+      IconGenerator.generateFAVICON( images, dir, logger )
     ];
 
     Promise
