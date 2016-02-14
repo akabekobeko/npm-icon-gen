@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 import Path from 'path';
+import Logger from '../lib/logger.js';
 import IconGenerator from '../lib/icon-generator.js';
 
 /**
@@ -139,10 +140,10 @@ function execute( args ) {
 
     switch( options.type ) {
       case 'png':
-        return IconGenerator.fromPNG( options.input, options.output );
+        return IconGenerator.fromPNG( options.input, options.output, new Logger( options.report ) );
 
       default:
-        return IconGenerator.fromSVG( options.input, options.output );
+        return IconGenerator.fromSVG( options.input, options.output, new Logger( options.report ) );
     }
   } );
 }

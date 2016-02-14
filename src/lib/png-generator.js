@@ -58,20 +58,21 @@ export default class PngGenerator {
         return;
       }
 
+      const dest = Path.join( dir, size + '.png' );
+      logger.log( '  Create: ' + dest );
+
       const buffer = SVG2PNG.sync( svg, { width: size, height: size } );
       if( !( buffer ) ) {
         reject( new Error( 'Faild to write the image, ' + size + 'x' + size ) );
         return;
       }
 
-      const dest = Path.join( dir, size + '.png' );
       Fs.writeFile( dest, buffer, ( err ) => {
         if( err ) {
           reject( err );
           return;
         }
 
-        logger.log( '  Create: ' + dest );
         resolve( { size: size, path: dest } );
       } );
     } );
