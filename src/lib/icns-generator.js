@@ -51,34 +51,28 @@ export default class IcnsGenerator {
    * @param {String}            dest   Output destination The path of ICNS file.
    * @param {Function}          cb     Callback function.
    * @param {Logger}            logger Logger.
+   *
+   * @return {Promise} Promise object.
    */
-  static generate( images, dest, cb, logger ) {
-    try {
+  static generate( images, dest, logger ) {
+    return new Promise( ( resolve, reject ) => {
+      logger.log( 'ICNS:' );
+
       const stream = Fs.createWriteStream( dest );
 
       const size = IcnsGenerator.fileSizeFromImages( images );
       stream.write( IcnsGenerator.createFileHeader( size ), 'binary' );
 
-      const tasks = IcnsConstants.iconIDs.map( ( iconID ) => {
-        return IcnsGenerator.writeImage( iconID, images, stream );
-      } );
+      for( let i = 0, max = IcnsConstants.iconIDs.length; i < max; ++i ) {
+        const iconID = IcnsConstants.iconIDs[ i ];
+        if( !( IcnsGenerator.writeImage( iconID, images, stream ) ) ) {
+          return reject( new Error( 'Faild to read/write image.' ) );
+        }
+      }
 
-      logger.log( 'ICNS:' );
-
-      tasks
-      .reduce( ( prev, current ) => {
-        return prev.then( current );
-      }, Promise.resolve() )
-      .then( () => {
-        logger.log( '  Create: ' + dest );
-        cb( null, dest );
-      } )
-      .catch( ( err ) => {
-        cb( err );
-      } );
-    } catch( err ) {
-      cb( err );
-    }
+      logger.log( '  Create: ' + dest );
+      resolve( dest );
+    } );
   }
 
   /**
@@ -88,27 +82,20 @@ export default class IcnsGenerator {
    * @param {Array.<ImageInfo>} images File informations..
    * @param {WritableStream}    stream Target stream.
    *
-   * @return {Promise} Task to write an image.
+   * @return {Boolean} If success "true".
    */
   static writeImage( iconID, images, stream ) {
-    return new Promise( ( resolve, reject ) => {
-      const image = IcnsGenerator.imageFromIconID( iconID, images );
-      if( !( image ) ) {
-        // Unknown target is ignored
-        return resolve();
-      }
+    // Unknown target is ignored
+    const image = IcnsGenerator.imageFromIconID( iconID, images );
+    if( !( image ) ) { return true; }
 
-      Fs.readFile( image.path, ( err, data ) => {
-        if( err ) {
-          return reject( err );
-        }
+    const data = Fs.readFileSync( image.path );
+    if( !( data ) ) { return false; }
 
-        const header = IcnsGenerator.createIconHeader( iconID, data.length );
-        stream.write( header, 'binary' );
-        stream.write( data, 'binary' );
-        resolve();
-      } );
-    } );
+    const header = IcnsGenerator.createIconHeader( iconID, data.length );
+    stream.write( header, 'binary' );
+    stream.write( data, 'binary' );
+    return true;
   }
 
   /**

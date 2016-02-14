@@ -48,9 +48,11 @@ export default class IcoGenerator {
    * @param {String}            dest   Output destination The path of ICO file.
    * @param {Function}          cb     Callback function.
    * @param {Logger}            logger Logger.
+   *
+   * @return {Promise} Promise object.
    */
-  static generate( images, dest, cb, logger ) {
-    try {
+  static generate( images, dest, logger ) {
+    return new Promise( ( resolve ) => {
       logger.log( 'ICO:' );
 
       const stream = Fs.createWriteStream( dest );
@@ -77,11 +79,8 @@ export default class IcoGenerator {
       } );
 
       logger.log( '  Create: ' + dest );
-      cb( null, dest );
-
-    } catch( err ) {
-      cb( err );
-    }
+      resolve( dest );
+    } );
   }
 
   /**

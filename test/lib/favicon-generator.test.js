@@ -11,24 +11,17 @@ describe( 'FaviconGenerator', () => {
   const dataDir = Path.join( testDir, 'data' );
 
   /** @test {FaviconGenerator#generate} */
-  it( 'generate', ( done ) => {
+  it( 'generate', () => {
     const images = FaviconConstants.imageSizes.map( ( size ) => {
       const path = Path.join( dataDir, size + '.png' );
       return { size: size, path: path };
     } );
 
-    const icoImages = FaviconConstants.icoImageSizes.map( ( size ) => {
-      const path = Path.join( dataDir, size + '.png' );
-      return { size: size, path: path };
-    } );
-
-    FaviconGenerator.generate( images, icoImages, testDir, ( err, results ) => {
-      assert( !( err ) );
+    return FaviconGenerator
+    .generate( images, testDir, new Logger() )
+    .then( ( results ) => {
       assert( results );
-      assert( 0 < results.length );
-
       TestUtil.deleteFiles( results );
-      done();
-    }, new Logger() );
+    } );
   } );
 } );

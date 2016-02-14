@@ -109,11 +109,16 @@ export default class IconGenerator {
       return cb( new Error( 'Targets is empty.' ) );
     }
 
-    const dir = Path.resolve( dest );
-    const tasks = [
-      IconGenerator.generate( IcoGenerator, images, IcoConstants.imageSizes, Path.join( dir, 'app.ico' ), logger ),
-      IconGenerator.generate( IcnsGenerator, images, IcnsConstants.imageSizes, Path.join( dir, 'app.icns' ), logger ),
-      IconGenerator.generateFAVICON( images, dir, logger )
+    const dir          = Path.resolve( dest );
+    const icoImages    = IconGenerator.filter( images, IcoConstants.imageSizes );
+    const icnsImages   = IconGenerator.filter( images, IcnsConstants.imageSizes );
+    const favIcoImages = IconGenerator.filter( images, FaviconConstants.icoImageSizes );
+    const favImages    = IconGenerator.filter( images, FaviconConstants.imageSizes );
+    const tasks        = [
+      IcnsGenerator.generate( icnsImages, Path.join( dir, 'app.icns' ), logger ),
+      IcoGenerator.generate( icoImages, Path.join( dir, 'app.ico' ), logger ),
+      IcoGenerator.generate( favIcoImages, Path.join( dir, 'favicon.ico' ), logger ),
+      FaviconGenerator.generate( favImages, dir, logger )
     ];
 
     Promise
@@ -123,45 +128,6 @@ export default class IconGenerator {
     } )
     .catch( ( err ) => {
       cb( err );
-    } );
-  }
-
-  /**
-   * Generate the icons from iamge informations.
-   *
-   * @param {IcoGenerator|IcnsGenerator} editor Icon editor.
-   * @param {Array.<ImageInfo>}          images Image informations.
-   * @param {Array.<Number>}             sizes  The sizes of the image to be used.
-   * @param {String}                     dest   The path of the output icon file.
-   * @param {Logger}                     logger  Logger.
-   *
-   * @return {Promise} Icon generation task.
-   */
-  static generate( editor, images, sizes, dest, logger ) {
-    return new Promise( ( resolve, reject ) => {
-      editor.generate( IconGenerator.filter( images, sizes ), dest, ( err ) => {
-        return ( err ? reject( err ) : resolve( dest ) );
-      }, logger );
-    } );
-  }
-
-  /**
-   * Generate the favorite icons from iamge informations.
-   *
-   * @param {Array.<ImageInfo>} images Image informations.
-   * @param {String}            dir    The path of the output icon file or directory.
-   * @param {Logger}            logger Logger.
-   *
-   * @return {Promise} Icon generation task.
-   */
-  static generateFAVICON( images, dir, logger ) {
-    return new Promise( ( resolve, reject ) => {
-      const favImages = IconGenerator.filter( images, FaviconConstants.imageSizes );
-      const icoImages = IconGenerator.filter( images, FaviconConstants.icoImageSizes );
-
-      FaviconGenerator.generate( favImages, icoImages, dir, ( err, results ) => {
-        return ( err ? reject( err ) : resolve( results ) );
-      }, logger );
     } );
   }
 

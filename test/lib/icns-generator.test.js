@@ -17,16 +17,13 @@ describe( 'IcnsGenerator', () => {
       return { size: size, path: path };
     } );
 
-    const dest = Path.join( testDir, 'sample.icns' );
-    IcnsGenerator.generate( images, dest, ( err ) => {
-      if( err ) {
-        console.error( err );
-      }
-
-      assert( !( err ) );
-      Fs.unlinkSync( dest );
+    return IcnsGenerator
+    .generate( images, Path.join( testDir, 'sample.icns' ), new Logger() )
+    .then( ( result ) => {
+      assert( result );
+      Fs.unlinkSync( result );
       done();
-    }, new Logger() );
+    } );
   } );
 
   /** @test {IcnsGenerator#createFileHeader} */

@@ -19,7 +19,7 @@ describe( 'IconGenerator', () => {
   it( 'fromSVG', () => {
     return IconGenerator.fromSVG( './test/data/sample.svg', './test', new Logger() )
     .then( () => {
-      assert( true );
+      assert( results );
       TestUtil.deleteFiles( results );
     } );
   } );
@@ -29,7 +29,7 @@ describe( 'IconGenerator', () => {
   it( 'fromPNG', () => {
     return IconGenerator.fromPNG( dataDir, './test', new Logger() )
     .then( ( results ) => {
-      assert( true );
+      assert( results );
       TestUtil.deleteFiles( results );
     } );
   } );

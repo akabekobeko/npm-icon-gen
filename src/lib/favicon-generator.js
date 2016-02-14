@@ -52,30 +52,29 @@ export default class FaviconGenerator {
   /**
    * Create a FAVICON image files from a PNG images.
    *
-   * @param {Array.<ImageInfo>} images    File information for the PNG files generation.
-   * @param {Array.<ImageInfo>} icoImages File information for ICO file generation.
-   * @param {String}            dir       Output destination The path of directory.
-   * @param {Function}          cb        Callback function.
-   * @param {Logger}            logger    Logger.
+   * @param {Array.<ImageInfo>} images File information for the PNG files generation.
+   * @param {String}            dir    Output destination The path of directory.
+   * @param {Logger}            logger Logger.
+   *
+   * @return {Promise} Promise object.
    */
-  static generate( images, icoImages, dir, cb, logger ) {
-    // PNG
-    const tasks = images.map( ( image ) => {
-      return FaviconGenerator.copyImage( image, dir, logger );
-    } );
+  static generate( images, dir, logger ) {
+    return new Promise( ( resolve, reject ) => {
+      logger.log( 'Favicon:' );
 
-    // favicon.ico
-    tasks.push( FaviconGenerator.generateICO( icoImages, dir, logger ) );
+      // PNG
+      const tasks = images.map( ( image ) => {
+        return FaviconGenerator.copyImage( image, dir, logger );
+      } );
 
-    logger.log( 'Favicon:' );
-
-    Promise
-    .all( tasks )
-    .then( ( results ) => {
-      cb( null, results );
-    } )
-    .catch( ( err ) => {
-      cb( err );
+      Promise
+      .all( tasks )
+      .then( ( results ) => {
+        resolve( results );
+      } )
+      .catch( ( err ) => {
+        reject( err );
+      } );
     } );
   }
 

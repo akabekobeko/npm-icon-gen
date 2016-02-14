@@ -17,16 +17,13 @@ describe( 'IcoGenerator', () => {
       return { size: size, path: path, stat: Fs.statSync( path ) };
     } );
 
-    const dest = Path.join( rootDir, 'sample.ico' );
-    IcoGenerator.generate( targets, dest, ( err ) => {
-      if( err ) {
-        console.error( err );
-        assert( false );
-      }
-
-      Fs.unlinkSync( dest );
+    IcoGenerator
+    .generate( targets, Path.join( rootDir, 'sample.ico' ), new Logger() )
+    .then( ( result ) => {
+      assert( result );
+      Fs.unlinkSync( result );
       done();
-    }, new Logger() );
+    } );
   } );
 
   /** @test {IcoGenerator#createFileHeader} */
