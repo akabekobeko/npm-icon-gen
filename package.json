@@ -1,6 +1,6 @@
 {
   "name": "icon-gen",
-  "description": "Icon file generator for Windows, OS X, ...etc",
+  "description": "Generate an icon files from the SVG or PNG files",
   "version": "1.0.0",
   "author": "akabeko (http://akabeko.me/)",
   "license": "MIT",

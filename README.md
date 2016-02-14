@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/akabekobeko/npm-icon-gen.svg?branch=master)](https://travis-ci.org/akabekobeko/npm-icon-gen)
 
-Generate an icon from the **SVG** or **PNG** file.
+Generate an icon files from the **SVG** or **PNG** files.
 
 ## Support formats
 
@@ -34,33 +34,29 @@ const options = {
   report: true
 };
 
-icongen( './sample.svg', './dist', () => {
-  if( err ) {
-    return console.error( err );
-  }
-
-  console.log( 'From SVG, Completed!!' );
-}, options );
+icongen( './sample.svg', './dist', { report: true } )
+.then( ( results ) => {
+  console.log( results );
+} )
+.catch( ( err ) => {
+  console.error( err );
+} );
 ```
 
 ### PNG
 
-Generate an icon from the directory of PNG files.
+Generate an icon files from the directory of PNG files.
 
 ```js
 const icongen = require( 'icon-gen' );
-const options = {
-  type: 'png',
-  report: true
-};
 
-icongen( './images', './dist', ( err ) => {
-  if( err ) {
-    return console.error( err );
-  }
-
-  console.log( 'From PNG, Completed!!' );
-}, options );
+icongen( './images', './dist', { type: 'png', report: true } )
+.then( ( results ) => {
+  console.log( results );
+} )
+.catch( ( err ) => {
+  console.error( err );
+} );
 ```
 
 Required PNG files is below. Favicon outputs both the ICO and PNG files ( see: [audreyr/favicon-cheat-sheet](https://github.com/audreyr/favicon-cheat-sheet) ).
@@ -88,13 +84,14 @@ Required PNG files is below. Favicon outputs both the ICO and PNG files ( see: [
 
 ## Node API
 
-`icongen( src, dest, cb, [options] )`
+`icongen` is promisify function.
+
+`icongen( src, dest, [options] )`
 
 | Name | Type | Description |
 |:--------|:--|:--|
 |     src |   String | Path of the SVG file or PNG directory that becomes the source. |
 |    dest |   String | Destination directory path. |
-|      cb | Function | Callback funtion. |
 | options |   Object | Options. |
 
 Options:
