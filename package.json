@@ -1,0 +1,50 @@
+{
+  "name": "icon-gen",
+  "description": "Generate an icon files from the SVG or PNG files",
+  "version": "1.0.0",
+  "author": "akabeko (http://akabeko.me/)",
+  "license": "MIT",
+  "homepage": "https://github.com/akabekobeko/npm-icon-gen#readme",
+  "main": "index.js",
+  "bin": "bin/main.js",
+  "files": [
+    "bin",
+    "lib",
+    "index.js"
+  ],
+  "keywords": [
+    "Icon",
+    "Generator",
+    "SVG",
+    "CLI"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/akabekobeko/npm-icon-gen.git"
+  },
+  "bugs": {
+    "url": "https://github.com/akabekobeko/npm-icon-gen/issues"
+  },
+  "scripts": {
+    "test": "mocha --timeout 50000 --compilers js:espower-babel/guess test/**/*.test.js",
+    "start": "npm run watch",
+    "esdoc": "esdoc -c esdoc.json",
+    "build": "babel src --out-dir ./",
+    "watch": "babel src --out-dir ./ --watch",
+    "prepublish": "npm run build"
+  },
+  "dependencies": {
+    "del": "^2.2.0",
+    "node-uuid": "^1.4.7",
+    "pngjs": "^2.2.0",
+    "svg2png": "^3.0.0"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.5.1",
+    "babel-preset-es2015": "^6.5.0",
+    "esdoc": "^0.4.4",
+    "espower-babel": "^4.0.1",
+    "mocha": "^2.4.5",
+    "power-assert": "^1.2.0"
+  }
+}
