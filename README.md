@@ -84,27 +84,27 @@ Required PNG files is below. Favicon outputs both the ICO and PNG files ( see: [
 
 ## Node API
 
+### icongen
+
 `icongen` is promisify function.
 
-`icongen( src, dest, [options] )`
+```js
+icongen( src, dest, [options] )
+```
 
 | Name | Type | Description |
 |:--------|:--|:--|
-|     src |   String | Path of the SVG file or PNG directory that becomes the source. |
+|     src |   String | Path of the **SVG file** or **PNG files directory** that becomes the source. |
 |    dest |   String | Destination directory path. |
 | options |   Object | Options. |
 
 Options:
 
-* `type`
- * 'String'
- * Type of input file
- * 'svg' is SVG file, 'png' is PNG directory
- * Default is 'svg'
-* `report`
- * `Boolean`
- * Display the process reports.
- * Default is `false` ( disable ).
+| Name | Type | Description |
+|:--------|:--|:--|
+| type | String | Type of input file. Allowed value is a `svg` or `png`. 'svg' is SVG file, `png` is PNG files directory. Default is `png`. |
+| modes | Array | Mode of output files. Allow value is a `ico`, `icns`, `favicon` and `all`. Default is `all`. |
+| report | Boolean | Display the process reports. Default is `false`, disable a report. |
 
 ## CLI
 
@@ -122,16 +122,22 @@ Usage: icon-gen [OPTIONS]
 
     -o, --output  Path of the output directory.
 
-    -t, --type    Type of input file.
-                  'svg' is the SVG file, 'png' is the PNG directory.
+    -t, --type    Type of the input file.
+                  'svg' is the SVG file, 'png' is the PNG files directory.
+                  Allowed values: svg, png
                   Default is 'svg'.
+
+    -m, --modes   Mode of the output files.
+                  Allowed values: ico, icns, favicon, all
+                  Default is 'all'.
 
     -r, --report  Display the process reports.
                   Default is disable.
 
   Examples:
-    $ icon-gen -i sample.svg -o ./dist
-    $ icon-gen -i ./images -o ./dist -t png
+    $ icon-gen -i sample.svg -o ./dist -r
+    $ icon-gen -i ./images -o ./dist -t png -r
+    $ icon-gen -i sample.svg -o ./dist -m ico,favicon -r
 
   See also:
     https://github.com/akabekobeko/npm-icon-gen
