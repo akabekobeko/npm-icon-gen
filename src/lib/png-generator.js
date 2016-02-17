@@ -6,6 +6,7 @@ import SVG2PNG from 'svg2png';
 import { FaviconConstants } from './favicon-generator.js';
 import { IcoConstants } from './ico-generator.js';
 import { IcnsConstants } from './icns-generator.js';
+import { CLIConstatns } from '../bin/cli-util.js';
 
 /**
  * Generate the PNG files from SVG file.
@@ -14,12 +15,13 @@ export default class PngGenerator {
   /**
    * Generate the PNG files from the SVG file.
    *
-   * @param {String}   src    SVG file path.
-   * @param {String}   dir    Output destination The path of directory.
-   * @param {Function} cb     Callback function.
-   * @param {Logger}   logger Logger.
+   * @param {String}         src    SVG file path.
+   * @param {String}         dir    Output destination The path of directory.
+   * @param {Array.<String>} modes  Modes of an output files.
+   * @param {Function}       cb     Callback function.
+   * @param {Logger}         logger Logger.
    */
-  static generate( src, dir, cb, logger ) {
+  static generate( src, dir, modes, cb, logger ) {
     Fs.readFile( src, ( err, svg ) => {
       if( err ) {
         return cb( err );
@@ -27,7 +29,7 @@ export default class PngGenerator {
 
       logger.log( 'SVG to PNG:' );
 
-      const sizes = PngGenerator.getRequiredImageSizes();
+      const sizes = PngGenerator.getRequiredImageSizes( modes );
       Promise
       .all( sizes.map( ( size ) => {
         return PngGenerator.generetePNG( svg, size, dir, logger );
@@ -94,10 +96,37 @@ export default class PngGenerator {
   /**
    * Gets the size of the images needed to create an icon.
    *
+   * @param {Array.<String>} modes Modes of an output files.
+   *
    * @return {Array.<Number>} The sizes of the image.
    */
-  static getRequiredImageSizes() {
-    const sizes = FaviconConstants.imageSizes.concat( IcoConstants.imageSizes ).concat( IcnsConstants.imageSizes );
+  static getRequiredImageSizes( modes ) {
+    let sizes = [];
+    if( modes && 0 < modes.length ) {
+      modes.forEach( ( mode ) => {
+        switch( mode ) {
+          case CLIConstatns.modes.ico:
+            sizes = sizes.concat( IcoConstants.imageSizes );
+            break;
+
+          case CLIConstatns.modes.icns:
+            sizes = sizes.concat( IcnsConstants.imageSizes );
+            break;
+
+          case CLIConstatns.modes.favicon:
+            sizes = sizes.concat( FaviconConstants.imageSizes );
+            break;
+
+          default:
+            break;
+        }
+      } );
+    }
+
+    // 'all' mode
+    if( sizes.length === 0 ) {
+      sizes = FaviconConstants.imageSizes.concat( IcoConstants.imageSizes ).concat( IcnsConstants.imageSizes );
+    }
 
     return sizes
     .filter( ( value, index, array ) => {

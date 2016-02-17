@@ -4,6 +4,10 @@ import Path from 'path';
 import Del from 'del';
 import Logger from '../../src/lib/logger.js';
 import PngGenerator from '../../src/lib/png-generator.js';
+import { FaviconConstants } from '../../src/lib/favicon-generator.js';
+import { IcoConstants } from '../../src/lib/ico-generator.js';
+import { IcnsConstants } from '../../src/lib/icns-generator.js';
+import { CLIConstatns } from '../../src/bin/cli-util.js';
 
 /** @test {PngGenerator} */
 describe( 'PngGenerator', () => {
@@ -42,10 +46,17 @@ describe( 'PngGenerator', () => {
 
   /** @test {PngGenerator#getRequiredImageSizes} */
   it( 'getRequiredImageSizes', () => {
-    const expected = PngGenerator.getRequiredImageSizes();
+    let   expected = PngGenerator.getRequiredImageSizes();
     const actual   = [ 16, 24, 32, 48, 57, 64, 72, 96, 120, 128, 144, 152, 195, 228, 256, 512, 1024 ];
-
-    assert( expected.length === actual.length );
     assert.deepEqual( expected, actual );
+
+    expected = PngGenerator.getRequiredImageSizes( [ CLIConstatns.modes.ico ] );
+    assert.deepEqual( expected, IcoConstants.imageSizes );
+
+    expected = PngGenerator.getRequiredImageSizes( [ CLIConstatns.modes.icns ] );
+    assert.deepEqual( expected, IcnsConstants.imageSizes );
+
+    expected = PngGenerator.getRequiredImageSizes( [ CLIConstatns.modes.favicon ] );
+    assert.deepEqual( expected, FaviconConstants.imageSizes );
   } );
 } );

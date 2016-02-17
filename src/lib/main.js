@@ -9,13 +9,13 @@ import { CLIConstatns } from '../bin/cli-util.js';
  * @param {String} dest    Destination directory path.
  * @param {Object} options Options.
  */
-module.exports = function( src, dest, options = { type: CLIConstatns.types.svg, report: false } ) {
+module.exports = function( src, dest, options = { type: CLIConstatns.types.svg, modes: [], report: false } ) {
   const logger = new Logger( options.report );
   switch( options.type ) {
     case CLIConstatns.types.png:
-      return IconGenerator.fromPNG( src, dest, logger );
+      return IconGenerator.fromPNG( src, dest, options.modes, logger );
 
     default:
-      return IconGenerator.fromSVG( src, dest, logger );
+      return IconGenerator.fromSVG( src, dest, options.modes, logger );
   }
 };

@@ -27,6 +27,7 @@ export const CLIConstatns = {
     input:   [ '-i', '--input' ],
     output:  [ '-o', '--output' ],
     type:    [ '-t', '--type' ],
+    modes:   [ '-m', '--modes' ],
     report:  [ '-r', '--report' ]
   },
 
@@ -37,6 +38,16 @@ export const CLIConstatns = {
   types: {
     svg: 'svg',
     png: 'png'
+  },
+
+  /**
+   * Output modes.
+   * @type {Object}
+   */
+  modes: {
+    ico: 'ico',
+    icns: 'icns',
+    favicon: 'favicon'
   }
 };
 
@@ -67,16 +78,22 @@ Options:
 
   -o, --output  Path of the output directory.
 
-  -t, --type    Type of input file.
-                'svg' is the SVG file, 'png' is the PNG directory.
+  -t, --type    Type of the input file.
+                'svg' is the SVG file, 'png' is the PNG files directory.
+                Allowed values: svg, png
                 Default is 'svg'.
+
+  -m, --modes   Mode of the output files.
+                Allowed values: ico, icns, favicon, all
+                Default is 'all'.
 
   -r, --report  Display the process reports.
                 Default is disable.
 
 Examples:
-  $ icon-gen -i sample.svg -o ./dist
-  $ icon-gen -i ./images -o ./dist -t png
+  $ icon-gen -i sample.svg -o ./dist -r
+  $ icon-gen -i ./images -o ./dist -t png -r
+  $ icon-gen -i sample.svg -o ./dist -m ico,favicon -r
 
 See also:
   https://github.com/akabekobeko/npm-icon-gen
@@ -173,6 +190,13 @@ See also:
           options.report = true;
           break;
 
+        case CLIConstatns.options.modes[ 0 ]:
+        case CLIConstatns.options.modes[ 1 ]:
+          if( index + 1 < argv.length ) {
+            options.modes = CLIUtil._parseMode( argv[ index + 1 ] );
+          }
+          break;
+
         default:
           break;
       }
@@ -182,6 +206,35 @@ See also:
       options.type = CLIConstatns.types.svg;
     }
 
+    if( !( options.modes ) ) {
+      options.modes = [];
+    }
+
     return options;
+  }
+
+  /**
+   * Parse for the mode option.
+   *
+   * @param {String} arg Option. Format is a 'all' or 'ico,icns,favicon'.
+   *
+   * @return {Array.<String>} Parse results.
+   */
+  static _parseMode( arg ) {
+    if( !( arg ) ) { return []; }
+
+    const values = arg.split( ',' ).filter( ( value ) => {
+      switch( value ) {
+        case CLIConstatns.modes.ico:
+        case CLIConstatns.modes.icns:
+        case CLIConstatns.modes.favicon:
+          return true;
+
+        default:
+          return false;
+      }
+    } );
+
+    return ( 0 < values.length ? values : [] );
   }
 }

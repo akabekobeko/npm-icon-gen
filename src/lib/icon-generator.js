@@ -16,13 +16,14 @@ export default class IconGenerator {
   /**
    * Generate an icon from the SVG file.
    *
-   * @param {String} src    SVG file path.
-   * @param {String} dir    Destination directory path.
-   * @param {Logger} logger Logger.
+   * @param {String}         src    Path of the SVG file.
+   * @param {String}         dir    Path of the output files directory.
+   * @param {Array.<String>} modes  Modes of an output files.
+   * @param {Logger}         logger Logger.
    *
    * @return {Promise} Promise object.
    */
-  static fromSVG( src, dir, logger ) {
+  static fromSVG( src, dir, modes, logger ) {
     return new Promise( ( resolve, reject ) => {
       const svgFilePath = Path.resolve( src );
       const destDirPath = Path.resolve( dir );
@@ -35,7 +36,7 @@ export default class IconGenerator {
         return reject( new Error( 'Failed to create the working directory.' ) );
       }
 
-      PngGenerator.generate( svgFilePath, workDir, ( err, images ) => {
+      PngGenerator.generate( svgFilePath, workDir, modes, ( err, images ) => {
         if( err ) {
           Del.sync( [ workDir ], { force: true } );
           return reject( err );
@@ -52,13 +53,14 @@ export default class IconGenerator {
   /**
    * Generate an icon from the SVG file.
    *
-   * @param {Array.<String>} src    PNG files path.
-   * @param {String}         dir    Destination directory path.
+   * @param {String}         src    Path of the PNG files direcgtory.
+   * @param {String}         dir    Path of the output files directory.
+   * @param {Array.<String>} modes  Modes of an output files.
    * @param {Logger}         logger Logger.
    *
    * @return {Promise} Promise object.
    */
-  static fromPNG( src, dir, logger ) {
+  static fromPNG( src, dir, modes, logger ) {
     return new Promise( ( resolve, reject ) => {
       const pngDirPath  = Path.resolve( src );
       const destDirPath = Path.resolve( dir );
@@ -66,7 +68,7 @@ export default class IconGenerator {
       logger.log( '  src: ' + pngDirPath );
       logger.log( '  dir: ' + destDirPath );
 
-      const images = PngGenerator.getRequiredImageSizes()
+      const images = PngGenerator.getRequiredImageSizes( modes )
       .map( ( size ) => {
         return Path.join( pngDirPath, size + '.png' );
       } )

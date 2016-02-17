@@ -12,15 +12,39 @@ describe( 'CLIUtil', () => {
   } );
 
   /** @test {CLIUtil#parse} */
-  it( 'parse: -h', () => {
-    const options = CLIUtil.parse( [ CLIConstatns.options.help[ 0 ] ] );
+  it( 'parse: -h --help', () => {
+    let options = CLIUtil.parse( [ CLIConstatns.options.help[ 0 ] ] );
+    assert( options.help );
+
+    options = CLIUtil.parse( [ CLIConstatns.options.help[ 1 ] ] );
     assert( options.help );
   } );
 
   /** @test {CLIUtil#parse} */
-  it( 'parse: -v', () => {
-    const options = CLIUtil.parse( [ CLIConstatns.options.version[ 0 ] ] );
+  it( 'parse: -v --version', () => {
+    let options = CLIUtil.parse( [ CLIConstatns.options.version[ 0 ] ] );
     assert( options.version );
+
+    options = CLIUtil.parse( [ CLIConstatns.options.version[ 1 ] ] );
+    assert( options.version );
+  } );
+
+  /** @test {CLIUtil#parse} */
+  it( 'parse: -m --modes', () => {
+    let options = CLIUtil.parse( [ CLIConstatns.options.modes[ 0 ], 'XXX' ] );
+    assert( options.modes.length === 0 );
+
+    options = CLIUtil.parse( [ CLIConstatns.options.modes[ 1 ], 'XXX' ] );
+    assert( options.modes.length === 0 );
+
+    options = CLIUtil.parse( [ CLIConstatns.options.modes[ 0 ], 'ico' ] );
+    assert( options.modes.length === 1 );
+
+    options = CLIUtil.parse( [ CLIConstatns.options.modes[ 0 ], 'ico,icns,favicon' ] );
+    assert( options.modes.length === 3 );
+
+    options = CLIUtil.parse( [ CLIConstatns.options.modes[ 0 ], 'ico,XXX,icns' ] );
+    assert( options.modes.length === 2 );
   } );
 
   /** @test {CLIUtil#parse} */
