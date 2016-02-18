@@ -1,6 +1,8 @@
 # npm-icon-gen
 
+[![npm version](https://badge.fury.io/js/icon-gen.svg)](https://badge.fury.io/js/icon-gen)
 [![Build Status](https://travis-ci.org/akabekobeko/npm-icon-gen.svg?branch=master)](https://travis-ci.org/akabekobeko/npm-icon-gen)
+[![Document](https://doc.esdoc.org/github.com/akabekobeko/npm-icon-gen/badge.svg?t=0)](https://doc.esdoc.org/github.com/akabekobeko/npm-icon-gen)
 
 Generate an icon files from the **SVG** or **PNG** files.
 
@@ -30,9 +32,6 @@ Rendering of svg2png is run by [phantomjs](https://www.npmjs.com/package/phantom
 
 ```js
 const icongen = require( 'icon-gen' );
-const options = {
-  report: true
-};
 
 icongen( './sample.svg', './dist', { report: true } )
 .then( ( results ) => {
