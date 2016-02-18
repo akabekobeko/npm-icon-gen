@@ -23,10 +23,10 @@ function execute( options ) {
 
     switch( options.type ) {
       case 'png':
-        return IconGenerator.fromPNG( options.input, options.output, options.mode, new Logger( options.report ) );
+        return IconGenerator.fromPNG( options.input, options.output, options.modes, new Logger( options.report ) );
 
       default:
-        return IconGenerator.fromSVG( options.input, options.output, options.mode, new Logger( options.report ) );
+        return IconGenerator.fromSVG( options.input, options.output, options.modes, new Logger( options.report ) );
     }
   } );
 }

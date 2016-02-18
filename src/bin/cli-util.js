@@ -48,7 +48,13 @@ export const CLIConstatns = {
     ico: 'ico',
     icns: 'icns',
     favicon: 'favicon'
-  }
+  },
+
+  /**
+   * Output mode for an all files.
+   * @type {Array}
+   */
+  modeAll: [ 'ico', 'icns', 'favicon' ]
 };
 
 /**
@@ -130,7 +136,7 @@ See also:
   /**
    * Parse for the command line argumens.
    *
-   * @param {Array.<String>} args   Arguments of the command line.
+   * @param {Array.<String>} argv Arguments of the command line.
    *
    * @return {CLIOptions} Parse results.
    */
@@ -207,7 +213,7 @@ See also:
     }
 
     if( !( options.modes ) ) {
-      options.modes = [];
+      options.modes = CLIConstatns.modeAll;
     }
 
     return options;
@@ -221,7 +227,7 @@ See also:
    * @return {Array.<String>} Parse results.
    */
   static _parseMode( arg ) {
-    if( !( arg ) ) { return []; }
+    if( !( arg ) ) { return CLIConstatns.modeAll; }
 
     const values = arg.split( ',' ).filter( ( value ) => {
       switch( value ) {
@@ -235,6 +241,6 @@ See also:
       }
     } );
 
-    return ( 0 < values.length ? values : [] );
+    return ( 0 < values.length ? values : CLIConstatns.modeAll );
   }
 }

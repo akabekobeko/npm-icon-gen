@@ -32,10 +32,10 @@ describe( 'CLIUtil', () => {
   /** @test {CLIUtil#parse} */
   it( 'parse: -m --modes', () => {
     let options = CLIUtil.parse( [ CLIConstatns.options.modes[ 0 ], 'XXX' ] );
-    assert( options.modes.length === 0 );
+    assert( options.modes.length === CLIConstatns.modeAll.length );
 
     options = CLIUtil.parse( [ CLIConstatns.options.modes[ 1 ], 'XXX' ] );
-    assert( options.modes.length === 0 );
+    assert( options.modes.length === CLIConstatns.modeAll.length );
 
     options = CLIUtil.parse( [ CLIConstatns.options.modes[ 0 ], 'ico' ] );
     assert( options.modes.length === 1 );

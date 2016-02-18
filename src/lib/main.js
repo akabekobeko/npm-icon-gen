@@ -9,7 +9,7 @@ import { CLIConstatns } from '../bin/cli-util.js';
  * @param {String} dest    Destination directory path.
  * @param {Object} options Options.
  */
-module.exports = function( src, dest, options = { type: CLIConstatns.types.svg, modes: [], report: false } ) {
+module.exports = function( src, dest, options = { type: CLIConstatns.types.svg, modes: CLIConstatns.modeAll, report: false } ) {
   const logger = new Logger( options.report );
   switch( options.type ) {
     case CLIConstatns.types.png:
