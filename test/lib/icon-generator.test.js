@@ -27,7 +27,7 @@ describe( 'IconGenerator', () => {
 
   /** @test {IconGenerator#fromPNG} */
   it( 'fromPNG', () => {
-    return IconGenerator.fromPNG( dataDir, './test', new Logger() )
+    return IconGenerator.fromPNG( dataDir, './test', [], new Logger() )
     .then( ( results ) => {
       assert( results );
       TestUtil.deleteFiles( results );

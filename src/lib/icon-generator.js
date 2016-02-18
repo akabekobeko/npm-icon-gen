@@ -8,6 +8,7 @@ import IcnsGenerator from './icns-generator.js';
 import { IcnsConstants } from './icns-generator.js';
 import FaviconGenerator from './favicon-generator.js';
 import { FaviconConstants } from './favicon-generator.js';
+import { CLIConstatns } from '../bin/cli-util.js';
 
 /**
  * Generate an icons.
@@ -16,13 +17,14 @@ export default class IconGenerator {
   /**
    * Generate an icon from the SVG file.
    *
-   * @param {String} src    SVG file path.
-   * @param {String} dir    Destination directory path.
-   * @param {Logger} logger Logger.
+   * @param {String}         src    Path of the SVG file.
+   * @param {String}         dir    Path of the output files directory.
+   * @param {Array.<String>} modes  Modes of an output files.
+   * @param {Logger}         logger Logger.
    *
    * @return {Promise} Promise object.
    */
-  static fromSVG( src, dir, logger ) {
+  static fromSVG( src, dir, modes, logger ) {
     return new Promise( ( resolve, reject ) => {
       const svgFilePath = Path.resolve( src );
       const destDirPath = Path.resolve( dir );
@@ -35,13 +37,13 @@ export default class IconGenerator {
         return reject( new Error( 'Failed to create the working directory.' ) );
       }
 
-      PngGenerator.generate( svgFilePath, workDir, ( err, images ) => {
+      PngGenerator.generate( svgFilePath, workDir, modes, ( err, images ) => {
         if( err ) {
           Del.sync( [ workDir ], { force: true } );
           return reject( err );
         }
 
-        IconGenerator.generateAll( images, destDirPath, logger, ( err2, results ) => {
+        IconGenerator.generate( images, destDirPath, modes, logger, ( err2, results ) => {
           Del.sync( [ workDir ], { force: true } );
           return ( err2 ? reject( err2 ) : resolve( results ) );
         } );
@@ -52,21 +54,22 @@ export default class IconGenerator {
   /**
    * Generate an icon from the SVG file.
    *
-   * @param {Array.<String>} src    PNG files path.
-   * @param {String}         dir    Destination directory path.
+   * @param {String}         src    Path of the PNG files direcgtory.
+   * @param {String}         dir    Path of the output files directory.
+   * @param {Array.<String>} modes  Modes of an output files.
    * @param {Logger}         logger Logger.
    *
    * @return {Promise} Promise object.
    */
-  static fromPNG( src, dir, logger ) {
+  static fromPNG( src, dir, modes, logger ) {
     return new Promise( ( resolve, reject ) => {
       const pngDirPath  = Path.resolve( src );
       const destDirPath = Path.resolve( dir );
-      logger.log( 'Icon generetor from SVG:' );
+      logger.log( 'Icon generetor from PNG:' );
       logger.log( '  src: ' + pngDirPath );
       logger.log( '  dir: ' + destDirPath );
 
-      const images = PngGenerator.getRequiredImageSizes()
+      const images = PngGenerator.getRequiredImageSizes( modes )
       .map( ( size ) => {
         return Path.join( pngDirPath, size + '.png' );
       } )
@@ -90,7 +93,7 @@ export default class IconGenerator {
         return reject( new Error( '"' + notExistsFile + '" does not exist.' ) );
       }
 
-      IconGenerator.generateAll( images, dir, logger, ( err, results ) => {
+      IconGenerator.generate( images, dir, modes, logger, ( err, results ) => {
         return ( err ? reject( err ) : resolve( results ) );
       } );
     } );
@@ -101,25 +104,37 @@ export default class IconGenerator {
    *
    * @param {Array.<ImageInfo>} images  Image file informations.
    * @param {String}            dest    Destination directory path.
+   * @param {Array.<String>}    modes   Modes of an output files.
    * @param {Logger}            logger  Logger.
    * @param {Function}          cb      Callback function.
    */
-  static generateAll( images, dest, logger, cb ) {
+  static generate( images, dest, modes, logger, cb ) {
     if( !( images && 0 < images.length ) ) {
       return cb( new Error( 'Targets is empty.' ) );
     }
 
-    const dir          = Path.resolve( dest );
-    const icoImages    = IconGenerator.filter( images, IcoConstants.imageSizes );
-    const icnsImages   = IconGenerator.filter( images, IcnsConstants.imageSizes );
-    const favIcoImages = IconGenerator.filter( images, FaviconConstants.icoImageSizes );
-    const favImages    = IconGenerator.filter( images, FaviconConstants.imageSizes );
-    const tasks        = [
-      IcnsGenerator.generate( icnsImages, Path.join( dir, 'app.icns' ), logger ),
-      IcoGenerator.generate( icoImages, Path.join( dir, 'app.ico' ), logger ),
-      IcoGenerator.generate( favIcoImages, Path.join( dir, 'favicon.ico' ), logger ),
-      FaviconGenerator.generate( favImages, dir, logger )
-    ];
+    // Select output mode
+    const dir   = Path.resolve( dest );
+    const tasks = [];
+    modes.forEach( ( mode ) => {
+      switch( mode ) {
+        case CLIConstatns.modes.ico:
+          tasks.push( IcoGenerator.generate( IconGenerator.filter( images, IcoConstants.imageSizes ), Path.join( dir, 'app.ico' ), logger ) );
+          break;
+
+        case CLIConstatns.modes.icns:
+          tasks.push( IcnsGenerator.generate( IconGenerator.filter( images, IcnsConstants.imageSizes ), Path.join( dir, 'app.icns' ), logger ) );
+          break;
+
+        case CLIConstatns.modes.favicon:
+          tasks.push( IcoGenerator.generate( IconGenerator.filter( images, FaviconConstants.icoImageSizes ), Path.join( dir, 'favicon.ico' ), logger ) );
+          tasks.push( FaviconGenerator.generate( IconGenerator.filter( images, FaviconConstants.imageSizes ), dir, logger ) );
+          break;
+
+        default:
+          break;
+      }
+    } );
 
     Promise
     .all( tasks )

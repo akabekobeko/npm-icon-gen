@@ -11,7 +11,7 @@ describe( 'IcnsGenerator', () => {
   const dataDir = Path.join( testDir, 'data' );
 
   /** @test {IcnsGenerator#generate} */
-  it( 'generate', ( done ) => {
+  it( 'generate', () => {
     const images = IcnsConstants.imageSizes.map( ( size ) => {
       const path = Path.join( dataDir, size + '.png' );
       return { size: size, path: path };
@@ -22,7 +22,6 @@ describe( 'IcnsGenerator', () => {
     .then( ( result ) => {
       assert( result );
       Fs.unlinkSync( result );
-      done();
     } );
   } );
 

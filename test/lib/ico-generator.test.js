@@ -11,7 +11,7 @@ describe( 'IcoGenerator', () => {
   const dataDir = Path.join( rootDir, 'data' );
 
   /** @test {IcoGenerator#generate} */
-  it( 'generate', ( done ) => {
+  it( 'generate', () => {
     const targets = IcoConstants.imageSizes.map( ( size ) => {
       const path = Path.join( dataDir, size + '.png' );
       return { size: size, path: path, stat: Fs.statSync( path ) };
@@ -22,7 +22,6 @@ describe( 'IcoGenerator', () => {
     .then( ( result ) => {
       assert( result );
       Fs.unlinkSync( result );
-      done();
     } );
   } );
 
