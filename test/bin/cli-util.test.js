@@ -1,4 +1,4 @@
-import assert from 'power-assert';
+import assert from 'assert';
 import Path from 'path';
 import CLIUtil from '../../src/bin/cli-util.js';
 import { CLIConstatns } from '../../src/bin/cli-util.js';
