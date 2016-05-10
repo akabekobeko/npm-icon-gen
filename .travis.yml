@@ -4,4 +4,4 @@ before_script:
  - npm run build
 node_js:
   - "4"
-  - "5"
+  - "6"
