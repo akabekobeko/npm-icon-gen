@@ -1,4 +1,4 @@
-import assert from 'power-assert';
+import assert from 'assert';
 import Fs from 'fs';
 import Path from 'path';
 import Del from 'del';
