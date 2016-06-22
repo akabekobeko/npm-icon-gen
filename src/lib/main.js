@@ -11,6 +11,12 @@ import { CLIConstatns } from '../bin/cli-util.js';
  */
 module.exports = function( src, dest, options = { type: CLIConstatns.types.svg, modes: CLIConstatns.modeAll, report: false } ) {
   const logger = new Logger( options.report );
+
+  const opt = options;
+  if( !( opt.modes ) ) {
+    opt.modes = CLIConstatns.modeAll;
+  }
+
   switch( options.type ) {
     case CLIConstatns.types.png:
       return IconGenerator.fromPNG( src, dest, options.modes, logger );
