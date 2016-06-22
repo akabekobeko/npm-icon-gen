@@ -34,13 +34,15 @@ export default class IconGenerator {
 
       const workDir = PngGenerator.createWorkDir();
       if( !( workDir ) ) {
-        return reject( new Error( 'Failed to create the working directory.' ) );
+        reject( new Error( 'Failed to create the working directory.' ) );
+        return;
       }
 
       PngGenerator.generate( svgFilePath, workDir, modes, ( err, images ) => {
         if( err ) {
           Del.sync( [ workDir ], { force: true } );
-          return reject( err );
+          reject( err );
+          return;
         }
 
         IconGenerator.generate( images, destDirPath, modes, logger, ( err2, results ) => {
@@ -90,7 +92,8 @@ export default class IconGenerator {
       } );
 
       if( notExistsFile ) {
-        return reject( new Error( '"' + notExistsFile + '" does not exist.' ) );
+        reject( new Error( '"' + notExistsFile + '" does not exist.' ) );
+        return;
       }
 
       IconGenerator.generate( images, dir, modes, logger, ( err, results ) => {
@@ -110,7 +113,8 @@ export default class IconGenerator {
    */
   static generate( images, dest, modes, logger, cb ) {
     if( !( images && 0 < images.length ) ) {
-      return cb( new Error( 'Targets is empty.' ) );
+      cb( new Error( 'Targets is empty.' ) );
+      return;
     }
 
     // Select output mode

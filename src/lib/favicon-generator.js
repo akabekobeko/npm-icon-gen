@@ -92,7 +92,8 @@ export default class FaviconGenerator {
       const fileName = FaviconGenerator.fileNameFromSize( image.size );
       if( !( fileName ) ) {
         // Unknown target is ignored
-        return resolve( '' );
+        resolve( '' );
+        return;
       }
 
       const reader = Fs.createReadStream( image.path )

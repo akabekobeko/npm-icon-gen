@@ -24,7 +24,8 @@ export default class PngGenerator {
   static generate( src, dir, modes, cb, logger ) {
     Fs.readFile( src, ( err, svg ) => {
       if( err ) {
-        return cb( err );
+        cb( err );
+        return;
       }
 
       logger.log( 'SVG to PNG:' );
