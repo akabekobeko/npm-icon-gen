@@ -9,7 +9,7 @@ export const IcnsConstants = {
    * Sizes required for the ICNS file.
    * @type {Array}
    */
-  imageSizes: [ 32, 64, 128, 256, 512, 1024 ],
+  imageSizes: [ 16, 32, 64, 128, 256, 512, 1024 ],
 
   /**
    * The size of the ICNS header.
@@ -28,6 +28,9 @@ export const IcnsConstants = {
    * @type {Array}
    */
   iconIDs: [
+    { id: 'icp4', size:   16 },
+    { id: 'icp5', size:   32 },
+    { id: 'icp6', size:   64 },
     { id: 'ic07', size:  128 },
     { id: 'ic08', size:  256 },
     { id: 'ic09', size:  512 },
@@ -65,7 +68,8 @@ export default class IcnsGenerator {
       for( let i = 0, max = IcnsConstants.iconIDs.length; i < max; ++i ) {
         const iconID = IcnsConstants.iconIDs[ i ];
         if( !( IcnsGenerator.writeImage( iconID, images, stream ) ) ) {
-          return reject( new Error( 'Faild to read/write image.' ) );
+          reject( new Error( 'Faild to read/write image.' ) );
+          return;
         }
       }
 

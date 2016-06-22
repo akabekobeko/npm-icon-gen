@@ -52,7 +52,7 @@ describe( 'IconGenerator', () => {
     assert( expected.length === 7 );
 
     expected = IconGenerator.filter( targets, IcnsConstants.imageSizes );
-    assert( expected.length === 6 );
+    assert( expected.length === 7 );
 
     expected = IconGenerator.filter( targets, FaviconConstants.imageSizes );
     assert( expected.length === 10 );

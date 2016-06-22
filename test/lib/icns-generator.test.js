@@ -41,7 +41,7 @@ describe( 'IcnsGenerator', () => {
 
   /** @test {IcnsGenerator#createIconHeader} */
   it( 'createIconHeader', () => {
-    const header = IcnsGenerator.createIconHeader( IcnsConstants.iconIDs[ 0 ], 128 );
+    const header = IcnsGenerator.createIconHeader( IcnsConstants.iconIDs[ 3 ], 128 );
 
     // In ASCII "ic07"
     assert( header.readUInt8( 0 ) === 0x69 );
