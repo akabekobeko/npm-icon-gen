@@ -1,0 +1,15 @@
+{
+  "name": "icon-gen-examples",
+  "description": "Examples for the icon-gen.",
+  "private": true,
+  "version": "1.0.0",
+  "author": "akabeko (http://akabeko.me/)",
+  "license": "MIT",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "icon-gen": "^1.0.3"
+  }
+}
