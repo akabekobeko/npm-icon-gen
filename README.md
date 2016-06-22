@@ -60,9 +60,9 @@ icongen( './images', './dist', { type: 'png', report: true } )
 
 Required PNG files is below. Favicon outputs both the ICO and PNG files ( see: [audreyr/favicon-cheat-sheet](https://github.com/audreyr/favicon-cheat-sheet) ).
 
-| Name | Size | ICO | ICNS | Fav ICO | Fav PNG |
+| Name     | Size      | ICO      | ICNS     | Fav ICO  | Fav PNG  |
 |---------:|:----------|:--------:|:--------:|:--------:|:--------:|
-|   16.png |     16x16 | &#10004; |          | &#10004; |          |
+|   16.png |     16x16 | &#10004; | &#10004; | &#10004; |          |
 |   24.png |     24x24 | &#10004; |          | &#10004; |          |
 |   32.png |     32x32 | &#10004; | &#10004; | &#10004; | &#10004; |
 |   48.png |     48x48 | &#10004; |          | &#10004; |          |
