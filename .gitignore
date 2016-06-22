@@ -38,3 +38,6 @@ node_modules
 /esdoc
 /temp
 /test.js
+*.png
+*.ico
+*.icns
