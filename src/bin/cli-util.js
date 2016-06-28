@@ -28,6 +28,7 @@ export const CLIConstatns = {
     output:  [ '-o', '--output' ],
     type:    [ '-t', '--type' ],
     modes:   [ '-m', '--modes' ],
+    names:   [ '-n', '--names' ],
     report:  [ '-r', '--report' ]
   },
 
@@ -54,7 +55,16 @@ export const CLIConstatns = {
    * Output mode for an all files.
    * @type {Array}
    */
-  modeAll: [ 'ico', 'icns', 'favicon' ]
+  modeAll: [ 'ico', 'icns', 'favicon' ],
+
+  /**
+   * File names.
+   * @type {Object}
+   */
+  names: {
+    ico: 'ico',
+    icns: 'icns'
+  }
 };
 
 /**
@@ -93,6 +103,10 @@ Options:
                 Allowed values: ico, icns, favicon, all
                 Default is 'all'.
 
+  -n, --names   Change an output file names for ICO and ICNS.
+                ex: 'ico=foo,icns=bar'
+                Default is 'app.ico' and 'app.ico'.
+
   -r, --report  Display the process reports.
                 Default is disable.
 
@@ -100,6 +114,7 @@ Examples:
   $ icon-gen -i sample.svg -o ./dist -r
   $ icon-gen -i ./images -o ./dist -t png -r
   $ icon-gen -i sample.svg -o ./dist -m ico,favicon -r
+  $ icon-gen -i sample.svg -o ./dist -n ico=foo,icns=bar
 
 See also:
   https://github.com/akabekobeko/npm-icon-gen
@@ -203,6 +218,13 @@ See also:
           }
           break;
 
+        case CLIConstatns.options.names[ 0 ]:
+        case CLIConstatns.options.names[ 1 ]:
+          if( index + 1 < argv.length ) {
+            options.names = CLIUtil._parseNames( argv[ index + 1 ] );
+          }
+          break;
+
         default:
           break;
       }
@@ -242,5 +264,37 @@ See also:
     } );
 
     return ( 0 < values.length ? values : CLIConstatns.modeAll );
+  }
+
+  /**
+   * Parse the output file names.
+   *
+   * @param {String} arg Option. Format is a 'ico=foo,icns=bar'.
+   *
+   * @return {Object} File names.
+   */
+  static _parseNames( arg ) {
+    const names = {};
+    if( !( typeof arg === 'string' ) ) { return names; }
+
+    const params = arg.split( ',' );
+    params.forEach( ( param ) => {
+      const units = param.split( '=' );
+      if( units.length < 2 ) { return; }
+
+      const key   = units[ 0 ];
+      const value = units[ 1 ];
+      switch( key ) {
+        case CLIConstatns.names.ico:
+        case CLIConstatns.names.icns:
+          names[ key ] = value;
+          break;
+
+        default:
+          break;
+      }
+    } );
+
+    return names;
   }
 }

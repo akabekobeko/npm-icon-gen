@@ -11,10 +11,10 @@ Generate an icon files from the **SVG** or **PNG** files.
 Supported the output format of the icon are following.
 
 | Platform | Icon |
-|:--|:--|
-| Windows | app.ico |
-| OS X | app.icns |
-| Favicon | favicon.ico, favicon-XX.png |
+|:---------|:-----|
+|  Windows | `app.ico` or specified name. |
+|     OS X | `app.icns` or specified name. |
+|  Favicon | `favicon.ico` and `favicon-XX.png`. |
 
 ## Installation
 
@@ -33,7 +33,15 @@ Rendering of svg2png is run by [phantomjs](https://www.npmjs.com/package/phantom
 ```js
 const icongen = require( 'icon-gen' );
 
-icongen( './sample.svg', './dist', { report: true } )
+const options = {
+  report: true,
+  names: {
+    ico: 'foo',
+    icns: 'bar'
+  }
+};
+
+icongen( './sample.svg', './dist', options )
 .then( ( results ) => {
   console.log( results );
 } )
@@ -49,7 +57,12 @@ Generate an icon files from the directory of PNG files.
 ```js
 const icongen = require( 'icon-gen' );
 
-icongen( './images', './dist', { type: 'png', report: true } )
+const options = {
+  type: 'png',
+  report: true
+};
+
+icongen( './images', './dist', options )
 .then( ( results ) => {
   console.log( results );
 } )
@@ -80,7 +93,6 @@ Required PNG files is below. Favicon outputs both the ICO and PNG files ( see: [
 |  512.png |   512x512 |          | &#10004; |          |          |
 | 1024.png | 1024x1024 |          | &#10004; |          |          |
 
-
 ## Node API
 
 ### icongen
@@ -91,19 +103,29 @@ Required PNG files is below. Favicon outputs both the ICO and PNG files ( see: [
 icongen( src, dest, [options] )
 ```
 
-| Name | Type | Description |
-|:--------|:--|:--|
-|     src |   String | Path of the **SVG file** or **PNG files directory** that becomes the source. |
-|    dest |   String | Destination directory path. |
-| options |   Object | Options. |
+|    Name |   Type | Description |
+|:--------|:-------|:------------|
+|     src | String | Path of the **SVG file** or **PNG files directory** that becomes the source. |
+|    dest | String | Destination directory path. |
+| options | Object | Options. |
 
-Options:
+options:
 
-| Name | Type | Description |
-|:--------|:--|:--|
-| type | String | Type of input file. Allowed value is a `svg` or `png`. 'svg' is SVG file, `png` is PNG files directory. Default is `png`. |
-| modes | Array | Mode of output files. Allow value is a `ico`, `icns`, `favicon` and `all`. Default is `all`. |
+|   Name |    Type | Description |
+|:-------|:--------|:------------|
+|   type |  String | Type of input file. Allowed value is a `svg` or `png`. 'svg' is SVG file, `png` is PNG files directory. Default is `png`. |
+|  modes |   Array | Mode of output files. Allow value is a `ico`, `icns`, `favicon` and `all`. Default is `all`. |
+|  names |  Object | Change an output file names for **ICO** and **ICNS**. |
 | report | Boolean | Display the process reports. Default is `false`, disable a report. |
+
+names:
+
+Use this property is specified without an extension. Default name is the `app`.
+
+| Name | Type | Description |
+|:--------|:--|:--|
+| ico | String | Name of the `ico` file. |
+| icns | String | Name of the `icns` file. |
 
 ## CLI
 
@@ -130,6 +152,10 @@ Usage: icon-gen [OPTIONS]
                   Allowed values: ico, icns, favicon, all
                   Default is 'all'.
 
+    -n, --names   Change an output file names for ICO and ICNS.
+                  ex: 'ico=foo,icns=bar'
+                  Default is 'app.ico' and 'app.ico'.
+
     -r, --report  Display the process reports.
                   Default is disable.
 
@@ -137,6 +163,7 @@ Usage: icon-gen [OPTIONS]
     $ icon-gen -i sample.svg -o ./dist -r
     $ icon-gen -i ./images -o ./dist -t png -r
     $ icon-gen -i sample.svg -o ./dist -m ico,favicon -r
+    $ icon-gen -i sample.svg -o ./dist -n ico=foo,icns=bar
 
   See also:
     https://github.com/akabekobeko/npm-icon-gen

@@ -1,8 +1,7 @@
 #!/usr/bin/env node
 
 import CLIUtil from './cli-util.js';
-import Logger from '../lib/logger.js';
-import IconGenerator from '../lib/icon-generator.js';
+import IconGen from '../lib/main.js';
 
 /**
  * Main process.
@@ -21,13 +20,7 @@ function execute( options ) {
       return reject( new Error( '"-o" or "--output" has not been specified. This parameter is required.' ) );
     }
 
-    switch( options.type ) {
-      case 'png':
-        return IconGenerator.fromPNG( options.input, options.output, options.modes, new Logger( options.report ) );
-
-      default:
-        return IconGenerator.fromSVG( options.input, options.output, options.modes, new Logger( options.report ) );
-    }
+    return IconGen( options.input, options.output, options );
   } );
 }
 
