@@ -2,6 +2,16 @@ import IconGenerator from './icon-generator.js';
 import Logger from './logger.js';
 import { CLIConstatns } from '../bin/cli-util.js';
 
+const DEFAULT_OPTIONS = {
+  type: CLIConstatns.types.svg,
+  modes: CLIConstatns.modeAll,
+  names: {
+    ico: 'app',
+    icns: 'app',
+  },
+  report: false
+};
+
 /**
  * Generate an icon from the SVG file.
  *
@@ -9,19 +19,19 @@ import { CLIConstatns } from '../bin/cli-util.js';
  * @param {String} dest    Destination directory path.
  * @param {Object} options Options.
  */
-module.exports = function( src, dest, options = { type: CLIConstatns.types.svg, modes: CLIConstatns.modeAll, report: false } ) {
-  const logger = new Logger( options.report );
-
+module.exports = function( src, dest, options = DEFAULT_OPTIONS ) {
   const opt = options;
-  if( !( opt.modes ) ) {
-    opt.modes = CLIConstatns.modeAll;
-  }
+  if( !( opt.modes ) )      { opt.modes      = DEFAULT_OPTIONS.modes; }
+  if( !( opt.names ) )      { opt.names      = DEFAULT_OPTIONS.names; }
+  if( !( opt.names.ico ) )  { opt.names.ico  = DEFAULT_OPTIONS.names.ico; }
+  if( !( opt.names.icns ) ) { opt.names.icns = DEFAULT_OPTIONS.names.icns; }
 
-  switch( options.type ) {
+  const logger = new Logger( opt.report );
+  switch( opt.type ) {
     case CLIConstatns.types.png:
-      return IconGenerator.fromPNG( src, dest, options.modes, logger );
+      return IconGenerator.fromPNG( src, dest, opt, logger );
 
     default:
-      return IconGenerator.fromSVG( src, dest, options.modes, logger );
+      return IconGenerator.fromSVG( src, dest, opt, logger );
   }
 };

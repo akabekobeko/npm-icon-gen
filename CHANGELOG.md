@@ -1,5 +1,10 @@
 # ChangeLog
 
+## 1.0.4
+
+* Change
+  * [Allow specifying icon file name](https://github.com/akabekobeko/npm-icon-gen/issues/38)
+
 ## 1.0.3
 
 * Change

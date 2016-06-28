@@ -1,6 +1,7 @@
 import Fs from 'fs';
 import Path from 'path';
 import Del from 'del';
+import MkdirP from 'mkdirp';
 import PngGenerator from './png-generator.js';
 import IcoGenerator from './ico-generator.js';
 import { IcoConstants } from './ico-generator.js';
@@ -17,14 +18,14 @@ export default class IconGenerator {
   /**
    * Generate an icon from the SVG file.
    *
-   * @param {String}         src    Path of the SVG file.
-   * @param {String}         dir    Path of the output files directory.
-   * @param {Array.<String>} modes  Modes of an output files.
-   * @param {Logger}         logger Logger.
+   * @param {String} src     Path of the SVG file.
+   * @param {String} dir     Path of the output files directory.
+   * @param {Object} options Options.
+   * @param {Logger} logger  Logger.
    *
    * @return {Promise} Promise object.
    */
-  static fromSVG( src, dir, modes, logger ) {
+  static fromSVG( src, dir, options, logger ) {
     return new Promise( ( resolve, reject ) => {
       const svgFilePath = Path.resolve( src );
       const destDirPath = Path.resolve( dir );
@@ -38,14 +39,14 @@ export default class IconGenerator {
         return;
       }
 
-      PngGenerator.generate( svgFilePath, workDir, modes, ( err, images ) => {
+      PngGenerator.generate( svgFilePath, workDir, options.modes, ( err, images ) => {
         if( err ) {
           Del.sync( [ workDir ], { force: true } );
           reject( err );
           return;
         }
 
-        IconGenerator.generate( images, destDirPath, modes, logger, ( err2, results ) => {
+        IconGenerator.generate( images, destDirPath, options, logger, ( err2, results ) => {
           Del.sync( [ workDir ], { force: true } );
           return ( err2 ? reject( err2 ) : resolve( results ) );
         } );
@@ -56,14 +57,14 @@ export default class IconGenerator {
   /**
    * Generate an icon from the SVG file.
    *
-   * @param {String}         src    Path of the PNG files direcgtory.
-   * @param {String}         dir    Path of the output files directory.
-   * @param {Array.<String>} modes  Modes of an output files.
-   * @param {Logger}         logger Logger.
+   * @param {String} src     Path of the PNG files direcgtory.
+   * @param {String} dir     Path of the output files directory.
+   * @param {Object} options Options.
+   * @param {Logger} logger  Logger.
    *
    * @return {Promise} Promise object.
    */
-  static fromPNG( src, dir, modes, logger ) {
+  static fromPNG( src, dir, options, logger ) {
     return new Promise( ( resolve, reject ) => {
       const pngDirPath  = Path.resolve( src );
       const destDirPath = Path.resolve( dir );
@@ -71,7 +72,7 @@ export default class IconGenerator {
       logger.log( '  src: ' + pngDirPath );
       logger.log( '  dir: ' + destDirPath );
 
-      const images = PngGenerator.getRequiredImageSizes( modes )
+      const images = PngGenerator.getRequiredImageSizes( options.modes )
       .map( ( size ) => {
         return Path.join( pngDirPath, size + '.png' );
       } )
@@ -96,7 +97,7 @@ export default class IconGenerator {
         return;
       }
 
-      IconGenerator.generate( images, dir, modes, logger, ( err, results ) => {
+      IconGenerator.generate( images, dir, options, logger, ( err, results ) => {
         return ( err ? reject( err ) : resolve( results ) );
       } );
     } );
@@ -107,31 +108,37 @@ export default class IconGenerator {
    *
    * @param {Array.<ImageInfo>} images  Image file informations.
    * @param {String}            dest    Destination directory path.
-   * @param {Array.<String>}    modes   Modes of an output files.
+   * @param {Object}            options Options.
    * @param {Logger}            logger  Logger.
    * @param {Function}          cb      Callback function.
    */
-  static generate( images, dest, modes, logger, cb ) {
+  static generate( images, dest, options, logger, cb ) {
     if( !( images && 0 < images.length ) ) {
       cb( new Error( 'Targets is empty.' ) );
       return;
     }
 
+    const dir = Path.resolve( dest );
+    MkdirP.sync( dir );
+
     // Select output mode
-    const dir   = Path.resolve( dest );
     const tasks = [];
-    modes.forEach( ( mode ) => {
+    let   path  = null;
+    options.modes.forEach( ( mode ) => {
       switch( mode ) {
         case CLIConstatns.modes.ico:
-          tasks.push( IcoGenerator.generate( IconGenerator.filter( images, IcoConstants.imageSizes ), Path.join( dir, 'app.ico' ), logger ) );
+          path = Path.join( dir, options.names.ico + '.ico' );
+          tasks.push( IcoGenerator.generate( IconGenerator.filter( images, IcoConstants.imageSizes ), path, logger ) );
           break;
 
         case CLIConstatns.modes.icns:
-          tasks.push( IcnsGenerator.generate( IconGenerator.filter( images, IcnsConstants.imageSizes ), Path.join( dir, 'app.icns' ), logger ) );
+          path = Path.join( dir, options.names.icns + '.icns' );
+          tasks.push( IcnsGenerator.generate( IconGenerator.filter( images, IcnsConstants.imageSizes ), path, logger ) );
           break;
 
         case CLIConstatns.modes.favicon:
-          tasks.push( IcoGenerator.generate( IconGenerator.filter( images, FaviconConstants.icoImageSizes ), Path.join( dir, 'favicon.ico' ), logger ) );
+          path = Path.join( dir, 'favicon.ico' );
+          tasks.push( IcoGenerator.generate( IconGenerator.filter( images, FaviconConstants.icoImageSizes ), path, logger ) );
           tasks.push( FaviconGenerator.generate( IconGenerator.filter( images, FaviconConstants.imageSizes ), dir, logger ) );
           break;
 
