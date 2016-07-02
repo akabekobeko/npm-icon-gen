@@ -113,7 +113,7 @@ options:
 
 |   Name |    Type | Description |
 |:-------|:--------|:------------|
-|   type |  String | Type of input file. Allowed value is a `svg` or `png`. 'svg' is SVG file, `png` is PNG files directory. Default is `png`. |
+|   type |  String | Type of input file. Allowed value is a `svg` or `png`. 'svg' is SVG file, `png` is PNG files directory. Default is `svg`. |
 |  modes |   Array | Mode of output files. Allow value is a `ico`, `icns`, `favicon` and `all`. Default is `all`. |
 |  names |  Object | Change an output file names for **ICO** and **ICNS**. |
 | report | Boolean | Display the process reports. Default is `false`, disable a report. |
