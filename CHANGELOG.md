@@ -1,5 +1,10 @@
 # ChangeLog
 
+## 1.0.5
+
+* Change
+  * [Correct default for `options.type` by atdrago](https://github.com/akabekobeko/npm-icon-gen/pull/39)
+
 ## 1.0.4
 
 * Change

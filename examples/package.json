@@ -10,6 +10,6 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "icon-gen": "^1.0.4"
+    "icon-gen": "^1.0.5"
   }
 }
