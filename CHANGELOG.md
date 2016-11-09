@@ -1,5 +1,13 @@
 # ChangeLog
 
+## 1.0.6
+
+* Change
+  * [Node v7 support](https://github.com/akabekobeko/npm-icon-gen/issues/41)
+* Fix
+  * [Icns not working](https://github.com/akabekobeko/npm-icon-gen/issues/42)
+  * [Fix icns generation](https://github.com/akabekobeko/npm-icon-gen/pull/43) by mifi
+
 ## 1.0.5
 
 * Change
