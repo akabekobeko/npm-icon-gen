@@ -1,5 +1,6 @@
 # npm-icon-gen
 
+![node v6, v7](https://img.shields.io/badge/node-v6%2C%20v7-green.svg)
 [![npm version](https://badge.fury.io/js/icon-gen.svg)](https://badge.fury.io/js/icon-gen)
 [![Build Status](https://travis-ci.org/akabekobeko/npm-icon-gen.svg?branch=master)](https://travis-ci.org/akabekobeko/npm-icon-gen)
 [![Document](https://doc.esdoc.org/github.com/akabekobeko/npm-icon-gen/badge.svg?t=0)](https://doc.esdoc.org/github.com/akabekobeko/npm-icon-gen)
