@@ -1,5 +1,10 @@
 # ChangeLog
 
+## 1.0.7
+
+* Change
+  * [Update uuid to version 3.0.0](https://github.com/akabekobeko/npm-icon-gen/pull/45) by marcbachmann
+
 ## 1.0.6
 
 * Change
