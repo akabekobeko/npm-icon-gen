@@ -1,7 +1,7 @@
 import OS from 'os';
 import Fs from 'fs';
 import Path from 'path';
-import UUID from 'node-uuid';
+import UUID from 'uuid';
 import SVG2PNG from 'svg2png';
 import { FaviconConstants } from './favicon-generator.js';
 import { IcoConstants } from './ico-generator.js';

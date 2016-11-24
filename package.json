@@ -48,9 +48,9 @@
   "dependencies": {
     "del": "^2.2.2",
     "mkdirp": "^0.5.1",
-    "node-uuid": "^1.4.7",
     "pngjs": "^3.0.0",
-    "svg2png": "4.1.0"
+    "svg2png": "4.1.0",
+    "uuid": "^3.0.0"
   },
   "devDependencies": {
     "babel-cli": "^6.18.0",
