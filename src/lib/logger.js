@@ -16,22 +16,22 @@ class Logger {
   /**
    * Display a log message for the stdout.
    *
-   * @param {Array.<Object>} args Message arguments.
+   * @param {Array.<Object>} message Message arguments.
    */
-  log (...args) {
+  log (message) {
     if (this._available) {
-      console.log(...args)
+      console.log(message)
     }
   }
 
   /**
    * Display an error message for the stdout.
    *
-   * @param {Array.<Object>} args Message arguments.
+   * @param {Array.<Object>} message Message arguments.
    */
-  error (...args) {
+  error (message) {
     if (this._available) {
-      console.error(...args)
+      console.error(message)
     }
   }
 }
