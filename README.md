@@ -1,9 +1,10 @@
 # npm-icon-gen
 
-![node v6, v7](https://img.shields.io/badge/node-v6%2C%20v7-green.svg)
+[![Support Node of LTS](https://img.shields.io/badge/node-LTS-brightgreen.svg)](https://nodejs.org/)
 [![npm version](https://badge.fury.io/js/icon-gen.svg)](https://badge.fury.io/js/icon-gen)
 [![Build Status](https://travis-ci.org/akabekobeko/npm-icon-gen.svg?branch=master)](https://travis-ci.org/akabekobeko/npm-icon-gen)
 [![Document](https://doc.esdoc.org/github.com/akabekobeko/npm-icon-gen/badge.svg?t=0)](https://doc.esdoc.org/github.com/akabekobeko/npm-icon-gen)
+[![Standard - JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](http://standardjs.com/)
 
 Generate an icon files from the **SVG** or **PNG** files.
 
@@ -32,7 +33,7 @@ SVG files are rendering to PNG file in [svg2png](https://www.npmjs.com/package/s
 Rendering of svg2png is run by [phantomjs](https://www.npmjs.com/package/phantomjs). Please use the PNG directory If the rendering quality there is a problem.
 
 ```js
-const icongen = require( 'icon-gen' );
+const icongen = require('icon-gen');
 
 const options = {
   report: true,
@@ -42,13 +43,13 @@ const options = {
   }
 };
 
-icongen( './sample.svg', './dist', options )
-.then( ( results ) => {
-  console.log( results );
-} )
-.catch( ( err ) => {
-  console.error( err );
-} );
+icongen('./sample.svg', './dist', options)
+.then((results) => {
+  console.log(results)
+})
+.catch((err) => {
+  console.error(err)
+});
 ```
 
 ### PNG
@@ -56,20 +57,20 @@ icongen( './sample.svg', './dist', options )
 Generate an icon files from the directory of PNG files.
 
 ```js
-const icongen = require( 'icon-gen' );
+const icongen = require('icon-gen');
 
 const options = {
   type: 'png',
   report: true
 };
 
-icongen( './images', './dist', options )
-.then( ( results ) => {
-  console.log( results );
+icongen('./images', './dist', options)
+.then((results) => {
+  console.log(results);
 } )
-.catch( ( err ) => {
-  console.error( err );
-} );
+.catch((err) => {
+  console.error(err);
+});
 ```
 
 Required PNG files is below. Favicon outputs both the ICO and PNG files ( see: [audreyr/favicon-cheat-sheet](https://github.com/audreyr/favicon-cheat-sheet) ).
@@ -98,11 +99,9 @@ Required PNG files is below. Favicon outputs both the ICO and PNG files ( see: [
 
 ### icongen
 
-`icongen` is promisify function.
+**icongen** is promisify function.
 
-```js
-icongen( src, dest, [options] )
-```
+`icongen(src, dest[, options])`
 
 |    Name |   Type | Description |
 |:--------|:-------|:------------|

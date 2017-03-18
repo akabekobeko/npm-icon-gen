@@ -1,63 +1,63 @@
-import assert from 'assert';
-import Path from 'path';
-import TestUtil from '../test-util.js';
-import Logger from '../../src/lib/logger.js';
-import IconGenerator from '../../src/lib/icon-generator.js';
-import PngGenerator from '../../src/lib/png-generator.js';
-import { IcoConstants } from '../../src/lib/ico-generator.js';
-import { IcnsConstants } from '../../src/lib/icns-generator.js';
-import { FaviconConstants } from '../../src/lib/favicon-generator.js';
+const assert = require('assert')
+const Path = require('path')
+const TestUtil = require('../test-util.js')
+const Logger = require('../../src/lib/logger.js')
+const IconGenerator = require('../../src/lib/icon-generator.js')
+const PNGGenerator = require('../../src/lib/png-generator.js')
+const ICO = require('../../src/lib/constants').ICO
+const ICNS = require('../../src/lib/constants.js').ICNS
+const Favicon = require('../../src/lib/constants.js').Favicon
 
 /** @test {IconGenerator} */
-describe( 'IconGenerator', () => {
-  const testDir = Path.resolve( './test' );
-  const dataDir = Path.join( testDir, 'data' );
+describe('IconGenerator', () => {
+  const testDir = Path.resolve('./test')
+  const dataDir = Path.join(testDir, 'data')
 
   //
   /** @test {IconGenerator#fromSVG} */
   /*
-  it( 'fromSVG', () => {
-    return IconGenerator.fromSVG( './test/data/sample.svg', './test', new Logger() )
-    .then( () => {
-      assert( results );
-      TestUtil.deleteFiles( results );
-    } );
-  } );
+  it('fromSVG', () => {
+    return IconGenerator.fromSVG('./test/data/sample.svg', './test', new Logger())
+    .then(() => {
+      assert(results)
+      TestUtil.deleteFiles(results)
+    })
+  })
   */
 
   /** @test {IconGenerator#fromPNG} */
-  it( 'fromPNG', () => {
-    return IconGenerator.fromPNG( dataDir, './test', { modes: [], names: { ico: 'app', icns: 'app' } }, new Logger() )
-    .then( ( results ) => {
-      assert( results );
-      TestUtil.deleteFiles( results );
-    } );
-  } );
+  it('fromPNG', () => {
+    return IconGenerator.fromPNG(dataDir, './test', {modes: [], names: {ico: 'app', icns: 'app'}}, new Logger())
+    .then((results) => {
+      assert(results)
+      TestUtil.deleteFiles(results)
+    })
+  })
 
-  it( 'flattenValues', () => {
-    const values   = [ 'A', 'B', [ 'C', 'D' ] ];
-    const actual   = [ 'A', 'B',  'C', 'D' ];
-    const expected = IconGenerator.flattenValues( values );
+  it('flattenValues', () => {
+    const values   = ['A', 'B', ['C', 'D']]
+    const actual   = ['A', 'B',  'C', 'D']
+    const expected = IconGenerator.flattenValues(values)
 
-    assert.deepEqual( expected, actual );
-  } );
+    assert.deepEqual(expected, actual)
+  })
 
   /** @test {IconGenerator#filter} */
-  it( 'filter', () => {
-    const targets = PngGenerator.getRequiredImageSizes().map( ( size ) => {
-      return { size: size };
-    } );
+  it('filter', () => {
+    const targets = PNGGenerator.getRequiredImageSizes().map((size) => {
+      return {size: size}
+    })
 
-    let expected = IconGenerator.filter( targets, IcoConstants.imageSizes );
-    assert( expected.length === 7 );
+    let expected = IconGenerator.filter(targets, ICO.imageSizes)
+    assert(expected.length === 7)
 
-    expected = IconGenerator.filter( targets, IcnsConstants.imageSizes );
-    assert( expected.length === 7 );
+    expected = IconGenerator.filter(targets, ICNS.imageSizes)
+    assert(expected.length === 7)
 
-    expected = IconGenerator.filter( targets, FaviconConstants.imageSizes );
-    assert( expected.length === 10 );
+    expected = IconGenerator.filter(targets, Favicon.imageSizes)
+    assert(expected.length === 10)
 
-    expected = IconGenerator.filter( targets, FaviconConstants.icoImageSizes );
-    assert( expected.length === 5 );
-  } );
-} );
+    expected = IconGenerator.filter(targets, Favicon.icoImageSizes)
+    assert(expected.length === 5)
+  })
+})

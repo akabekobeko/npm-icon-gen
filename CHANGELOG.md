@@ -1,5 +1,10 @@
 # ChangeLog
 
+## 1.0.8
+
+* Change
+  * [Drop transpile by Babel](https://github.com/akabekobeko/npm-icon-gen/issues/48)
+
 ## 1.0.7
 
 * Change
