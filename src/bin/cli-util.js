@@ -1,3 +1,5 @@
+'use strict'
+
 const Path = require('path')
 const Help = require('./constants.js').Help
 const CLI = require('./constants.js').CLI

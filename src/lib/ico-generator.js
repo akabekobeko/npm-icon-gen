@@ -1,3 +1,5 @@
+'use strict'
+
 const Fs = require('fs')
 const PNG = require('pngjs').PNG
 const ICO = require('./constants.js').ICO

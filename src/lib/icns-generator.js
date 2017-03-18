@@ -1,3 +1,5 @@
+'use strict'
+
 const Fs = require('fs')
 const ICNS = require('./constants.js').ICNS
 

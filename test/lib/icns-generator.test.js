@@ -1,3 +1,5 @@
+'use strict'
+
 const assert = require('assert')
 const Fs = require('fs')
 const Path = require('path')

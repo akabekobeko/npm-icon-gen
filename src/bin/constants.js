@@ -1,3 +1,5 @@
+'use strict'
+
 /**
  * Constatns of CLI process.
  * @type {Object}

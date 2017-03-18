@@ -1,3 +1,4 @@
+'use strict'
 
 /**
  * Display the log message for the stdout.

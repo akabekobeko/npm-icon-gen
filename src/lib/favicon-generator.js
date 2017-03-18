@@ -1,3 +1,5 @@
+'use strict'
+
 const Fs = require('fs')
 const Path = require('path')
 const Logger = require('./logger.js')

@@ -1,3 +1,5 @@
+'use strict'
+
 const IconGenerator = require('./icon-generator.js')
 const Logger = require('./logger.js')
 const CLI = require('../bin/constants').CLI

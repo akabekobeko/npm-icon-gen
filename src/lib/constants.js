@@ -1,3 +1,5 @@
+'use strict'
+
 /**
  * size required for the FAVICON.
  * @type {Object}

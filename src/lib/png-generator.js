@@ -1,3 +1,5 @@
+'use strict'
+
 const OS = require('os')
 const Fs = require('fs')
 const Path = require('path')
