@@ -6,7 +6,7 @@
   "license": "MIT",
   "homepage": "https://github.com/akabekobeko/npm-icon-gen#readme",
   "engines": {
-    "node": ">= 4"
+    "node": ">= 6"
   },
   "bin": "src/bin/index.js",
   "main": "src/lib/index.js",
