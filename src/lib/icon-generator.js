@@ -1,22 +1,19 @@
-import Fs from 'fs';
-import Path from 'path';
-import Del from 'del';
-import MkdirP from 'mkdirp';
-import PngGenerator from './png-generator.js';
-import IcoGenerator from './ico-generator.js';
-import { IcoConstants } from './ico-generator.js';
-import IcnsGenerator from './icns-generator.js';
-import { IcnsConstants } from './icns-generator.js';
-import FaviconGenerator from './favicon-generator.js';
-import { FaviconConstants } from './favicon-generator.js';
-import { CLIConstatns } from '../bin/cli-util.js';
+const Fs = require('fs')
+const Path = require('path')
+const Del = require('del')
+const MkdirP = require('mkdirp')
+const PngGenerator = require('./png-generator.js')
+const {CLI} = require('../bin/cli-util')
+const {ICOGenerator, ICO} = require('./ico-generator.js')
+const {ICNSGenerator, ICNS} = require('./icns-generator.js')
+const {FaviconGenerator, Favicon} = require('./favicon-generator.js')
 
 /**
  * Generate an icons.
  */
-export default class IconGenerator {
+class IconGenerator {
   /**
-   * Generate an icon from the SVG file.
+   * Generate an icon = require(the SVG file.
    *
    * @param {String} src     Path of the SVG file.
    * @param {String} dir     Path of the output files directory.
@@ -25,37 +22,37 @@ export default class IconGenerator {
    *
    * @return {Promise} Promise object.
    */
-  static fromSVG( src, dir, options, logger ) {
-    return new Promise( ( resolve, reject ) => {
-      const svgFilePath = Path.resolve( src );
-      const destDirPath = Path.resolve( dir );
-      logger.log( 'Icon generetor from SVG:' );
-      logger.log( '  src: ' + svgFilePath );
-      logger.log( '  dir: ' + destDirPath );
+  static fromSVG (src, dir, options, logger) {
+    return new Promise((resolve, reject) => {
+      const svgFilePath = Path.resolve(src)
+      const destDirPath = Path.resolve(dir)
+      logger.log('Icon generetor from SVG:')
+      logger.log('  src: ' + svgFilePath)
+      logger.log('  dir: ' + destDirPath)
 
-      const workDir = PngGenerator.createWorkDir();
-      if( !( workDir ) ) {
-        reject( new Error( 'Failed to create the working directory.' ) );
-        return;
+      const workDir = PngGenerator.createWorkDir()
+      if (!(workDir)) {
+        reject(new Error('Failed to create the working directory.'))
+        return
       }
 
-      PngGenerator.generate( svgFilePath, workDir, options.modes, ( err, images ) => {
-        if( err ) {
-          Del.sync( [ workDir ], { force: true } );
-          reject( err );
-          return;
+      PngGenerator.generate(svgFilePath, workDir, options.modes, (err, images) => {
+        if (err) {
+          Del.sync([workDir], {force: true})
+          reject(err)
+          return
         }
 
-        IconGenerator.generate( images, destDirPath, options, logger, ( err2, results ) => {
-          Del.sync( [ workDir ], { force: true } );
-          return ( err2 ? reject( err2 ) : resolve( results ) );
-        } );
-      }, logger );
-    } );
+        IconGenerator.generate(images, destDirPath, options, logger, (err2, results) => {
+          Del.sync([workDir], {force: true})
+          return (err2 ? reject(err2) : resolve(results))
+        })
+      }, logger)
+    })
   }
 
   /**
-   * Generate an icon from the SVG file.
+   * Generate an icon = require(the SVG file.
    *
    * @param {String} src     Path of the PNG files direcgtory.
    * @param {String} dir     Path of the output files directory.
@@ -64,47 +61,47 @@ export default class IconGenerator {
    *
    * @return {Promise} Promise object.
    */
-  static fromPNG( src, dir, options, logger ) {
-    return new Promise( ( resolve, reject ) => {
-      const pngDirPath  = Path.resolve( src );
-      const destDirPath = Path.resolve( dir );
-      logger.log( 'Icon generetor from PNG:' );
-      logger.log( '  src: ' + pngDirPath );
-      logger.log( '  dir: ' + destDirPath );
+  static fromPNG (src, dir, options, logger) {
+    return new Promise((resolve, reject) => {
+      const pngDirPath  = Path.resolve(src)
+      const destDirPath = Path.resolve(dir)
+      logger.log('Icon generetor from PNG:')
+      logger.log('  src: ' + pngDirPath)
+      logger.log('  dir: ' + destDirPath)
 
-      const images = PngGenerator.getRequiredImageSizes( options.modes )
-      .map( ( size ) => {
-        return Path.join( pngDirPath, size + '.png' );
-      } )
-      .map( ( path ) => {
-        const size = Number( Path.basename( path, '.png' ) );
-        return { path, size };
-      } );
+      const images = PngGenerator.getRequiredImageSizes(options.modes)
+      .map((size) => {
+        return Path.join(pngDirPath, size + '.png')
+      })
+      .map((path) => {
+        const size = Number(Path.basename(path, '.png'))
+        return { path, size }
+      })
 
-      let notExistsFile = null;
-      images.some( ( image ) => {
-        const stat = Fs.statSync( image.path );
-        if( !( stat && stat.isFile() ) ) {
-          notExistsFile = Path.basename( image.path );
-          return true;
+      let notExistsFile = null
+      images.some((image) => {
+        const stat = Fs.statSync(image.path)
+        if (!(stat && stat.isFile())) {
+          notExistsFile = Path.basename(image.path)
+          return true
         }
 
-        return false;
-      } );
+        return false
+      })
 
-      if( notExistsFile ) {
-        reject( new Error( '"' + notExistsFile + '" does not exist.' ) );
-        return;
+      if (notExistsFile) {
+        reject(new Error('"' + notExistsFile + '" does not exist.'))
+        return
       }
 
-      IconGenerator.generate( images, dir, options, logger, ( err, results ) => {
-        return ( err ? reject( err ) : resolve( results ) );
-      } );
-    } );
+      IconGenerator.generate(images, dir, options, logger, (err, results) => {
+        return (err ? reject(err) : resolve(results))
+      })
+    })
   }
 
   /**
-   * Generate an icon from the image file infromations.
+   * Generate an icon = require(the image file infromations.
    *
    * @param {Array.<ImageInfo>} images  Image file informations.
    * @param {String}            dest    Destination directory path.
@@ -112,49 +109,49 @@ export default class IconGenerator {
    * @param {Logger}            logger  Logger.
    * @param {Function}          cb      Callback function.
    */
-  static generate( images, dest, options, logger, cb ) {
-    if( !( images && 0 < images.length ) ) {
-      cb( new Error( 'Targets is empty.' ) );
-      return;
+  static generate (images, dest, options, logger, cb) {
+    if (!(images && 0 < images.length)) {
+      cb(new Error('Targets is empty.'))
+      return
     }
 
-    const dir = Path.resolve( dest );
-    MkdirP.sync( dir );
+    const dir = Path.resolve(dest)
+    MkdirP.sync(dir)
 
     // Select output mode
-    const tasks = [];
-    let   path  = null;
-    options.modes.forEach( ( mode ) => {
-      switch( mode ) {
-        case CLIConstatns.modes.ico:
-          path = Path.join( dir, options.names.ico + '.ico' );
-          tasks.push( IcoGenerator.generate( IconGenerator.filter( images, IcoConstants.imageSizes ), path, logger ) );
-          break;
+    const tasks = []
+    let   path  = null
+    options.modes.forEach((mode) => {
+      switch (mode) {
+        case CLI.modes.ico:
+          path = Path.join(dir, options.names.ico + '.ico')
+          tasks.push(ICOGenerator.generate(IconGenerator.filter(images, ICO.imageSizes), path, logger))
+          break
 
-        case CLIConstatns.modes.icns:
-          path = Path.join( dir, options.names.icns + '.icns' );
-          tasks.push( IcnsGenerator.generate( IconGenerator.filter( images, IcnsConstants.imageSizes ), path, logger ) );
-          break;
+        case CLI.modes.icns:
+          path = Path.join(dir, options.names.icns + '.icns')
+          tasks.push(ICNSGenerator.generate(IconGenerator.filter(images, ICNS.imageSizes), path, logger))
+          break
 
-        case CLIConstatns.modes.favicon:
-          path = Path.join( dir, 'favicon.ico' );
-          tasks.push( IcoGenerator.generate( IconGenerator.filter( images, FaviconConstants.icoImageSizes ), path, logger ) );
-          tasks.push( FaviconGenerator.generate( IconGenerator.filter( images, FaviconConstants.imageSizes ), dir, logger ) );
-          break;
+        case CLI.modes.favicon:
+          path = Path.join(dir, 'favicon.ico')
+          tasks.push(ICOGenerator.generate(IconGenerator.filter(images, Favicon.icoImageSizes), path, logger))
+          tasks.push(FaviconGenerator.generate(IconGenerator.filter(images, Favicon.imageSizes), dir, logger))
+          break
 
         default:
-          break;
+          break
       }
-    } );
+    })
 
     Promise
-    .all( tasks )
-    .then( ( results ) => {
-      cb( null, IconGenerator.flattenValues( results ) );
-    } )
-    .catch( ( err ) => {
-      cb( err );
-    } );
+    .all(tasks)
+    .then((results) => {
+      cb(null, IconGenerator.flattenValues(results))
+    })
+    .catch((err) => {
+      cb(err)
+    })
   }
 
   /**
@@ -165,39 +162,43 @@ export default class IconGenerator {
    *
    * @return {Array.<ImageInfo>} Filtered image informations.
    */
-  static filter( images, sizes ) {
+  static filter (images, sizes) {
     return images
-    .filter( ( image ) => {
-      return sizes.some( ( size ) => {
-        return ( image.size === size );
-      } );
-    } )
-    .sort( ( a, b ) => {
-      return ( a.size - b.size );
-    } );
+    .filter((image) => {
+      return sizes.some((size) => {
+        return (image.size === size)
+      })
+    })
+    .sort((a, b) => {
+      return (a.size - b.size)
+    })
   }
 
   /**
    * Convert a values to a flat array.
    *
-   * @param  {Array.<String|Array>} values Values ( [ 'A', 'B', [ 'C', 'D' ] ] ).
+   * @param  {Array.<String|Array>} values Values ([ 'A', 'B', [ 'C', 'D' ] ]).
    *
-   * @return {Array.<String>} Flat array ( [ 'A', 'B', 'C', 'D' ] ).
+   * @return {Array.<String>} Flat array ([ 'A', 'B', 'C', 'D' ]).
    */
-  static flattenValues( values ) {
-    const paths = [];
-    values.forEach( ( value ) => {
-      if( !( value ) ) { return; }
-
-      if( Array.isArray( value ) ) {
-        value.forEach( ( path ) => {
-          paths.push( path );
-        } );
-      } else {
-        paths.push( value );
+  static flattenValues (values) {
+    const paths = []
+    values.forEach((value) => {
+      if (!(value)) {
+        return
       }
-    } );
 
-    return paths;
+      if (Array.isArray(value)) {
+        value.forEach((path) => {
+          paths.push(path)
+        })
+      } else {
+        paths.push(value)
+      }
+    })
+
+    return paths
   }
 }
+
+module.exports = IconGenerator
