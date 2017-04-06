@@ -1,14 +1,12 @@
-'use strict'
-
 const OS = require('os')
 const Fs = require('fs')
 const Path = require('path')
 const UUID = require('uuid')
 const SVG2PNG = require('svg2png')
-const Favicon = require('./constants.js').Favicon
-const ICO = require('./constants.js').ICO
-const ICNS = require('./constants.js').ICNS
-const CLI = require('../bin/constants.js').CLI
+const {Favicon} = require('./favicon-generator.js')
+const {ICO} = require('./ico-generator.js')
+const {ICNS} = require('./icns-generator.js')
+const {CLI} = require('../bin/cli-util.js')
 
 /**
  * Generate the PNG files = require(SVG file.

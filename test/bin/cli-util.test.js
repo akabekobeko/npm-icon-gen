@@ -1,9 +1,6 @@
-'use strict'
-
 const assert = require('assert')
 const Path = require('path')
-const CLIUtil = require('../../src/bin/cli-util.js')
-const CLI = require('../../src/bin/constants.js').CLI
+const {CLIUtil, CLI} = require('../../src/bin/cli-util.js')
 
 /** @test {CLIUtil} */
 describe('CLIUtil', () => {

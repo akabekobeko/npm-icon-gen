@@ -1,8 +1,6 @@
-'use strict'
-
 const IconGenerator = require('./icon-generator.js')
 const Logger = require('./logger.js')
-const CLI = require('../bin/constants').CLI
+const {CLI} = require('../bin/cli-util.js')
 
 const DEFAULT_OPTIONS = {
   type: CLI.types.svg,

@@ -1,11 +1,8 @@
-'use strict'
-
 const assert = require('assert')
 const Fs = require('fs')
 const Path = require('path')
 const Logger = require('../../src/lib/logger.js')
-const ICNSGenerator = require('../../src/lib/icns-generator.js')
-const ICNS = require('../../src/lib/constants').ICNS
+const {ICNSGenerator, ICNS} = require('../../src/lib/icns-generator.js')
 
 /** @test {ICNSGenerator} */
 describe('ICNSGenerator', () => {

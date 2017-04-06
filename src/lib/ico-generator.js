@@ -1,8 +1,41 @@
-'use strict'
-
 const Fs = require('fs')
 const PNG = require('pngjs').PNG
-const ICO = require('./constants.js').ICO
+
+/**
+ * It defines constants for the ICO.
+ * @type {Object}
+ */
+const ICO = {
+  /**
+   * Sizes required for the ICO file.
+   * @type {Array}
+   */
+  imageSizes: [16, 24, 32, 48, 64, 128, 256],
+
+  /**
+   * Size of the file header.
+   * @type {Number}
+   */
+  headerSize: 6,
+
+  /**
+   * Size of the icon directory.
+   * @type {Number}
+   */
+  directorySize: 16,
+
+  /**
+   * Size of the BITMAPINFOHEADER.
+   * @type {Number}
+   */
+  BitmapInfoHeaderSize: 40,
+
+  /**
+   * Color mode.
+   * @type {Number}
+   */
+  BI_RGB: 0
+}
 
 /**
  * Generate the ICO file from PNG images.
@@ -57,7 +90,7 @@ class ICOGenerator {
    * @return {Buffer} Header data.
    */
   static createFileHeader (count) {
-    const b = new Buffer(ICO.headerSize)
+    const b = Buffer.alloc(ICO.headerSize)
     b.writeUInt16LE(0, 0)     // 2 Reserved
     b.writeUInt16LE(1,  2)    // 2 Type
     b.writeUInt16LE(count, 4) // 2 Image count
@@ -74,7 +107,7 @@ class ICOGenerator {
    * @return {Buffer} Directory data.
    */
   static createDirectory (png, offset) {
-    const b      = new Buffer(ICO.directorySize)
+    const b      = Buffer.alloc(ICO.directorySize)
     const size   = png.data.length + ICO.BitmapInfoHeaderSize
     const width  = (256 <= png.width ? 0 : png.width)
     const height = (256 <= png.height ? 0 : png.height)
@@ -101,7 +134,7 @@ class ICOGenerator {
    * @return {Buffer} BITMAPINFOHEADER data.
    */
   static createBitmapInfoHeader (png, compression) {
-    const b = new Buffer(ICO.BitmapInfoHeaderSize)
+    const b = Buffer.alloc(ICO.BitmapInfoHeaderSize)
     b.writeUInt32LE(ICO.BitmapInfoHeaderSize, 0) // 4 DWORD biSize
     b.writeInt32LE(png.width, 4)                          // 4 LONG  biWidth
     b.writeInt32LE(png.height * 2, 8)                     // 4 LONG  biHeight
@@ -136,7 +169,7 @@ class ICOGenerator {
     const cols   = (width * bpp)
     const rows   = (height * cols)
     const rowEnd = (rows - cols)
-    const dest   = new Buffer(src.length)
+    const dest   = Buffer.alloc(src.length)
 
     for (let row = 0; row < rows; row += cols) {
       for (let col = 0; col < cols; col += bpp) {
@@ -160,4 +193,7 @@ class ICOGenerator {
   }
 }
 
-module.exports = ICOGenerator
+module.exports = {
+  ICO: ICO,
+  ICOGenerator: ICOGenerator
+}

@@ -1,7 +1,42 @@
-'use strict'
-
 const Fs = require('fs')
-const ICNS = require('./constants.js').ICNS
+
+/**
+ * It defines constants for the ICNS.
+ * @type {Object}
+ */
+const ICNS = {
+  /**
+   * Sizes required for the ICNS file.
+   * @type {Array}
+   */
+  imageSizes: [16, 32, 64, 128, 256, 512, 1024],
+
+  /**
+   * The size of the ICNS header.
+   * @type {Number}
+   */
+  headerSize: 8,
+
+  /**
+   * Identifier of the ICNS file, in ASCII "icns".
+   * @type {Number}
+   */
+  fileID: 'icns',
+
+  /**
+   * Identifier of the images, Mac OS 8.x (il32, is32, l8mk, s8mk) is unsupported.
+   * @type {Array}
+   */
+  iconIDs: [
+    {id: 'icp4', size: 16},
+    {id: 'icp5', size: 32},
+    {id: 'icp6', size: 64},
+    {id: 'ic07', size: 128},
+    {id: 'ic08', size: 256},
+    {id: 'ic09', size: 512},
+    {id: 'ic10', size: 1024}
+  ]
+}
 
 /**
  * Generate the ICNS file from a PNG images.
@@ -137,4 +172,7 @@ class ICNSGenerator {
   }
 }
 
-module.exports = ICNSGenerator
+module.exports = {
+  ICNS: ICNS,
+  ICNSGenerator: ICNSGenerator
+}

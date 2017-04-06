@@ -1,5 +1,3 @@
-'use strict'
-
 /**
  * Display the log message for the stdout.
  */
@@ -16,22 +14,22 @@ class Logger {
   /**
    * Display a log message for the stdout.
    *
-   * @param {Array.<Object>} message Message arguments.
+   * @param {Array.<Object>} args Message arguments.
    */
-  log (message) {
+  log (...args) {
     if (this._available) {
-      console.log(message)
+      console.log(args)
     }
   }
 
   /**
    * Display an error message for the stdout.
    *
-   * @param {Array.<Object>} message Message arguments.
+   * @param {Array.<Object>} args Message arguments.
    */
-  error (message) {
+  error (...args) {
     if (this._available) {
-      console.error(message)
+      console.error(args)
     }
   }
 }

@@ -1,8 +1,6 @@
 #!/usr/bin/env node
 
-'use strict'
-
-const CLIUtil = require('./cli-util.js')
+const {CLIUtil} = require('./cli-util.js')
 const IconGen = require('../lib/index.js')
 
 /**

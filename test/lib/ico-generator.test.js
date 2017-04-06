@@ -1,11 +1,8 @@
-'use strict'
-
 const assert = require('assert')
 const Fs = require('fs')
 const Path = require('path')
 const Logger = require('../../src/lib/logger.js')
-const ICOGenerator = require('../../src/lib/ico-generator.js')
-const ICO = require('../../src/lib/constants').ICO
+const {ICOGenerator, ICO} = require('../../src/lib/ico-generator.js')
 
 /** @test {ICOGenerator} */
 describe('ICOGenerator', () => {

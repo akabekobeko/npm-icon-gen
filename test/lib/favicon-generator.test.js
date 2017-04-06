@@ -1,11 +1,8 @@
-'use strict'
-
 const assert = require('assert')
 const Path = require('path')
 const TestUtil = require('../test-util.js')
 const Logger = require('../../src/lib/logger.js')
-const FaviconGenerator = require('../../src/lib/favicon-generator.js')
-const Favicon = require('../../src/lib/constants').Favicon
+const {FaviconGenerator, Favicon} = require('../../src/lib/favicon-generator.js')
 
 /** @test {FaviconGenerator} */
 describe('FaviconGenerator', () => {

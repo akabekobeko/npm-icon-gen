@@ -1,17 +1,12 @@
-'use strict'
-
 const Fs = require('fs')
 const Path = require('path')
 const Del = require('del')
 const MkdirP = require('mkdirp')
 const PngGenerator = require('./png-generator.js')
-const ICOGenerator = require('./ico-generator.js')
-const ICNSGenerator = require('./icns-generator.js')
-const FaviconGenerator = require('./favicon-generator.js')
-const ICO = require('./constants.js').ICO
-const ICNS = require('./constants.js').ICNS
-const Favicon = require('./constants.js').Favicon
-const CLI = require('../bin/constants.js').CLI
+const {CLI} = require('../bin/cli-util')
+const {ICOGenerator, ICO} = require('./ico-generator.js')
+const {ICNSGenerator, ICNS} = require('./icns-generator.js')
+const {FaviconGenerator, Favicon} = require('./favicon-generator.js')
 
 /**
  * Generate an icons.

@@ -1,14 +1,12 @@
-'use strict'
-
 const assert = require('assert')
 const Path = require('path')
 const TestUtil = require('../test-util.js')
 const Logger = require('../../src/lib/logger.js')
 const IconGenerator = require('../../src/lib/icon-generator.js')
 const PNGGenerator = require('../../src/lib/png-generator.js')
-const ICO = require('../../src/lib/constants').ICO
-const ICNS = require('../../src/lib/constants.js').ICNS
-const Favicon = require('../../src/lib/constants.js').Favicon
+const {ICO} = require('../../src/lib/ico-generator.js')
+const {ICNS} = require('../../src/lib/icns-generator.js')
+const {Favicon} = require('../../src/lib/favicon-generator.js')
 
 /** @test {IconGenerator} */
 describe('IconGenerator', () => {
