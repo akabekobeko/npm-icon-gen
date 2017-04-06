@@ -34,7 +34,12 @@ export const IcnsConstants = {
     { id: 'ic07', size:  128 },
     { id: 'ic08', size:  256 },
     { id: 'ic09', size:  512 },
-    { id: 'ic10', size: 1024 }
+    { id: 'ic10', size: 1024 },
+    // retina
+    { id: 'ic11', size:   32 },
+    { id: 'ic12', size:   64 },
+    { id: 'ic13', size:  256 },
+    { id: 'ic14', size:  512 }
   ]
 };
 
