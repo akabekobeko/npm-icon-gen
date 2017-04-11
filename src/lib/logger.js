@@ -18,7 +18,7 @@ class Logger {
    */
   log (...args) {
     if (this._available) {
-      console.log(args)
+      console.log(...args)
     }
   }
 
@@ -29,7 +29,7 @@ class Logger {
    */
   error (...args) {
     if (this._available) {
-      console.error(args)
+      console.error(...args)
     }
   }
 }
