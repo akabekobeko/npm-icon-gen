@@ -1,6 +1,6 @@
-const assert = require('assert')
-const Path = require('path')
-const {CLIUtil, CLI} = require('../../src/bin/cli-util.js')
+import assert from 'assert'
+import Path from 'path'
+import CLIUtil, {CLI} from './cli-util.js'
 
 /** @test {CLIUtil} */
 describe('CLIUtil', () => {

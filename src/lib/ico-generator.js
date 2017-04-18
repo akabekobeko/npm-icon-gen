@@ -1,11 +1,11 @@
-const Fs = require('fs')
-const PNG = require('pngjs').PNG
+import Fs from 'fs'
+import {PNG} from 'pngjs'
 
 /**
  * It defines constants for the ICO.
  * @type {Object}
  */
-const ICO = {
+export const ICO = {
   /**
    * Sizes required for the ICO file.
    * @type {Array}
@@ -40,7 +40,7 @@ const ICO = {
 /**
  * Generate the ICO file from PNG images.
  */
-class ICOGenerator {
+export default class ICOGenerator {
   /**
    * Generate the ICO file from a PNG images.
    *
@@ -191,9 +191,4 @@ class ICOGenerator {
 
     return dest
   }
-}
-
-module.exports = {
-  ICO: ICO,
-  ICOGenerator: ICOGenerator
 }

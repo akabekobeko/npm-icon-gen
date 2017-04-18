@@ -1,15 +1,15 @@
 {
   "name": "icon-gen",
   "description": "Generate an icon files from the SVG or PNG files",
-  "version": "1.0.8",
+  "version": "1.1.0",
   "author": "akabeko (http://akabeko.me/)",
   "license": "MIT",
   "homepage": "https://github.com/akabekobeko/npm-icon-gen#readme",
   "engines": {
     "node": ">= 6"
   },
-  "bin": "src/bin/index.js",
-  "main": "src/lib/index.js",
+  "bin": "dist/bin/index.js",
+  "main": "dist/lib/index.js",
   "files": [
     "src/bin",
     "src/lib"
@@ -32,7 +32,7 @@
     "destination": "./esdoc",
     "test": {
       "type": "mocha",
-      "source": "./test"
+      "source": "./src"
     },
     "plugins": [
       {
@@ -41,6 +41,15 @@
     ]
   },
   "babel": {
+    "presets": [
+      [
+        "env", {
+          "targets": {
+            "node": 6
+          }
+        }
+      ]
+    ],
     "env": {
       "development": {
         "presets": [
@@ -50,9 +59,13 @@
     }
   },
   "scripts": {
-    "test": "mocha --timeout 50000 --compilers js:babel-register test/**/*.test.js",
+    "test": "mocha --timeout 50000 --compilers js:babel-register src/**/*.test.js",
+    "start": "npm run watch",
     "esdoc": "esdoc",
-    "eslint": "eslint ./src"
+    "eslint": "eslint ./src",
+    "build": "babel src --out-dir dist --ignore *.test.js,test-util.js,typedef.js",
+    "watch": "babel src --out-dir dist --ignore *.test.js,test-util.js,typedef.js --watch",
+    "prepare": "npm run build"
   },
   "dependencies": {
     "del": "^2.2.2",
@@ -62,16 +75,18 @@
     "uuid": "^3.0.1"
   },
   "devDependencies": {
+    "babel-cli": "^6.24.1",
+    "babel-preset-env": "^1.4.0",
     "babel-preset-power-assert": "^1.0.0",
-    "babel-register": "^6.24.0",
+    "babel-register": "^6.24.1",
     "esdoc": "^0.5.2",
     "esdoc-node": "^1.0.1",
     "eslint": "^3.19.0",
-    "eslint-config-standard": "^10.0.0",
+    "eslint-config-standard": "^10.2.1",
     "eslint-plugin-import": "^2.2.0",
     "eslint-plugin-node": "^4.2.2",
     "eslint-plugin-promise": "^3.5.0",
-    "eslint-plugin-standard": "^2.2.0",
+    "eslint-plugin-standard": "^3.0.1",
     "mocha": "^3.2.0",
     "power-assert": "^1.4.2"
   }

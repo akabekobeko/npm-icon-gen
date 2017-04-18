@@ -1,23 +1,20 @@
-const assert = require('assert')
-const Fs = require('fs')
-const Path = require('path')
-const Logger = require('../../src/lib/logger.js')
-const {ICOGenerator, ICO} = require('../../src/lib/ico-generator.js')
+import assert from 'assert'
+import Fs from 'fs'
+import Path from 'path'
+import Logger from './logger.js'
+import ICOGenerator, {ICO} from './ico-generator.js'
 
 /** @test {ICOGenerator} */
 describe('ICOGenerator', () => {
-  const rootDir = Path.resolve('./test')
-  const dataDir = Path.join(rootDir, 'data')
-
   /** @test {ICOGenerator#generate} */
   it('generate', () => {
     const targets = ICO.imageSizes.map((size) => {
-      const path = Path.join(dataDir, size + '.png')
+      const path = Path.join('./examples/data', size + '.png')
       return { size: size, path: path, stat: Fs.statSync(path) }
     })
 
     ICOGenerator
-    .generate(targets, Path.join(rootDir, 'sample.ico'), new Logger())
+    .generate(targets, Path.join('./examples/data', 'sample.ico'), new Logger())
     .then((result) => {
       assert(result)
       Fs.unlinkSync(result)

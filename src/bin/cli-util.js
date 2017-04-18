@@ -1,10 +1,10 @@
-const Path = require('path')
+import Path from 'path'
 
 /**
  * Constatns of CLI process.
  * @type {Object}
  */
-const CLI = {
+export const CLI = {
   /**
    * CLI options.
    * @type {Object}
@@ -101,7 +101,7 @@ https://github.com/akabekobeko/npm-icon-gen`
 /**
  * Utility for a command line process.
  */
-class CLIUtil {
+export default class CLIUtil {
   /**
    * Show the help text.
    *
@@ -295,10 +295,4 @@ class CLIUtil {
 
     return names
   }
-}
-
-module.exports = {
-  CLI: CLI,
-  Help: Help,
-  CLIUtil: CLIUtil
 }

@@ -1,4 +1,4 @@
-const Fs = require('fs')
+import Fs from 'fs'
 
 /**
  * Utility for the test methods.
