@@ -1,17 +1,17 @@
-const OS = require('os')
-const Fs = require('fs')
-const Path = require('path')
-const UUID = require('uuid')
-const SVG2PNG = require('svg2png')
-const {Favicon} = require('./favicon-generator.js')
-const {ICO} = require('./ico-generator.js')
-const {ICNS} = require('./icns-generator.js')
-const {CLI} = require('../bin/cli-util.js')
+import OS from 'os'
+import Fs from 'fs'
+import Path from 'path'
+import UUID from 'uuid'
+import SVG2PNG from 'svg2png'
+import {Favicon} from './favicon-generator.js'
+import {ICO} from './ico-generator.js'
+import {ICNS} from './icns-generator.js'
+import {CLI} from '../bin/cli-util.js'
 
 /**
  * Generate the PNG files = require(SVG file.
  */
-class PNGGenerator {
+export default class PNGGenerator {
   /**
    * Generate the PNG files = require(the SVG file.
    *
@@ -139,5 +139,3 @@ class PNGGenerator {
     })
   }
 }
-
-module.exports = PNGGenerator

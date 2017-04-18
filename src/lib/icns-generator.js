@@ -1,10 +1,10 @@
-const Fs = require('fs')
+import Fs from 'fs'
 
 /**
  * It defines constants for the ICNS.
  * @type {Object}
  */
-const ICNS = {
+export const ICNS = {
   /**
    * Sizes required for the ICNS file.
    * @type {Array}
@@ -47,7 +47,7 @@ const ICNS = {
  * Generate the ICNS file from a PNG images.
  * However, Mac OS 8.x is unsupported.
  */
-class ICNSGenerator {
+export default class ICNSGenerator {
   /**
    * Create the ICNS file from a PNG images.
    *
@@ -136,7 +136,7 @@ class ICNSGenerator {
    * @return {Buffer} Header data.
    */
   static createFileHeader (fileSize) {
-    const b = new Buffer(ICNS.headerSize)
+    const b = Buffer.alloc(ICNS.headerSize)
     b.write(ICNS.fileID, 0, 'ascii')
     b.writeUInt32BE(fileSize, 4)
 
@@ -152,7 +152,7 @@ class ICNSGenerator {
    * @return {Buffer} Header data.
    */
   static createIconHeader (iconID, imageSize) {
-    const buffer = new Buffer(ICNS.headerSize)
+    const buffer = Buffer.alloc(ICNS.headerSize)
     buffer.write(iconID.id, 0, 'ascii')
     buffer.writeUInt32BE(ICNS.headerSize + imageSize, 4)
 
@@ -175,9 +175,4 @@ class ICNSGenerator {
 
     return size + ICNS.headerSize + (ICNS.headerSize * images.length)
   }
-}
-
-module.exports = {
-  ICNS: ICNS,
-  ICNSGenerator: ICNSGenerator
 }

@@ -1,17 +1,17 @@
-const Fs = require('fs')
-const Path = require('path')
-const Del = require('del')
-const MkdirP = require('mkdirp')
-const PngGenerator = require('./png-generator.js')
-const {CLI} = require('../bin/cli-util')
-const {ICOGenerator, ICO} = require('./ico-generator.js')
-const {ICNSGenerator, ICNS} = require('./icns-generator.js')
-const {FaviconGenerator, Favicon} = require('./favicon-generator.js')
+import Fs from 'fs'
+import Path from 'path'
+import Del from 'del'
+import MkdirP from 'mkdirp'
+import PngGenerator from './png-generator.js'
+import {CLI} from '../bin/cli-util'
+import ICOGenerator, {ICO} from './ico-generator.js'
+import ICNSGenerator, {ICNS} from './icns-generator.js'
+import FaviconGenerator, {Favicon} from './favicon-generator.js'
 
 /**
  * Generate an icons.
  */
-class IconGenerator {
+export default class IconGenerator {
   /**
    * Generate an icon = require(the SVG file.
    *
@@ -200,5 +200,3 @@ class IconGenerator {
     return paths
   }
 }
-
-module.exports = IconGenerator

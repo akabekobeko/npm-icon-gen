@@ -1,6 +1,6 @@
-const IconGenerator = require('./icon-generator.js')
-const Logger = require('./logger.js')
-const {CLI} = require('../bin/cli-util.js')
+import IconGenerator from './icon-generator.js'
+import Logger from './logger.js'
+import {CLI} from '../bin/cli-util.js'
 
 const DEFAULT_OPTIONS = {
   type: CLI.types.svg,

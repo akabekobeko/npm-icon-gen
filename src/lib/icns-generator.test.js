@@ -1,23 +1,20 @@
-const assert = require('assert')
-const Fs = require('fs')
-const Path = require('path')
-const Logger = require('../../src/lib/logger.js')
-const {ICNSGenerator, ICNS} = require('../../src/lib/icns-generator.js')
+import assert from 'assert'
+import Fs from 'fs'
+import Path from 'path'
+import Logger from './logger.js'
+import ICNSGenerator, {ICNS} from './icns-generator.js'
 
 /** @test {ICNSGenerator} */
 describe('ICNSGenerator', () => {
-  const testDir = Path.resolve('./test')
-  const dataDir = Path.join(testDir, 'data')
-
   /** @test {ICNSGenerator#generate} */
   it('generate', () => {
     const images = ICNS.imageSizes.map((size) => {
-      const path = Path.join(dataDir, size + '.png')
+      const path = Path.join('./examples/data', size + '.png')
       return { size: size, path: path }
     })
 
     return ICNSGenerator
-    .generate(images, Path.join(testDir, 'sample.icns'), new Logger())
+    .generate(images, Path.join('./examples/data', 'sample.icns'), new Logger())
     .then((result) => {
       assert(result)
       Fs.unlinkSync(result)

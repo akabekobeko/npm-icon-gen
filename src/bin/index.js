@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
-const {CLIUtil} = require('./cli-util.js')
-const IconGen = require('../lib/index.js')
+import CLIUtil from './cli-util.js'
+import IconGen from '../lib/index.js'
 
 /**
  * Main process.

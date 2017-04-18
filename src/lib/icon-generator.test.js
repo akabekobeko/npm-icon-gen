@@ -1,33 +1,17 @@
-const assert = require('assert')
-const Path = require('path')
-const TestUtil = require('../test-util.js')
-const Logger = require('../../src/lib/logger.js')
-const IconGenerator = require('../../src/lib/icon-generator.js')
-const PNGGenerator = require('../../src/lib/png-generator.js')
-const {ICO} = require('../../src/lib/ico-generator.js')
-const {ICNS} = require('../../src/lib/icns-generator.js')
-const {Favicon} = require('../../src/lib/favicon-generator.js')
+import assert from 'assert'
+import TestUtil from './test-util.js'
+import Logger from './logger.js'
+import IconGenerator from './icon-generator.js'
+import PNGGenerator from './png-generator.js'
+import {ICO} from './ico-generator.js'
+import {ICNS} from './icns-generator.js'
+import {Favicon} from './favicon-generator.js'
 
 /** @test {IconGenerator} */
 describe('IconGenerator', () => {
-  const testDir = Path.resolve('./test')
-  const dataDir = Path.join(testDir, 'data')
-
-  //
-  /** @test {IconGenerator#fromSVG} */
-  /*
-  it('fromSVG', () => {
-    return IconGenerator.fromSVG('./test/data/sample.svg', './test', new Logger())
-    .then(() => {
-      assert(results)
-      TestUtil.deleteFiles(results)
-    })
-  })
-  */
-
   /** @test {IconGenerator#fromPNG} */
   it('fromPNG', () => {
-    return IconGenerator.fromPNG(dataDir, './test', {modes: [], names: {ico: 'app', icns: 'app'}}, new Logger())
+    return IconGenerator.fromPNG('./examples/data', './exsamples/data', {modes: [], names: {ico: 'app', icns: 'app'}}, new Logger())
     .then((results) => {
       assert(results)
       TestUtil.deleteFiles(results)

@@ -33,7 +33,6 @@ node_modules
 # Optional REPL history
 .node_repl_history
 
-/esdoc
-*.png
-*.ico
-*.icns
+dist/
+esdoc/
+icons/

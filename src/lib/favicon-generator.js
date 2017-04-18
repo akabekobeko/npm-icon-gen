@@ -1,13 +1,13 @@
-const Fs = require('fs')
-const Path = require('path')
-const Logger = require('./logger.js')
-const {IcoGenerator} = require('./ico-generator.js')
+import Fs from 'fs'
+import Path from 'path'
+import Logger from './logger.js'
+import IcoGenerator from './ico-generator.js'
 
 /**
  * size required for the FAVICON.
  * @type {Object}
  */
-const Favicon = {
+export const Favicon = {
   /**
    * Sizes required for the FAVICON PNG files.
    * @type {Array.<Number>}
@@ -48,7 +48,7 @@ const Favicon = {
 /**
  * Generate a FAVICON files = require(a PNG images.
  */
-class FaviconGenerator {
+export default class FaviconGenerator {
   /**
    * Create a FAVICON image files = require(a PNG images.
    *
@@ -158,9 +158,4 @@ class FaviconGenerator {
 
     return name
   }
-}
-
-module.exports = {
-  Favicon: Favicon,
-  FaviconGenerator: FaviconGenerator
 }
