@@ -9,7 +9,7 @@ export const ICNS = {
    * Sizes required for the ICNS file.
    * @type {Array}
    */
-  imageSizes: [16, 32, 64, 128, 256, 512, 1024],
+  imageSizes: [32, 64, 128, 256, 512, 1024],
 
   /**
    * The size of the ICNS header.
@@ -25,17 +25,18 @@ export const ICNS = {
 
   /**
    * Identifier of the images, Mac OS 8.x (il32, is32, l8mk, s8mk) is unsupported.
+   * If icp4, icp5, icp6 is present, Icon will not be supported because it can not be set as Folder of Finder.
+   *
    * @type {Array}
    */
   iconIDs: [
-    {id: 'icp4', size: 16},
-    {id: 'icp5', size: 32},
-    {id: 'icp6', size: 64},
+    // Nromal
     {id: 'ic07', size: 128},
     {id: 'ic08', size: 256},
     {id: 'ic09', size: 512},
     {id: 'ic10', size: 1024},
-    // retina
+
+    // Retina
     {id: 'ic11', size: 32},
     {id: 'ic12', size: 64},
     {id: 'ic13', size: 256},
@@ -66,7 +67,7 @@ export default class ICNSGenerator {
       stream.write(ICNSGenerator.createFileHeader(size), 'binary')
 
       for (let i = 0, max = ICNS.iconIDs.length; i < max; ++i) {
-        const iconID = ICNS.iconIDs[ i ]
+        const iconID = ICNS.iconIDs[i]
         if (!(ICNSGenerator.writeImage(iconID, images, stream))) {
           reject(new Error('Faild to read/write image.'))
           return
@@ -159,7 +160,7 @@ export default class ICNSGenerator {
     return buffer
   }
 
-  /**
+  /*
    * Calculate the size of the ICNS file.
    *
    * @param {Array.<ImageInfo>} images File informations.
@@ -168,11 +169,26 @@ export default class ICNSGenerator {
    */
   static fileSizeFromImages (images) {
     let size = 0
-    images.forEach((image) => {
-      const stat = Fs.statSync(image.path)
-      size += stat.size
+    ICNS.iconIDs.forEach((iconId) => {
+      let path = null
+      images.some((image) => {
+        if (image.size === iconId.size) {
+          path = image.path
+          return true
+        }
+
+        return false
+      })
+
+      if (!(path)) {
+        return
+      }
+
+      const stat = Fs.statSync(path)
+      size += ICNS.headerSize + stat.size
     })
 
-    return size + ICNS.headerSize + (ICNS.headerSize * images.length)
+    // File header + body
+    return ICNS.headerSize + size
   }
 }

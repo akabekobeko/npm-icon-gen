@@ -11,7 +11,7 @@ import {Favicon} from './favicon-generator.js'
 describe('IconGenerator', () => {
   /** @test {IconGenerator#fromPNG} */
   it('fromPNG', () => {
-    return IconGenerator.fromPNG('./examples/data', './exsamples/data', {modes: [], names: {ico: 'app', icns: 'app'}}, new Logger())
+    return IconGenerator.fromPNG('./examples/data', './examples/data', {modes: [], names: {ico: 'app', icns: 'app'}}, new Logger())
     .then((results) => {
       assert(results)
       TestUtil.deleteFiles(results)
@@ -33,15 +33,15 @@ describe('IconGenerator', () => {
     })
 
     let expected = IconGenerator.filter(targets, ICO.imageSizes)
-    assert(expected.length === 7)
+    assert(expected.length === ICO.imageSizes.length)
 
     expected = IconGenerator.filter(targets, ICNS.imageSizes)
-    assert(expected.length === 7)
+    assert(expected.length === ICNS.imageSizes.length)
 
     expected = IconGenerator.filter(targets, Favicon.imageSizes)
-    assert(expected.length === 10)
+    assert(expected.length === Favicon.imageSizes.length)
 
     expected = IconGenerator.filter(targets, Favicon.icoImageSizes)
-    assert(expected.length === 5)
+    assert(expected.length === Favicon.icoImageSizes.length)
   })
 })

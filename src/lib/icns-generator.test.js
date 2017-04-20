@@ -37,7 +37,7 @@ describe('ICNSGenerator', () => {
 
   /** @test {ICNSGenerator#createIconHeader} */
   it('createIconHeader', () => {
-    const header = ICNSGenerator.createIconHeader(ICNS.iconIDs[ 3 ], 128)
+    const header = ICNSGenerator.createIconHeader(ICNS.iconIDs[0], 128)
 
     // In ASCII "ic07"
     assert(header.readUInt8(0) === 0x69)
