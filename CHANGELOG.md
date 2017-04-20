@@ -1,5 +1,11 @@
 # ChangeLog
 
+## v1.1.2
+
+### Fix
+
+* npm install fails [#56](https://github.com/akabekobeko/npm-icon-gen/issues/56)
+
 ## v1.1.0
 
 ### Change
