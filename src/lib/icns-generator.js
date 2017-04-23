@@ -160,7 +160,7 @@ export default class ICNSGenerator {
     return buffer
   }
 
-  /*
+  /**
    * Calculate the size of the ICNS file.
    *
    * @param {Array.<ImageInfo>} images File informations.
