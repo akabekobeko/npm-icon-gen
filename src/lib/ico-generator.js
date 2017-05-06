@@ -77,6 +77,8 @@ export default class ICOGenerator {
         stream.write(dib, 'binary')
       })
 
+      stream.end()
+
       logger.log('  Create: ' + dest)
       resolve(dest)
     })
