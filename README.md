@@ -19,9 +19,9 @@ This module depends on [svg2png](https://github.com/domenic/svg2png). Therefore 
 Supported the output format of the icon are following.
 
 | Platform | Icon |
-|:---------|:-----|
+|---------:|:-----|
 |  Windows | `app.ico` or specified name. |
-|     OS X | `app.icns` or specified name. |
+|    macOS | `app.icns` or specified name. |
 |  Favicon | `favicon.ico` and `favicon-XX.png`. |
 
 ## Installation
@@ -83,7 +83,7 @@ Required PNG files is below. Favicon outputs both the ICO and PNG files ( see: [
 
 | Name     | Size      | ICO      | ICNS     | Fav ICO  | Fav PNG  |
 |---------:|:----------|:--------:|:--------:|:--------:|:--------:|
-|   16.png |     16x16 | &#10004; | &#10004; | &#10004; |          |
+|   16.png |     16x16 | &#10004; |          | &#10004; |          |
 |   24.png |     24x24 | &#10004; |          | &#10004; |          |
 |   32.png |     32x32 | &#10004; | &#10004; | &#10004; | &#10004; |
 |   48.png |     48x48 | &#10004; |          | &#10004; |          |

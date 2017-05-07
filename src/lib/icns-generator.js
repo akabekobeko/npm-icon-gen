@@ -69,10 +69,13 @@ export default class ICNSGenerator {
       for (let i = 0, max = ICNS.iconIDs.length; i < max; ++i) {
         const iconID = ICNS.iconIDs[i]
         if (!(ICNSGenerator.writeImage(iconID, images, stream))) {
+          stream.end()
           reject(new Error('Faild to read/write image.'))
           return
         }
       }
+
+      stream.end()
 
       logger.log('  Create: ' + dest)
       resolve(dest)
