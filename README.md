@@ -19,9 +19,9 @@ This module depends on [svg2png](https://github.com/domenic/svg2png). Therefore 
 Supported the output format of the icon are following.
 
 | Platform | Icon |
-|:---------|:-----|
+|---------:|:-----|
 |  Windows | `app.ico` or specified name. |
-|     OS X | `app.icns` or specified name. |
+|    macOS | `app.icns` or specified name. |
 |  Favicon | `favicon.ico` and `favicon-XX.png`. |
 
 ## Installation
