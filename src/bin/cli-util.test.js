@@ -133,4 +133,27 @@ describe('CLIUtil', () => {
       assert.deepEqual({}, names)
     })
   })
+
+  /** @test {CLIUtil#_parseSizes} */
+  describe('_parseSizes', () => {
+    it('ico & icns', () => {
+      const sizes = CLIUtil._parseSizes('ico=[16,24,32],icns=[16,24,64]')
+      assert.deepEqual({ ico: ['16', '24', '32'], icns: ['16', '24', '64'] }, sizes)
+    })
+
+    it('ico', () => {
+      const sizes = CLIUtil._parseSizes('ico=[16,24,32]')
+      assert.deepEqual({ ico: ['16', '24', '32'] }, sizes)
+    })
+
+    it('icns', () => {
+      const sizes = CLIUtil._parseSizes('icns=[16,24,64]')
+      assert.deepEqual({ icns: ['16', '24', '64'] }, sizes)
+    })
+
+    it('Invalid value', () => {
+      const sizes = CLIUtil._parseSizes()
+      assert.deepEqual({}, sizes)
+    })
+  })
 })

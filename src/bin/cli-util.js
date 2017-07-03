@@ -16,6 +16,7 @@ export const CLI = {
     output: ['-o', '--output'],
     type: ['-t', '--type'],
     modes: ['-m', '--modes'],
+    sizes: ['-s', '--sizes'],
     names: ['-n', '--names'],
     report: ['-r', '--report']
   },
@@ -52,7 +53,13 @@ export const CLI = {
   names: {
     ico: 'ico',
     icns: 'icns'
-  }
+  },
+
+  /**
+   * Input sizes.
+   * @type {Object}
+   */
+  sizes: []
 }
 
 /**
@@ -88,6 +95,9 @@ Options:
 
 -r, --report  Display the process reports.
           Default is disable.
+
+-s, --sizes   Change an varietion of input files.
+          ex: 'ico=[12,24,32],icns=[12,24,64]'
 
 Examples:
 $ icon-gen -i sample.svg -o ./dist -r
@@ -217,6 +227,13 @@ export default class CLIUtil {
           }
           break
 
+        case CLI.options.sizes[0]:
+        case CLI.options.sizes[1]:
+          if (index + 1 < argv.length) {
+            options.sizes = CLIUtil._parseSizes(argv[index + 1])
+          }
+          break
+
         default:
           break
       }
@@ -294,5 +311,43 @@ export default class CLIUtil {
     })
 
     return names
+  }
+
+  /**
+   * Parse the input file sizes.
+   *
+   * @param {String} arg Option. Format is a 'ico=[16,24,32],icns=[16,24,32]'.
+   *
+   * @return {Object} File sizes.
+   */
+  static _parseSizes (arg) {
+    const sizes = {}
+    if (!(typeof arg === 'string')) {
+      return sizes
+    }
+
+    const regexp = new RegExp(/((ico|icns)=\[[0-9,]+\])/g)
+
+    const params = arg.match(regexp)
+    params.forEach((param) => {
+      const units = param.split('=')
+      if (units.length < 2) {
+        return
+      }
+
+      const key   = units[0]
+      const values = units[1].match(/\[([0-9,]+)\]/)[1].split(',')
+      switch (key) {
+        case CLI.names.ico:
+        case CLI.names.icns:
+          sizes[key] = values
+          break
+
+        default:
+          break
+      }
+    })
+
+    return sizes
   }
 }
