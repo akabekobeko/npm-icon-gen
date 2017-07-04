@@ -247,6 +247,10 @@ export default class CLIUtil {
       options.modes = CLI.modeAll
     }
 
+    if (!(options.sizes)) {
+      options.sizes = {}
+    }
+
     return options
   }
 

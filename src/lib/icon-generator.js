@@ -68,7 +68,6 @@ export default class IconGenerator {
       logger.log('Icon generetor from PNG:')
       logger.log('  src: ' + pngDirPath)
       logger.log('  dir: ' + destDirPath)
-
       const sizes = options.sizes[options.modes] || PngGenerator.getRequiredImageSizes(options.modes)
       const images = sizes
       .map((size) => {
@@ -126,17 +125,19 @@ export default class IconGenerator {
       switch (mode) {
         case CLI.modes.ico:
           path = Path.join(dir, options.names.ico + '.ico')
-          tasks.push(ICOGenerator.generate(IconGenerator.filter(images, ICO.imageSizes), path, logger))
+          const icoImageFilter = options.sizes['ico'] || ICO.imageSizes
+          tasks.push(ICOGenerator.generate(IconGenerator.filter(images, icoImageFilter), path, logger))
           break
 
         case CLI.modes.icns:
           path = Path.join(dir, options.names.icns + '.icns')
-          tasks.push(ICNSGenerator.generate(IconGenerator.filter(images, ICNS.imageSizes), path, logger))
+          const icnsImageFilter = options.sizes['ico'] || ICNS.imageSizes
+          tasks.push(ICNSGenerator.generate(IconGenerator.filter(images, icnsImageFilter), path, logger))
           break
 
         case CLI.modes.favicon:
           path = Path.join(dir, 'favicon.ico')
-          tasks.push(ICOGenerator.generate(IconGenerator.filter(images, Favicon.icoImageSizes), path, logger))
+          tasks.push(ICOGenerator.generate(IconGenerator.filter(images, Favicon.ImageSizes), path, logger))
           tasks.push(FaviconGenerator.generate(IconGenerator.filter(images, Favicon.imageSizes), dir, logger))
           break
 
