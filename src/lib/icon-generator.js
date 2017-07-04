@@ -69,7 +69,7 @@ export default class IconGenerator {
       logger.log('  src: ' + pngDirPath)
       logger.log('  dir: ' + destDirPath)
 
-      const images = PngGenerator.getRequiredImageSizes(options.modes)
+      const images = options.sizes[options.modes] || PngGenerator.getRequiredImageSizes(options.modes)
       .map((size) => {
         return Path.join(pngDirPath, size + '.png')
       })
