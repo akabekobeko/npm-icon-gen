@@ -11,7 +11,7 @@ import {Favicon} from './favicon-generator.js'
 describe('IconGenerator', () => {
   /** @test {IconGenerator#fromPNG} */
   it('fromPNG', () => {
-    return IconGenerator.fromPNG('./examples/data', './examples/data', {modes: [], names: {ico: 'app', icns: 'app'}}, new Logger())
+    return IconGenerator.fromPNG('./examples/data', './examples/data', {modes: [], names: {ico: 'app', icns: 'app'}, sizes: {}}, new Logger())
     .then((results) => {
       assert(results)
       TestUtil.deleteFiles(results)
