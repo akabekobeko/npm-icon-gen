@@ -137,7 +137,7 @@ export default class IconGenerator {
 
         case CLI.modes.favicon:
           path = Path.join(dir, 'favicon.ico')
-          tasks.push(ICOGenerator.generate(IconGenerator.filter(images, Favicon.ImageSizes), path, logger))
+          tasks.push(ICOGenerator.generate(IconGenerator.filter(images, Favicon.icoImageSizes), path, logger))
           tasks.push(FaviconGenerator.generate(IconGenerator.filter(images, Favicon.imageSizes), dir, logger))
           break
 
