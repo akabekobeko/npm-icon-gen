@@ -123,6 +123,7 @@ options:
 |  modes |   Array | Mode of output files. Allow value is a `ico`, `icns`, `favicon` and `all`. Default is `all`. |
 |  names |  Object | Change an output file names for **ICO** and **ICNS**. |
 | report | Boolean | Display the process reports. Default is `false`, disable a report. |
+|  sizes |  Object | List of sizes to include for **ICO** and **ICNS**. |
 
 names:
 
@@ -132,6 +133,15 @@ Use this property is specified without an extension. Default name is the `app`.
 |:--------|:--|:--|
 | ico | String | Name of the `ico` file. |
 | icns | String | Name of the `icns` file. |
+
+sizes:
+
+Use this property is specified without an extension. Default name is the `app`.
+
+| Name | Type | Description |
+|:--------|:--|:--|
+| ico | Array | List of sizes for the `ico` file. |
+| icns | Array | List of sizes for the `icns` file. |
 
 ## CLI
 
@@ -164,6 +174,9 @@ Usage: icon-gen [OPTIONS]
 
     -r, --report  Display the process reports.
                   Default is disable.
+
+    -s, --sizes   List of sizes to include for ICO and ICNS.
+              ex: 'ico=[12,24,32],icns=[12,24,64]'
 
   Examples:
     $ icon-gen -i sample.svg -o ./dist -r

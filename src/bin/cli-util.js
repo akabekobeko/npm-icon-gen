@@ -59,7 +59,7 @@ export const CLI = {
    * Input sizes.
    * @type {Object}
    */
-  sizes: []
+  sizes: {}
 }
 
 /**
@@ -96,7 +96,7 @@ Options:
 -r, --report  Display the process reports.
           Default is disable.
 
--s, --sizes   Change an varietion of input files.
+-s, --sizes   List of sizes to include for ICO and ICNS.
           ex: 'ico=[12,24,32],icns=[12,24,64]'
 
 Examples:
@@ -339,7 +339,7 @@ export default class CLIUtil {
         return
       }
 
-      const key   = units[0]
+      const key    = units[0]
       const values = units[1].match(/\[([0-9,]+)\]/)[1].split(',')
       switch (key) {
         case CLI.names.ico:
