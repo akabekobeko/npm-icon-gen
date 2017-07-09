@@ -1,10 +1,16 @@
 # ChangeLog
 
+## v1.1.4
+
+### Changes
+
+* add sizes option to define witch size of png to include [#62](https://github.com/akabekobeko/npm-icon-gen/pull/62) by.[beijaflor (sho otani)](https://github.com/beijaflor)
+
 ## v1.1.3
 
 ### Bug Fixes
 
-* Close a write stream [#57](https://github.com/akabekobeko/npm-icon-gen/pull/57) by satorf
+* Close a write stream [#57](https://github.com/akabekobeko/npm-icon-gen/pull/57) by.[satorf](https://github.com/satorf)
 * Close stream explicitly [#58](https://github.com/akabekobeko/npm-icon-gen/issues/58)
 
 ## v1.1.2
@@ -18,7 +24,7 @@
 ### Changes
 
 * Using the Babel and change structure of project [#55](https://github.com/akabekobeko/npm-icon-gen/issues/55)
-* Add ICNS Retina support [#52](https://github.com/akabekobeko/npm-icon-gen/pull/52)  by quanglam2807
+* Add ICNS Retina support [#52](https://github.com/akabekobeko/npm-icon-gen/pull/52)  by.[quanglam2807 (Quang Lam)](https://github.com/quanglam2807)
 * **Drop the Node v4 (Breaking change)** [#51](https://github.com/akabekobeko/npm-icon-gen/issues/51)
 
 ### Bug Fixes
@@ -36,7 +42,7 @@
 
 ### Changes
 
-* Update uuid to version 3.0.0 [#45](https://github.com/akabekobeko/npm-icon-gen/pull/45) by marcbachmann
+* Update uuid to version 3.0.0 [#45](https://github.com/akabekobeko/npm-icon-gen/pull/45) by.[marcbachmann (Marc Bachmann)](https://github.com/marcbachmann)
 
 ## 1.0.6
 
@@ -47,13 +53,13 @@
 ### Bug Fixes
 
 * Icns not working [#42](https://github.com/akabekobeko/npm-icon-gen/issues/42)
-* Fix icns generation [#43](https://github.com/akabekobeko/npm-icon-gen/pull/43) by mifi
+* Fix icns generation [#43](https://github.com/akabekobeko/npm-icon-gen/pull/43) by.[mifi (Mikael Finstad)](https://github.com/mifi)
 
 ## 1.0.5
 
 ### Changes
 
-* Correct default for `options.type` [#39](https://github.com/akabekobeko/npm-icon-gen/pull/39) by atdrago
+* Correct default for `options.type` [#39](https://github.com/akabekobeko/npm-icon-gen/pull/39) by.[atdrago (Adam Drago)](https://github.com/atdrago)
 
 ## 1.0.4
 
