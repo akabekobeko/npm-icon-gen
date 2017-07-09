@@ -125,13 +125,13 @@ export default class IconGenerator {
       switch (mode) {
         case CLI.modes.ico:
           path = Path.join(dir, options.names.ico + '.ico')
-          const icoImageFilter = options.sizes['ico'] || ICO.imageSizes
+          const icoImageFilter = IconGenerator.getSizes(ICO.imageSizes, options, 'ico')
           tasks.push(ICOGenerator.generate(IconGenerator.filter(images, icoImageFilter), path, logger))
           break
 
         case CLI.modes.icns:
           path = Path.join(dir, options.names.icns + '.icns')
-          const icnsImageFilter = options.sizes['ico'] || ICNS.imageSizes
+          const icnsImageFilter = IconGenerator.getSizes(ICNS.imageSizes, options, 'icns')
           tasks.push(ICNSGenerator.generate(IconGenerator.filter(images, icnsImageFilter), path, logger))
           break
 
@@ -154,6 +154,19 @@ export default class IconGenerator {
     .catch((err) => {
       cb(err)
     })
+  }
+
+  /**
+   * Get the icon sizes.
+   *
+   * @param {Array.<Number>} defaltSizes Sizes of the defalt.
+   * @param {Object}         options     CLI options.
+   * @param {String}         type        Type of the icon, 'ico' or 'icns'.
+   *
+   * @return {Array.<Number>} Sizes.
+   */
+  static getSizes (defaltSizes, options, type) {
+    return options && options.sizes && options.sizes[type] ? options.sizes[type] : defaltSizes
   }
 
   /**
