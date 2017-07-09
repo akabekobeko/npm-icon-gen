@@ -34,7 +34,7 @@ $ npm install icon-gen
 
 ### SVG
 
-SVG files are rendering to PNG file in **vg2png**. Rendering files is output to a temporary directory of the each OS.
+SVG files are rendering to PNG file in **svg2png**. Rendering files is output to a temporary directory of the each OS.
 
 Rendering of svg2png is run by [phantomjs](https://www.npmjs.com/package/phantomjs). Please use the PNG directory If the rendering quality there is a problem.
 
@@ -176,7 +176,7 @@ Usage: icon-gen [OPTIONS]
                   Default is disable.
 
     -s, --sizes   List of sizes to include for ICO and ICNS.
-              ex: 'ico=[12,24,32],icns=[12,24,64]'
+                  ex: 'ico=[12,24,32],icns=[12,24,64]'
 
   Examples:
     $ icon-gen -i sample.svg -o ./dist -r

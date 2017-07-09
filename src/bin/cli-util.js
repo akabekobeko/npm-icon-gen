@@ -81,20 +81,23 @@ Options:
 -o, --output  Path of the output directory.
 
 -t, --type    Type of the input file.
-          'svg' is the SVG file, 'png' is the PNG files directory.
-          Allowed values: svg, png
-          Default is 'svg'.
+              'svg' is the SVG file, 'png' is the PNG files directory.
+              Allowed values: svg, png
+              Default is 'svg'.
 
 -m, --modes   Mode of the output files.
-          Allowed values: ico, icns, favicon, all
-          Default is 'all'.
+              Allowed values: ico, icns, favicon, all
+              Default is 'all'.
 
 -n, --names   Change an output file names for ICO and ICNS.
-          ex: 'ico=foo,icns=bar'
-          Default is 'app.ico' and 'app.ico'.
+              ex: 'ico=foo,icns=bar'
+              Default is 'app.ico' and 'app.ico'.
 
 -r, --report  Display the process reports.
-          Default is disable.
+              Default is disable.
+
+-s, --sizes   List of sizes to include for ICO and ICNS.
+              ex: 'ico=[12,24,32],icns=[12,24,64]'
 
 -s, --sizes   List of sizes to include for ICO and ICNS.
           ex: 'ico=[12,24,32],icns=[12,24,64]'
