@@ -1,5 +1,11 @@
 # ChangeLog
 
+## v1.1.5
+
+### Bug Fixes
+
+* Fail if the `sizes` option is not specified [#66](https://github.com/akabekobeko/npm-icon-gen/issues/66)
+
 ## v1.1.4
 
 ### Changes
