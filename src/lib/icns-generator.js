@@ -9,7 +9,7 @@ export const ICNS = {
    * Sizes required for the ICNS file.
    * @type {Array}
    */
-  imageSizes: [32, 64, 128, 256, 512, 1024],
+  imageSizes: [16, 32, 64, 128, 256, 512, 1024],
 
   /**
    * The size of the ICNS header.
@@ -24,13 +24,15 @@ export const ICNS = {
   fileID: 'icns',
 
   /**
-   * Identifier of the images, Mac OS 8.x (il32, is32, l8mk, s8mk) is unsupported.
+   * Identifier of the images, Mac OS 8.x (l8mk, s8mk) is unsupported.
    * If icp4, icp5, icp6 is present, Icon will not be supported because it can not be set as Folder of Finder.
    *
    * @type {Array}
    */
   iconIDs: [
     // Nromal
+    {id: 'is32', size: 16},
+    {id: 'il32', size: 32},
     {id: 'ic07', size: 128},
     {id: 'ic08', size: 256},
     {id: 'ic09', size: 512},
