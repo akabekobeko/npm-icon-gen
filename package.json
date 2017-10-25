@@ -29,13 +29,14 @@
   "esdoc": {
     "source": "./src",
     "destination": "./esdoc",
-    "test": {
-      "type": "mocha",
-      "source": "./src"
-    },
     "plugins": [
       {
-        "name": "esdoc-node"
+        "name": "esdoc-standard-plugin",
+        "option": {
+          "test": {
+            "source": "./src"
+          }
+        }
       }
     ]
   },
@@ -59,7 +60,7 @@
     }
   },
   "scripts": {
-    "test": "mocha --timeout 50000 --compilers js:babel-register src/**/*.test.js",
+    "test": "mocha --timeout 50000 --require babel-register src/**/*.test.js",
     "start": "npm run watch",
     "esdoc": "esdoc",
     "eslint": "eslint ./src",
@@ -70,23 +71,24 @@
   "dependencies": {
     "del": "^3.0.0",
     "mkdirp": "^0.5.1",
-    "pngjs": "^3.2.0",
+    "pngjs": "^3.3.0",
     "svg2png": "4.1.1",
     "uuid": "^3.1.0"
   },
   "devDependencies": {
-    "babel-cli": "^6.24.1",
+    "babel-cli": "^6.26.0",
     "babel-preset-env": "^1.6.0",
     "babel-preset-power-assert": "^1.0.0",
-    "babel-register": "^6.24.1",
-    "esdoc": "^0.5.2",
-    "eslint": "^4.1.1",
+    "babel-register": "^6.26.0",
+    "esdoc": "^1.0.3",
+    "esdoc-standard-plugin": "^1.0.0",
+    "eslint": "^4.8.0",
     "eslint-config-standard": "^10.2.1",
     "eslint-plugin-import": "^2.7.0",
-    "eslint-plugin-node": "^5.1.0",
+    "eslint-plugin-node": "^5.2.0",
     "eslint-plugin-promise": "^3.5.0",
     "eslint-plugin-standard": "^3.0.1",
-    "mocha": "^3.4.2",
+    "mocha": "^4.0.1",
     "power-assert": "^1.4.4"
   }
 }

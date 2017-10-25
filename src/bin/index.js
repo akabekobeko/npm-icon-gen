@@ -6,7 +6,7 @@ import IconGen from '../lib/index.js'
 /**
  * Main process.
  *
- * @param {Array.<String>} args   Arguments of the command line.
+ * @param {CLIOptions} options Options.
  *
  * @return {Promise} Promise object.
  */
@@ -44,7 +44,7 @@ function main (argv, stdout) {
 }
 
 main(process.argv.slice(2), process.stdout)
-.then()
-.catch((err) => {
-  console.error(err)
-})
+  .then()
+  .catch((err) => {
+    console.error(err)
+  })

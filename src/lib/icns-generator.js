@@ -30,7 +30,7 @@ export const ICNS = {
    * @type {Array}
    */
   iconIDs: [
-    // Nromal
+    // Normal
     {id: 'ic07', size: 128},
     {id: 'ic08', size: 256},
     {id: 'ic09', size: 512},

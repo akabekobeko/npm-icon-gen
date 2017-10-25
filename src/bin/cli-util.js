@@ -179,7 +179,7 @@ export default class CLIUtil {
   /**
    * Parse for the command line argumens.
    *
-   * @param {Array.<String>} args   Arguments of the command line.
+   * @param {Array.<String>} argv Arguments of the command line.
    *
    * @return {CLIOptions} Parse results.
    */
