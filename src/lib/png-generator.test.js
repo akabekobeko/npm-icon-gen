@@ -7,39 +7,10 @@ import {Favicon} from './favicon-generator'
 import {ICO} from './ico-generator.js'
 import {ICNS} from './icns-generator.js'
 import {CLI} from '../bin/cli-util.js'
+import Util from './util.js'
 
 /** @test {PNGGenerator} */
 describe('PNGGenerator', () => {
-  /** @test {PNGGenerator#generetePNG} */
-  it('generetePNG', () => {
-    const svg = Fs.readFileSync('./examples/data/sample.svg')
-    assert(svg)
-
-    const dir = PNGGenerator.createWorkDir()
-    assert(dir)
-
-    const size = 16
-    PNGGenerator
-    .generetePNG(svg, size, dir, new Logger())
-    .then((result) => {
-      assert(result.size === size)
-      Del.sync([dir], {force: true})
-    })
-    .catch((err) => {
-      console.error(err)
-      assert()
-      Del.sync([dir], {force: true})
-    })
-  })
-
-  /** @test {PNGGenerator#createWorkDir} */
-  it('createWorkDir', () => {
-    const dir = PNGGenerator.createWorkDir()
-    assert(dir)
-
-    Del.sync([dir], {force: true})
-  })
-
   /** @test {PNGGenerator#getRequiredImageSizes} */
   it('getRequiredImageSizes', () => {
     let   expected = PNGGenerator.getRequiredImageSizes()
@@ -54,5 +25,27 @@ describe('PNGGenerator', () => {
 
     expected = PNGGenerator.getRequiredImageSizes([CLI.modes.favicon])
     assert.deepEqual(expected, Favicon.imageSizes)
+  })
+
+  /** @test {PNGGenerator#_generetePNG} */
+  it('_generetePNG', () => {
+    const svg = Fs.readFileSync('./examples/data/sample.svg')
+    assert(svg)
+
+    const dir = Util.createWorkDir()
+    assert(dir)
+
+    const size = 16
+    return PNGGenerator
+      ._generatePNG(svg, size, dir, new Logger())
+      .then((result) => {
+        assert(result.size === size)
+        Del.sync([dir], {force: true})
+      })
+      .catch((err) => {
+        console.error(err)
+        assert()
+        Del.sync([dir], {force: true})
+      })
   })
 })

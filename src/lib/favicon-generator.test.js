@@ -1,6 +1,6 @@
 import assert from 'assert'
 import Path from 'path'
-import TestUtil from './test-util.js'
+import Util from './util.js'
 import Logger from '../lib/logger.js'
 import FaviconGenerator, {Favicon} from './favicon-generator.js'
 
@@ -14,10 +14,10 @@ describe('FaviconGenerator', () => {
     })
 
     return FaviconGenerator
-    .generate(images, './examples/data', new Logger())
-    .then((results) => {
-      assert(results)
-      TestUtil.deleteFiles(results)
-    })
+      .generate(images, './examples/data', new Logger())
+      .then((results) => {
+        assert(results)
+        Util.deleteFiles(results)
+      })
   })
 })

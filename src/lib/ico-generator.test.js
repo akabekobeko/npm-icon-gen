@@ -14,25 +14,25 @@ describe('ICOGenerator', () => {
     })
 
     ICOGenerator
-    .generate(targets, Path.join('./examples/data', 'sample.ico'), new Logger())
-    .then((result) => {
-      assert(result)
-      Fs.unlinkSync(result)
-    })
+      .generate(targets, Path.join('./examples/data', 'sample.ico'), new Logger())
+      .then((result) => {
+        assert(result)
+        Fs.unlinkSync(result)
+      })
   })
 
-  /** @test {ICOGenerator#createFileHeader} */
-  it('createFileHeader', () => {
+  /** @test {ICOGenerator#_createFileHeader} */
+  it('_createFileHeader', () => {
     const count = 7
-    const b = ICOGenerator.createFileHeader(count)
+    const b = ICOGenerator._createFileHeader(count)
 
     assert(b.readUInt16LE(0) === 0)
     assert(b.readUInt16LE(2) === 1)
     assert(b.readUInt16LE(4) === count)
   })
 
-  /** @test {ICOGenerator#createDirectory} */
-  it('createDirectory', () => {
+  /** @test {ICOGenerator#_createDirectory} */
+  it('_createDirectory', () => {
     const png = {
       width: 16,
       height: 16,
@@ -43,7 +43,7 @@ describe('ICOGenerator', () => {
     }
 
     const offset = ICO.headerSize + ICO.directorySize
-    const b      = ICOGenerator.createDirectory(png, offset)
+    const b      = ICOGenerator._createDirectory(png, offset)
 
     assert(b.readUInt8(0) === png.width)
     assert(b.readUInt8(1) === png.height)
@@ -55,8 +55,8 @@ describe('ICOGenerator', () => {
     assert(b.readUInt32LE(12) === offset)
   })
 
-  /** @test {ICOGenerator#createBitmapInfoHeader} */
-  it('createBitmapInfoHeader', () => {
+  /** @test {ICOGenerator#_createBitmapInfoHeader} */
+  it('_createBitmapInfoHeader', () => {
     const png = {
       width: 16,
       height: 16,
@@ -66,7 +66,7 @@ describe('ICOGenerator', () => {
       }
     }
 
-    const b = ICOGenerator.createBitmapInfoHeader(png, ICO.BI_RGB)
+    const b = ICOGenerator._createBitmapInfoHeader(png, ICO.BI_RGB)
     assert(b.readUInt32LE(0) === ICO.BitmapInfoHeaderSize)
     assert(b.readInt32LE(4) === png.width)
     assert(b.readInt32LE(8) === png.height * 2)

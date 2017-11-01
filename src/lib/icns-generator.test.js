@@ -14,16 +14,16 @@ describe('ICNSGenerator', () => {
     })
 
     return ICNSGenerator
-    .generate(images, Path.join('./examples/data', 'sample.icns'), new Logger())
-    .then((result) => {
-      assert(result)
-      Fs.unlinkSync(result)
-    })
+      .generate(images, Path.join('./examples/data', 'sample.icns'), new Logger())
+      .then((result) => {
+        assert(result)
+        Fs.unlinkSync(result)
+      })
   })
 
-  /** @test {ICNSGenerator#createFileHeader} */
-  it('createFileHeader', () => {
-    const header = ICNSGenerator.createFileHeader(32)
+  /** @test {ICNSGenerator#_createFileHeader} */
+  it('_createFileHeader', () => {
+    const header = ICNSGenerator._createFileHeader(32)
 
     // In ASCII "icns"
     assert(header.readUInt8(0) === 0x69)
@@ -35,9 +35,9 @@ describe('ICNSGenerator', () => {
     assert(header.readUInt32BE(4) === 32)
   })
 
-  /** @test {ICNSGenerator#createIconHeader} */
-  it('createIconHeader', () => {
-    const header = ICNSGenerator.createIconHeader(ICNS.iconIDs[0], 128)
+  /** @test {ICNSGenerator#_createIconHeader} */
+  it('_createIconHeader', () => {
+    const header = ICNSGenerator._createIconHeader(ICNS.iconInfos[0], 128)
 
     // In ASCII "ic07"
     assert(header.readUInt8(0) === 0x69)

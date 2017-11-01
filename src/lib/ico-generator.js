@@ -55,7 +55,7 @@ export default class ICOGenerator {
       logger.log('ICO:')
 
       const stream = Fs.createWriteStream(dest)
-      stream.write(ICOGenerator.createFileHeader(images.length), 'binary')
+      stream.write(ICOGenerator._createFileHeader(images.length), 'binary')
 
       const pngs = images.map((image) => {
         const data = Fs.readFileSync(image.path)
@@ -64,16 +64,16 @@ export default class ICOGenerator {
 
       let offset = ICO.headerSize + (ICO.directorySize * images.length)
       pngs.forEach((png) => {
-        const directory = ICOGenerator.createDirectory(png, offset)
+        const directory = ICOGenerator._createDirectory(png, offset)
         stream.write(directory, 'binary')
         offset += png.data.length + ICO.BitmapInfoHeaderSize
       })
 
       pngs.forEach((png) => {
-        const header = ICOGenerator.createBitmapInfoHeader(png, ICO.BI_RGB)
+        const header = ICOGenerator._createBitmapInfoHeader(png, ICO.BI_RGB)
         stream.write(header, 'binary')
 
-        const dib = ICOGenerator.convertPNGtoDIB(png.data, png.width, png.height, png.bpp)
+        const dib = ICOGenerator._convertPNGtoDIB(png.data, png.width, png.height, png.bpp)
         stream.write(dib, 'binary')
       })
 
@@ -91,7 +91,7 @@ export default class ICOGenerator {
    *
    * @return {Buffer} Header data.
    */
-  static createFileHeader (count) {
+  static _createFileHeader (count) {
     const b = Buffer.alloc(ICO.headerSize)
     b.writeUInt16LE(0, 0)     // 2 Reserved
     b.writeUInt16LE(1,  2)    // 2 Type
@@ -108,7 +108,7 @@ export default class ICOGenerator {
    *
    * @return {Buffer} Directory data.
    */
-  static createDirectory (png, offset) {
+  static _createDirectory (png, offset) {
     const b      = Buffer.alloc(ICO.directorySize)
     const size   = png.data.length + ICO.BitmapInfoHeaderSize
     const width  = (256 <= png.width ? 0 : png.width)
@@ -135,19 +135,19 @@ export default class ICOGenerator {
    *
    * @return {Buffer} BITMAPINFOHEADER data.
    */
-  static createBitmapInfoHeader (png, compression) {
+  static _createBitmapInfoHeader (png, compression) {
     const b = Buffer.alloc(ICO.BitmapInfoHeaderSize)
     b.writeUInt32LE(ICO.BitmapInfoHeaderSize, 0) // 4 DWORD biSize
-    b.writeInt32LE(png.width, 4)                          // 4 LONG  biWidth
-    b.writeInt32LE(png.height * 2, 8)                     // 4 LONG  biHeight
-    b.writeUInt16LE(1, 12)                                // 2 WORD  biPlanes
-    b.writeUInt16LE(png.bpp * 8, 14)                      // 2 WORD  biBitCount
-    b.writeUInt32LE(compression, 16)                      // 4 DWORD biCompression
-    b.writeUInt32LE(png.data.length, 20)                  // 4 DWORD biSizeImage
-    b.writeInt32LE(0, 24)                                 // 4 LONG  biXPelsPerMeter
-    b.writeInt32LE(0, 28)                                 // 4 LONG  biYPelsPerMeter
-    b.writeUInt32LE(0, 32)                                // 4 DWORD biClrUsed
-    b.writeUInt32LE(0, 36)                                // 4 DWORD biClrImportant
+    b.writeInt32LE(png.width, 4)                 // 4 LONG  biWidth
+    b.writeInt32LE(png.height * 2, 8)            // 4 LONG  biHeight
+    b.writeUInt16LE(1, 12)                       // 2 WORD  biPlanes
+    b.writeUInt16LE(png.bpp * 8, 14)             // 2 WORD  biBitCount
+    b.writeUInt32LE(compression, 16)             // 4 DWORD biCompression
+    b.writeUInt32LE(png.data.length, 20)         // 4 DWORD biSizeImage
+    b.writeInt32LE(0, 24)                        // 4 LONG  biXPelsPerMeter
+    b.writeInt32LE(0, 28)                        // 4 LONG  biYPelsPerMeter
+    b.writeUInt32LE(0, 32)                       // 4 DWORD biClrUsed
+    b.writeUInt32LE(0, 36)                       // 4 DWORD biClrImportant
 
     return b
   }
@@ -167,7 +167,7 @@ export default class ICOGenerator {
    *
    * @see https://en.wikipedia.org/wiki/BMP_file_format
    */
-  static convertPNGtoDIB (src, width, height, bpp) {
+  static _convertPNGtoDIB (src, width, height, bpp) {
     const cols   = (width * bpp)
     const rows   = (height * cols)
     const rowEnd = (rows - cols)

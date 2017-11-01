@@ -64,8 +64,8 @@
     "start": "npm run watch",
     "esdoc": "esdoc",
     "eslint": "eslint ./src",
-    "build": "babel src --out-dir dist --ignore *.test.js,test-util.js,typedef.js",
-    "watch": "babel src --out-dir dist --ignore *.test.js,test-util.js,typedef.js --watch",
+    "build": "babel src --out-dir dist --ignore *.test.js,typedef.js",
+    "watch": "babel src --out-dir dist --ignore *.test.js,typedef.js --watch",
     "prepare": "npm run build"
   },
   "dependencies": {

@@ -24,12 +24,12 @@ export const ICNS = {
   fileID: 'icns',
 
   /**
-   * Identifier of the images, Mac OS 8.x (il32, is32, l8mk, s8mk) is unsupported.
+   * Information of the images, Mac OS 8.x (il32, is32, l8mk, s8mk) is unsupported.
    * If icp4, icp5, icp6 is present, Icon will not be supported because it can not be set as Folder of Finder.
    *
    * @type {Array}
    */
-  iconIDs: [
+  iconInfos: [
     // Normal
     {id: 'ic07', size: 128},
     {id: 'ic08', size: 256},
@@ -62,13 +62,13 @@ export default class ICNSGenerator {
     return new Promise((resolve, reject) => {
       logger.log('ICNS:')
 
-      const size   = ICNSGenerator.fileSizeFromImages(images)
+      const size   = ICNSGenerator._fileSizeFromImages(images)
       const stream = Fs.createWriteStream(dest)
-      stream.write(ICNSGenerator.createFileHeader(size), 'binary')
+      stream.write(ICNSGenerator._createFileHeader(size), 'binary')
 
-      for (let i = 0, max = ICNS.iconIDs.length; i < max; ++i) {
-        const iconID = ICNS.iconIDs[i]
-        if (!(ICNSGenerator.writeImage(iconID, images, stream))) {
+      for (let i = 0, max = ICNS.iconInfos.length; i < max; ++i) {
+        const info = ICNS.iconInfos[i]
+        if (!(ICNSGenerator._writeImage(info, images, stream))) {
           stream.end()
           reject(new Error('Faild to read/write image.'))
           return
@@ -85,15 +85,15 @@ export default class ICNSGenerator {
   /**
    * Write the image.
    *
-   * @param {Object}            iconID Identifier of the icon.
+   * @param {Object}            info   Information of the icon.
    * @param {Array.<ImageInfo>} images File informations..
    * @param {WritableStream}    stream Target stream.
    *
    * @return {Boolean} If success "true".
    */
-  static writeImage (iconID, images, stream) {
+  static _writeImage (info, images, stream) {
     // Unknown target is ignored
-    const image = ICNSGenerator.imageFromIconID(iconID, images)
+    const image = ICNSGenerator._imageFromIconID(info, images)
     if (!(image)) {
       return true
     }
@@ -103,7 +103,7 @@ export default class ICNSGenerator {
       return false
     }
 
-    const header = ICNSGenerator.createIconHeader(iconID, data.length)
+    const header = ICNSGenerator._createIconHeader(info, data.length)
     stream.write(header, 'binary')
     stream.write(data, 'binary')
 
@@ -113,15 +113,15 @@ export default class ICNSGenerator {
   /**
    * Select the image support to the icon.
    *
-   * @param {Object}            iconID Identifier of the icon.
+   * @param {Object}            info   Information of the icon.
    * @param {Array.<ImageInfo>} images File informations..
    *
    * @return {ImageInfo} If successful image information, otherwise null.
    */
-  static imageFromIconID (iconID, images) {
+  static _imageFromIconID (info, images) {
     let result = null
     images.some((image) => {
-      if (image.size === iconID.size) {
+      if (image.size === info.size) {
         result = image
         return true
       }
@@ -139,7 +139,7 @@ export default class ICNSGenerator {
    *
    * @return {Buffer} Header data.
    */
-  static createFileHeader (fileSize) {
+  static _createFileHeader (fileSize) {
     const b = Buffer.alloc(ICNS.headerSize)
     b.write(ICNS.fileID, 0, 'ascii')
     b.writeUInt32BE(fileSize, 4)
@@ -150,14 +150,14 @@ export default class ICNSGenerator {
   /**
    * Create the Icon header in ICNS file.
    *
-   * @param {Object} iconID    Icon identifier.
+   * @param {Object} info      Infromation of the icon.
    * @param {Number} imageSize Size of the image.
    *
    * @return {Buffer} Header data.
    */
-  static createIconHeader (iconID, imageSize) {
+  static _createIconHeader (info, imageSize) {
     const buffer = Buffer.alloc(ICNS.headerSize)
-    buffer.write(iconID.id, 0, 'ascii')
+    buffer.write(info.id, 0, 'ascii')
     buffer.writeUInt32BE(ICNS.headerSize + imageSize, 4)
 
     return buffer
@@ -170,12 +170,12 @@ export default class ICNSGenerator {
    *
    * @return {Number} File size.
    */
-  static fileSizeFromImages (images) {
+  static _fileSizeFromImages (images) {
     let size = 0
-    ICNS.iconIDs.forEach((iconId) => {
+    ICNS.iconInfos.forEach((info) => {
       let path = null
       images.some((image) => {
-        if (image.size === iconId.size) {
+        if (image.size === info.size) {
           path = image.path
           return true
         }
