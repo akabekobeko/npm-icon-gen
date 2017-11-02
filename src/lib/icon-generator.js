@@ -3,10 +3,9 @@ import Path from 'path'
 import Del from 'del'
 import MkdirP from 'mkdirp'
 import PngGenerator from './png-generator.js'
-import {CLI} from '../bin/cli-util'
-import ICOGenerator, {ICO} from './ico-generator.js'
-import ICNSGenerator, {ICNS} from './icns-generator.js'
-import FaviconGenerator, {Favicon} from './favicon-generator.js'
+import ICOGenerator from './ico-generator.js'
+import ICNSGenerator from './icns-generator.js'
+import FaviconGenerator from './favicon-generator.js'
 import Util from './util.js'
 
 /**
@@ -123,19 +122,17 @@ export default class IconGenerator {
     const tasks = []
     options.modes.forEach((mode) => {
       switch (mode) {
-        case CLI.modes.ico:
-          const icoImageFilter = IconGenerator._getSizes(ICO.imageSizes, options, 'ico')
-          tasks.push(ICOGenerator.generate(Util.filterImagesBySizes(images, icoImageFilter), Path.join(dir, options.names.ico + '.ico'), logger))
+        case 'icns':
+          tasks.push(ICNSGenerator.generate(images, dir, options, logger))
           break
 
-        case CLI.modes.icns:
-          const icnsImageFilter = IconGenerator._getSizes(ICNS.imageSizes, options, 'icns')
-          tasks.push(ICNSGenerator.generate(Util.filterImagesBySizes(images, icnsImageFilter), Path.join(dir, options.names.icns + '.icns'), logger))
+        case 'ico':
+          tasks.push(ICOGenerator.generate(images, dir, options, logger))
           break
 
-        case CLI.modes.favicon:
-          tasks.push(ICOGenerator.generate(Util.filterImagesBySizes(images, Favicon.icoImageSizes), Path.join(dir, Favicon.icoFileName), logger))
-          tasks.push(FaviconGenerator.generate(Util.filterImagesBySizes(images, Favicon.imageSizes), dir, logger))
+        case 'favicon':
+          tasks.push(FaviconGenerator.generateICO(images, dir, logger))
+          tasks.push(FaviconGenerator.generate(images, dir, logger))
           break
 
         default:

@@ -1,9 +1,9 @@
 import assert from 'assert'
 import Del from 'del'
 import PNGGenerator from './png-generator.js'
-import {Favicon} from './favicon-generator.js'
-import {ICO} from './ico-generator.js'
-import {ICNS} from './icns-generator.js'
+import FaviconGenerator from './favicon-generator.js'
+import ICNSGenerator from './icns-generator.js'
+import ICOGenerator from './ico-generator.js'
 import Util from './util.js'
 
 /** @test {Util} */
@@ -22,17 +22,17 @@ describe('Util', () => {
       return {size: size}
     })
 
-    let expected = Util.filterImagesBySizes(targets, ICO.imageSizes)
-    assert(expected.length === ICO.imageSizes.length)
+    let actual = ICOGenerator.getRequiredImageSizes()
+    let expected = Util.filterImagesBySizes(targets, actual)
+    assert(expected.length === actual.length)
 
-    expected = Util.filterImagesBySizes(targets, ICNS.imageSizes)
-    assert(expected.length === ICNS.imageSizes.length)
+    actual = ICNSGenerator.getRequiredImageSizes()
+    expected = Util.filterImagesBySizes(targets, actual)
+    assert(expected.length === actual.length)
 
-    expected = Util.filterImagesBySizes(targets, Favicon.imageSizes)
-    assert(expected.length === Favicon.imageSizes.length)
-
-    expected = Util.filterImagesBySizes(targets, Favicon.icoImageSizes)
-    assert(expected.length === Favicon.icoImageSizes.length)
+    actual = FaviconGenerator.getRequiredImageSizes()
+    expected = Util.filterImagesBySizes(targets, actual)
+    assert(expected.length === actual.length)
   })
 
   /** @test {Util#flattenValues} */

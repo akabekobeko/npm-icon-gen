@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import CLIUtil from './cli-util.js'
+import CLI from './cli-util.js'
 import IconGen from '../lib/index.js'
 
 /**
@@ -33,11 +33,11 @@ function execute (options) {
  * @return {Promise} Promise object.
  */
 function main (argv, stdout) {
-  const options = CLIUtil.parse(argv)
+  const options = CLI.parse(argv)
   if (options.help) {
-    return CLIUtil.showHelp(stdout)
+    return CLI.showHelp(stdout)
   } else if (options.version) {
-    return CLIUtil.showVersion(stdout)
+    return CLI.showVersion(stdout)
   }
 
   return execute(options)

@@ -1,10 +1,9 @@
 import Fs from 'fs'
 import Path from 'path'
 import SVG2PNG from 'svg2png'
-import {Favicon} from './favicon-generator.js'
-import {ICO} from './ico-generator.js'
-import {ICNS} from './icns-generator.js'
-import {CLI} from '../bin/cli-util.js'
+import FaviconGenerator from './favicon-generator.js'
+import ICNSGenerator from './icns-generator.js'
+import ICOGenerator from './ico-generator.js'
 
 /**
  * Generate the PNG files = require(SVG file.
@@ -54,16 +53,16 @@ export default class PNGGenerator {
     if (modes && 0 < modes.length) {
       modes.forEach((mode) => {
         switch (mode) {
-          case CLI.modes.ico:
-            sizes = sizes.concat(ICO.imageSizes)
+          case 'icns':
+            sizes = sizes.concat(ICNSGenerator.getRequiredImageSizes())
             break
 
-          case CLI.modes.icns:
-            sizes = sizes.concat(ICNS.imageSizes)
+          case 'ico':
+            sizes = sizes.concat(ICOGenerator.getRequiredImageSizes())
             break
 
-          case CLI.modes.favicon:
-            sizes = sizes.concat(Favicon.imageSizes)
+          case 'favicon':
+            sizes = sizes.concat(FaviconGenerator.getRequiredImageSizes())
             break
 
           default:
@@ -74,7 +73,7 @@ export default class PNGGenerator {
 
     // 'all' mode
     if (sizes.length === 0) {
-      sizes = Favicon.imageSizes.concat(ICO.imageSizes).concat(ICNS.imageSizes)
+      sizes = FaviconGenerator.getRequiredImageSizes().concat(ICNSGenerator.getRequiredImageSizes().concat(ICOGenerator.getRequiredImageSizes()))
     }
 
     return sizes
