@@ -1,72 +1,45 @@
 import Path from 'path'
 
 /**
- * Constatns of CLI process.
- * @type {Object}
+ * CLI parameters [Short, Full].
  */
-export const CLI = {
-  /**
-   * CLI options.
-   * @type {Object}
-   */
-  options: {
-    help: ['-h', '--help'],
-    version: ['-v', '--version'],
-    input: ['-i', '--input'],
-    output: ['-o', '--output'],
-    type: ['-t', '--type'],
-    modes: ['-m', '--modes'],
-    sizes: ['-s', '--sizes'],
-    names: ['-n', '--names'],
-    report: ['-r', '--report']
-  },
-
-  /**
-   * Execution types.
-   * @type {Object}
-   */
-  types: {
-    svg: 'svg',
-    png: 'png'
-  },
-
-  /**
-   * Output modes.
-   * @type {Object}
-   */
-  modes: {
-    ico: 'ico',
-    icns: 'icns',
-    favicon: 'favicon'
-  },
-
-  /**
-   * Output mode for an all files.
-   * @type {Array}
-   */
-  modeAll: ['ico', 'icns', 'favicon'],
-
-  /**
-   * File names.
-   * @type {Object}
-   */
-  names: {
-    ico: 'ico',
-    icns: 'icns'
-  },
-
-  /**
-   * Input sizes.
-   * @type {Object}
-   */
-  sizes: {}
+const CLI_PARAMS = {
+  help: ['-h', '--help'],
+  version: ['-v', '--version'],
+  input: ['-i', '--input'],
+  output: ['-o', '--output'],
+  type: ['-t', '--type'],
+  modes: ['-m', '--modes'],
+  sizes: ['-s', '--sizes'],
+  names: ['-n', '--names'],
+  report: ['-r', '--report']
 }
 
 /**
- * String of help.
+ * Types of the source file.
+ * @type {Object}
+ */
+const SOURCE_TYPES = {
+  svg: 'svg',
+  png: 'png'
+}
+
+/**
+ * Output file modes.
+ * @type {Object}
+ */
+const OUTPUT_MODES = {
+  ico: 'ico',
+  icns: 'icns',
+  favicon: 'favicon',
+  all: ['ico', 'icns', 'favicon']
+}
+
+/**
+ * Text of help.
  * @type {String}
  */
-const Help = `
+const HELP_TEXT = `
 Usage: icon-gen [OPTIONS]
 
 Generate an icon from the SVG or PNG file.
@@ -111,10 +84,20 @@ $ icon-gen -i sample.svg -o ./dist -n ico=foo,icns=bar
 See also:
 https://github.com/akabekobeko/npm-icon-gen`
 
+export const DEFAULT_OPTIONS = {
+  type: SOURCE_TYPES.svg,
+  modes: OUTPUT_MODES.all,
+  names: {
+    ico: 'app',
+    icns: 'app'
+  },
+  report: false
+}
+
 /**
- * Utility for a command line process.
+ * Utility of the commad line interface.
  */
-export default class CLIUtil {
+export default class CLI {
   /**
    * Show the help text.
    *
@@ -124,7 +107,7 @@ export default class CLIUtil {
    */
   static showHelp (stream) {
     return new Promise((resolve) => {
-      stream.write(Help)
+      stream.write(HELP_TEXT)
       resolve()
     })
   }
@@ -166,23 +149,23 @@ export default class CLIUtil {
     }
 
     switch (argv[0]) {
-      case CLI.options.help[0]:
-      case CLI.options.help[1]:
+      case CLI_PARAMS.help[0]:
+      case CLI_PARAMS.help[1]:
         return {help: true}
 
-      case CLI.options.version[0]:
-      case CLI.options.version[1]:
+      case CLI_PARAMS.version[0]:
+      case CLI_PARAMS.version[1]:
         return {version: true}
 
       default:
-        return CLIUtil._parse(argv)
+        return CLI._parse(argv)
     }
   }
 
   /**
    * Parse for the command line argumens.
    *
-   * @param {Array.<String>} args   Arguments of the command line.
+   * @param {Array.<String>} argv Arguments of the command line.
    *
    * @return {CLIOptions} Parse results.
    */
@@ -190,50 +173,50 @@ export default class CLIUtil {
     const options = {}
     argv.forEach((arg, index) => {
       switch (arg) {
-        case CLI.options.input[0]:
-        case CLI.options.input[1]:
+        case CLI_PARAMS.input[0]:
+        case CLI_PARAMS.input[1]:
           if (index + 1 < argv.length) {
             options.input = Path.resolve(argv[index + 1])
           }
           break
 
-        case CLI.options.output[0]:
-        case CLI.options.output[1]:
+        case CLI_PARAMS.output[0]:
+        case CLI_PARAMS.output[1]:
           if (index + 1 < argv.length) {
             options.output = Path.resolve(argv[index + 1])
           }
           break
 
-        case CLI.options.type[0]:
-        case CLI.options.type[1]:
+        case CLI_PARAMS.type[0]:
+        case CLI_PARAMS.type[1]:
           if (index + 1 < argv.length) {
             options.type = argv[index + 1]
           }
           break
 
-        case CLI.options.report[0]:
-        case CLI.options.report[1]:
+        case CLI_PARAMS.report[0]:
+        case CLI_PARAMS.report[1]:
           options.report = true
           break
 
-        case CLI.options.modes[0]:
-        case CLI.options.modes[1]:
+        case CLI_PARAMS.modes[0]:
+        case CLI_PARAMS.modes[1]:
           if (index + 1 < argv.length) {
-            options.modes = CLIUtil._parseMode(argv[index + 1])
+            options.modes = CLI._parseMode(argv[index + 1])
           }
           break
 
-        case CLI.options.names[0]:
-        case CLI.options.names[1]:
+        case CLI_PARAMS.names[0]:
+        case CLI_PARAMS.names[1]:
           if (index + 1 < argv.length) {
-            options.names = CLIUtil._parseNames(argv[index + 1])
+            options.names = CLI._parseNames(argv[index + 1])
           }
           break
 
-        case CLI.options.sizes[0]:
-        case CLI.options.sizes[1]:
+        case CLI_PARAMS.sizes[0]:
+        case CLI_PARAMS.sizes[1]:
           if (index + 1 < argv.length) {
-            options.sizes = CLIUtil._parseSizes(argv[index + 1])
+            options.sizes = CLI._parseSizes(argv[index + 1])
           }
           break
 
@@ -242,12 +225,12 @@ export default class CLIUtil {
       }
     })
 
-    if (!(options.type) || (options.type !== CLI.types.svg && options.type !== CLI.types.png)) {
-      options.type = CLI.types.svg
+    if (!(options.type) || (options.type !== SOURCE_TYPES.svg && options.type !== SOURCE_TYPES.png)) {
+      options.type = SOURCE_TYPES.svg
     }
 
     if (!(options.modes)) {
-      options.modes = CLI.modeAll
+      options.modes = OUTPUT_MODES.all
     }
 
     if (!(options.sizes)) {
@@ -266,14 +249,14 @@ export default class CLIUtil {
    */
   static _parseMode (arg) {
     if (!(arg)) {
-      return CLI.modeAll
+      return OUTPUT_MODES.all
     }
 
     const values = arg.split(',').filter((value) => {
       switch (value) {
-        case CLI.modes.ico:
-        case CLI.modes.icns:
-        case CLI.modes.favicon:
+        case OUTPUT_MODES.ico:
+        case OUTPUT_MODES.icns:
+        case OUTPUT_MODES.favicon:
           return true
 
         default:
@@ -281,7 +264,7 @@ export default class CLIUtil {
       }
     })
 
-    return (0 < values.length ? values : CLI.modeAll)
+    return (0 < values.length ? values : OUTPUT_MODES.all)
   }
 
   /**
@@ -307,8 +290,8 @@ export default class CLIUtil {
       const key   = units[0]
       const value = units[1]
       switch (key) {
-        case CLI.names.ico:
-        case CLI.names.icns:
+        case OUTPUT_MODES.ico:
+        case OUTPUT_MODES.icns:
           names[key] = value
           break
 
@@ -345,8 +328,8 @@ export default class CLIUtil {
       const key    = units[0]
       const values = units[1].match(/\[([0-9,]+)\]/)[1].split(',')
       switch (key) {
-        case CLI.names.ico:
-        case CLI.names.icns:
+        case OUTPUT_MODES.ico:
+        case OUTPUT_MODES.icns:
           sizes[key] = values
           break
 

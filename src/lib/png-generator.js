@@ -1,12 +1,9 @@
-import OS from 'os'
 import Fs from 'fs'
 import Path from 'path'
-import UUID from 'uuid'
 import SVG2PNG from 'svg2png'
-import {Favicon} from './favicon-generator.js'
-import {ICO} from './ico-generator.js'
-import {ICNS} from './icns-generator.js'
-import {CLI} from '../bin/cli-util.js'
+import FaviconGenerator from './favicon-generator.js'
+import ICNSGenerator from './icns-generator.js'
+import ICOGenerator from './ico-generator.js'
 
 /**
  * Generate the PNG files = require(SVG file.
@@ -32,16 +29,61 @@ export default class PNGGenerator {
 
       const sizes = PNGGenerator.getRequiredImageSizes(modes)
       Promise
-      .all(sizes.map((size) => {
-        return PNGGenerator.generetePNG(svg, size, dir, logger)
-      }))
-      .then((results) => {
-        cb(null, results)
-      })
-      .catch((err2) => {
-        cb(err2)
-      })
+        .all(sizes.map((size) => {
+          return PNGGenerator._generatePNG(svg, size, dir, logger)
+        }))
+        .then((results) => {
+          cb(null, results)
+        })
+        .catch((err2) => {
+          cb(err2)
+        })
     })
+  }
+
+  /**
+   * Gets the size of the images needed to create an icon.
+   *
+   * @param {Array.<String>} modes Modes of an output files.
+   *
+   * @return {Array.<Number>} The sizes of the image.
+   */
+  static getRequiredImageSizes (modes) {
+    let sizes = []
+    if (modes && 0 < modes.length) {
+      modes.forEach((mode) => {
+        switch (mode) {
+          case 'icns':
+            sizes = sizes.concat(ICNSGenerator.getRequiredImageSizes())
+            break
+
+          case 'ico':
+            sizes = sizes.concat(ICOGenerator.getRequiredImageSizes())
+            break
+
+          case 'favicon':
+            sizes = sizes.concat(FaviconGenerator.getRequiredImageSizes())
+            break
+
+          default:
+            break
+        }
+      })
+    }
+
+    // 'all' mode
+    if (sizes.length === 0) {
+      sizes = FaviconGenerator.getRequiredImageSizes().concat(ICNSGenerator.getRequiredImageSizes().concat(ICOGenerator.getRequiredImageSizes()))
+    }
+
+    return sizes
+      .filter((value, index, array) => {
+        return (array.indexOf(value) === index)
+      })
+      .sort((a, b) => {
+      // Always ensure the ascending order
+        return (a - b)
+      })
   }
 
   /**
@@ -54,7 +96,7 @@ export default class PNGGenerator {
    *
    * @return {Promise} Image generation task.
    */
-  static generetePNG (svg, size, dir, logger) {
+  static _generatePNG (svg, size, dir, logger) {
     return new Promise((resolve, reject) => {
       if (!(svg && 0 < size && dir)) {
         reject(new Error('Invalid parameters.'))
@@ -78,64 +120,6 @@ export default class PNGGenerator {
 
         resolve({ size: size, path: dest })
       })
-    })
-  }
-
-  /**
-   * Create the work directory.
-   *
-   * @return {String} The path of the created directory, failure is null.
-   */
-  static createWorkDir () {
-    const dir = Path.join(OS.tmpdir(), UUID.v4())
-    Fs.mkdirSync(dir)
-
-    const stat = Fs.statSync(dir)
-    return (stat && stat.isDirectory() ? dir : null)
-  }
-
-  /**
-   * Gets the size of the images needed to create an icon.
-   *
-   * @param {Array.<String>} modes Modes of an output files.
-   *
-   * @return {Array.<Number>} The sizes of the image.
-   */
-  static getRequiredImageSizes (modes) {
-    let sizes = []
-    if (modes && 0 < modes.length) {
-      modes.forEach((mode) => {
-        switch (mode) {
-          case CLI.modes.ico:
-            sizes = sizes.concat(ICO.imageSizes)
-            break
-
-          case CLI.modes.icns:
-            sizes = sizes.concat(ICNS.imageSizes)
-            break
-
-          case CLI.modes.favicon:
-            sizes = sizes.concat(Favicon.imageSizes)
-            break
-
-          default:
-            break
-        }
-      })
-    }
-
-    // 'all' mode
-    if (sizes.length === 0) {
-      sizes = Favicon.imageSizes.concat(ICO.imageSizes).concat(ICNS.imageSizes)
-    }
-
-    return sizes
-    .filter((value, index, array) => {
-      return (array.indexOf(value) === index)
-    })
-    .sort((a, b) => {
-      // Always ensure the ascending order
-      return (a - b)
     })
   }
 }
