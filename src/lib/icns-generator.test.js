@@ -23,7 +23,7 @@ describe('ICNSGenerator', () => {
 
   /** @test {ICNSGenerator#_createFileHeader} */
   it('_createFileHeader', () => {
-    const header = ICNSGenerator._createFileHeader(32)
+    const header = ICNSGenerator._createFileHeader(401)
 
     // In ASCII "icns"
     assert(header.readUInt8(0) === 0x69)
@@ -32,12 +32,12 @@ describe('ICNSGenerator', () => {
     assert(header.readUInt8(3) === 0x73)
 
     // File size
-    assert(header.readUInt32BE(4) === 32)
+    assert(header.readUInt32BE(4) === 401)
   })
 
   /** @test {ICNSGenerator#_createIconHeader} */
   it('_createIconHeader', () => {
-    const header = ICNSGenerator._createIconHeader({id: 'ic07', size: 128}, 713)
+    const header = ICNSGenerator._createIconHeader(`ic07`, 713)
 
     // In ASCII "ic07"
     assert(header.readUInt8(0) === 0x69)

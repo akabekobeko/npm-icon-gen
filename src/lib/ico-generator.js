@@ -91,8 +91,8 @@ export default class ICOGenerator {
 
   /**
    * Get the size of the required PNG.
-   * 
-   * @return {{Array.<Number>}} Sizes.
+   *
+   * @return {Array.<Number>} Sizes.
    */
   static getRequiredImageSizes () {
     return REQUIRED_IMAGE_SIZES
@@ -153,7 +153,7 @@ export default class ICOGenerator {
    *
    * @return {Buffer} BITMAPINFOHEADER data.
    *
-   * @see https://msdn.microsoft.com/ja-jp/library/windows/desktop/dd183376(v=vs.85).aspx
+   * @see https://msdn.microsoft.com/ja-jp/library/windows/desktop/dd183376%28v=vs.85%29.aspx
    */
   static _createBitmapInfoHeader (png, compression) {
     const b = Buffer.alloc(BITMAPINFOHEADER_SIZE)
