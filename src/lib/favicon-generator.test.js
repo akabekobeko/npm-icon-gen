@@ -17,22 +17,38 @@ describe('FaviconGenerator', () => {
     return FaviconGenerator
       .generate(images, './examples/data', new Logger())
       .then((results) => {
-        assert(results)
+        assert(results.length === 11)
         Util.deleteFiles(results)
       })
   })
 
-  it('generateICO', () => {
+  /** @test {FaviconGenerator#_generateICO} */
+  it('_generateICO', () => {
     const images = [16, 24, 32, 48, 64].map((size) => {
       const path = Path.join('./examples/data', size + '.png')
       return {size: size, path: path}
     })
 
     return FaviconGenerator
-      .generateICO(images, './examples/data', new Logger())
+      ._generateICO(images, './examples/data', new Logger())
       .then((result) => {
-        assert(result)
+        assert(Path.basename(result) === 'favicon.ico')
         Fs.unlinkSync(result)
+      })
+  })
+
+  /** @test {FaviconGenerator#_generatePNG} */
+  it('_generatePNG', () => {
+    const images = FaviconGenerator.getRequiredImageSizes().map((size) => {
+      const path = Path.join('./examples/data', size + '.png')
+      return {size: size, path: path}
+    })
+
+    return FaviconGenerator
+      ._generatePNG(images, './examples/data', new Logger())
+      .then((results) => {
+        assert(results.length === 10)
+        Util.deleteFiles(results)
       })
   })
 })

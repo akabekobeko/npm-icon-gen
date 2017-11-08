@@ -7,7 +7,7 @@ import ICOGenerator from './ico-generator.js'
  * Sizes required for the FAVICON PNG files.
  * @type {Array.<Number>}
  */
-const REQUIRED_IMAGE_SIZES =  [32, 57, 72, 96, 120, 128, 144, 152, 195, 228]
+const REQUIRED_PNG_IMAGE_SIZES =  [32, 57, 72, 96, 120, 128, 144, 152, 195, 228]
 
 /**
  * Sizes required for the FAVICON ICO file.
@@ -16,10 +16,18 @@ const REQUIRED_IMAGE_SIZES =  [32, 57, 72, 96, 120, 128, 144, 152, 195, 228]
 const REQUIRED_ICO_IMAGE_SIZES = [16, 24, 32, 48, 64]
 
 /**
+ * Sizes required for the FAVICON files.
+ * @type {Array.<Number>}
+ */
+const REQUIRED_IMAGE_SIZES = REQUIRED_PNG_IMAGE_SIZES.concat(REQUIRED_ICO_IMAGE_SIZES)
+  .filter((a, i, self) => self.indexOf(a) === i)
+  .sort((a, b) => a - b)
+
+/**
  * File name of the FAVICON file.
  * @type {String}
  */
-const ICO_FILE_NAME = 'favicon.ico'
+const ICO_FILE_NAME = 'favicon'
 
 /**
  * Collection of the file name and size of the icon.
@@ -44,7 +52,7 @@ const PNG_FILE_INFOS = [
  */
 export default class FaviconGenerator {
   /**
-   * Generate a FAVICON image files from the PNG images.
+   * Generate a FAVICON image files (ICO and PNG) from the PNG images.
    *
    * @param {Array.<ImageInfo>} images File information for the PNG files generation.
    * @param {String}            dir    Output destination the path of directory.
@@ -53,11 +61,59 @@ export default class FaviconGenerator {
    * @return {Promise} Promise object.
    */
   static generate (images, dir, logger) {
+    const results = []
+    return Promise
+      .resolve()
+      .then(() => {
+        return FaviconGenerator._generateICO(images, dir, logger)
+      })
+      .then((icoFile) => {
+        results.push(icoFile)
+        return FaviconGenerator._generatePNG(images, dir, logger)
+      })
+      .then((pngFiles) => {
+        return results.concat(pngFiles)
+      })
+  }
+
+  /**
+   * Get the size of the required PNG.
+   *
+   * @return {Array.<Number>} Sizes.
+   */
+  static getRequiredImageSizes () {
+    return REQUIRED_IMAGE_SIZES
+  }
+
+  /**
+   * Generate the FAVICON file from the PNG images.
+   *
+   * @param {Array.<ImageInfo>} images File information for the PNG files generation.
+   * @param {String}            dir    Output destination the path of directory.
+   * @param {Logger}            logger Logger.
+   *
+   * @return {Promise} Promise object.
+   */
+  static _generateICO (images, dir, logger) {
+    const options = {names: {ico: ICO_FILE_NAME}}
+    return ICOGenerator.generate(Util.filterImagesBySizes(images, REQUIRED_ICO_IMAGE_SIZES), dir, options, logger)
+  }
+
+  /**
+   * Generate the FAVICON PNG file from the PNG images.
+   *
+   * @param {Array.<ImageInfo>} images File information for the PNG files generation.
+   * @param {String}            dir    Output destination the path of directory.
+   * @param {Logger}            logger Logger.
+   *
+   * @return {Promise} Promise object.
+   */
+  static _generatePNG (images, dir, logger) {
     return new Promise((resolve, reject) => {
       logger.log('Favicon:')
 
       // PNG
-      const tasks = Util.filterImagesBySizes(images, REQUIRED_IMAGE_SIZES)
+      const tasks = Util.filterImagesBySizes(images, REQUIRED_PNG_IMAGE_SIZES)
         .map((image) => {
           return FaviconGenerator._copyImage(image, dir, logger)
         })
@@ -71,29 +127,6 @@ export default class FaviconGenerator {
           reject(err)
         })
     })
-  }
-
-  /**
-   * Generate the FAVICON file from the PNG images.
-   * 
-   * @param {Array.<ImageInfo>} images File information for the PNG files generation.
-   * @param {String}            dir    Output destination the path of directory.
-   * @param {Logger}            logger Logger.
-   *
-   * @return {Promise} Promise object.
-   */
-  static generateICO (images, dir, logger) {
-    const options = {names: {ico: ICO_FILE_NAME}}
-    return ICOGenerator.generate(Util.filterImagesBySizes(images, REQUIRED_ICO_IMAGE_SIZES), dir, options, logger)
-  }
-
-  /**
-   * Get the size of the required PNG.
-   * 
-   * @return {{Array.<Number>}} Sizes.
-   */
-  static getRequiredImageSizes () {
-    return REQUIRED_IMAGE_SIZES
   }
 
   /**
