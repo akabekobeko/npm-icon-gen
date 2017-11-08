@@ -36,3 +36,4 @@ node_modules
 dist/
 esdoc/
 icons/
+package-lock.json

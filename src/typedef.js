@@ -10,8 +10,17 @@
  * Image file infromations.
  *
  * @typedef {Object} ImageInfo
- * @property {Number} size Image size ( width/height ).
+ * @property {Number} size Image size (width/height).
  * @property {String} path File path.
+ */
+
+/**
+ * Information of the icon.
+ *
+ * @typedef {Object} ICNSIconInfo
+ * @property {String} id   Identifier of the icon block.
+ * @property {String} mask Identifier of the icon block (PackBits mask).
+ * @property {Number} size Image size (width/height).
  */
 
 /**

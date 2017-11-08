@@ -30,7 +30,7 @@ const FILE_EXTENSION = '.icns'
  * Information of the images, Mac OS 8.x (il32, is32, l8mk, s8mk) is unsupported.
  * If icp4, icp5, icp6 is present, Icon will not be supported because it can not be set as Folder of Finder.
  *
- * @type {Array}
+ * @type {Array.<ICNSIconInfo>}
  */
 const ICON_INFOS = [
   // Normal
@@ -44,6 +44,13 @@ const ICON_INFOS = [
   {id: 'ic12', size: 64},
   {id: 'ic13', size: 256},
   {id: 'ic14', size: 512}
+
+  // TODO: Implement later...
+  /*
+  // Mac OS 8.5
+  {id: 'is32', mask: 's8mk', size: 16},
+  {id: 'il32', mask: 'l8mk', size: 32}
+  */
 ]
 
 /**
@@ -54,7 +61,7 @@ export default class ICNSGenerator {
   /**
    * Create the ICNS file from a PNG images.
    *
-   * @param {Array.<ImageInfo>} images File informations..
+   * @param {Array.<ImageInfo>} images Information of the image files.
    * @param {String}            dir     Output destination the path of directory.
    * @param {Object}            options Options.
    * @param {Logger}            logger  Logger.
@@ -67,83 +74,123 @@ export default class ICNSGenerator {
 
       const dest    = Path.join(dir, options.names.icns + FILE_EXTENSION)
       const targets = Util.filterImagesBySizes(images, Util.checkImageSizes(REQUIRED_IMAGE_SIZES, options, 'icns'))
-      const size    = ICNSGenerator._fileSizeFromImages(targets)
-      const stream  = Fs.createWriteStream(dest)
-      stream.write(ICNSGenerator._createFileHeader(size), 'binary')
 
-      for (let i = 0, max = ICON_INFOS.length; i < max; ++i) {
-        const info = ICON_INFOS[i]
-        if (!(ICNSGenerator._writeImage(info, targets, stream))) {
-          stream.end()
-          reject(new Error('Faild to read/write image.'))
-          return
-        }
+      if (ICNSGenerator._createIcon(targets, dest)) {
+        logger.log('  Create: ' + dest)
+        resolve(dest)
+      } else {
+        Fs.unlinkSync(dest)
+        reject(new Error('Faild to read/write image.'))
       }
-
-      stream.end()
-
-      logger.log('  Create: ' + dest)
-      resolve(dest)
     })
   }
 
   /**
    * Get the size of the required PNG.
-   * 
-   * @return {{Array.<Number>}} Sizes.
+   *
+   * @return {Array.<Number>} Sizes.
    */
   static getRequiredImageSizes () {
     return REQUIRED_IMAGE_SIZES
   }
 
   /**
-   * Write the image.
+   * Creat a file header and icon blocks.
    *
-   * @param {Object}            info   Information of the icon.
-   * @param {Array.<ImageInfo>} images File informations..
-   * @param {WritableStream}    stream Target stream.
+   * @param {Array.<ImageInfo>} images Information of the image files.
+   * @param {String}            dest   The path of the output destination file.
    *
-   * @return {Boolean} If success "true".
+   * @return {Boolean} "true" if it succeeds.
    */
-  static _writeImage (info, images, stream) {
-    // Unknown target is ignored
-    const image = ICNSGenerator._imageFromIconID(info, images)
-    if (!(image)) {
-      return true
+  static _createIcon (images, dest) {
+    // Write a temporary file size
+    let fileSize = HEADER_SIZE
+    let stream   = Fs.createWriteStream(dest)
+    stream.write(ICNSGenerator._createFileHeader(fileSize), 'binary')
+
+    for (let i = 0, max = ICON_INFOS.length; i < max; ++i) {
+      const info = ICON_INFOS[i]
+      const image = ICNSGenerator._imageFromIconSize(info.size, images)
+      if (!(image)) {
+        // Depending on the command line option, there may be no corresponding size
+        continue
+      }
+
+      const block = ICNSGenerator._createIconBlock(info, image)
+      if (block) {
+        stream.write(block, 'binary')
+        fileSize += block.length
+      } else {
+        fileSize = 0
+        break
+      }
     }
 
-    const data = Fs.readFileSync(image.path)
-    if (!(data)) {
+    stream.end()
+
+    if (fileSize === 0) {
       return false
     }
 
-    const header = ICNSGenerator._createIconHeader(info, data.length)
-    stream.write(header, 'binary')
-    stream.write(data, 'binary')
+    // Update an actual file size
+    stream = Fs.createWriteStream(dest)
+    stream.write(ICNSGenerator._createFileHeader(fileSize), 'binary')
+    stream.end()
 
     return true
   }
 
   /**
-   * Select the image support to the icon.
+   * Create an icon block.
    *
-   * @param {Object}            info   Information of the icon.
-   * @param {Array.<ImageInfo>} images File informations..
+   * @param {ICNSIconInfo} info  Information of the icon.
+   * @param {ImageInfo}    image Information of the image.
    *
-   * @return {ImageInfo} If successful image information, otherwise null.
+   * @return {Buffer} If successful it wrote the icon block. "null" on failure.
    */
-  static _imageFromIconID (info, images) {
-    let result = null
-    images.some((image) => {
-      if (image.size === info.size) {
-        result = image
-        return true
-      }
+  static _createIconBlock (info, image) {
+    switch (info.id) {
+      case 'is32':
+      case 'il32':
+        return ICNSGenerator._createIconBlockPackBits(info.id, info.mask, image)
 
-      return false
-    })
+      default:
+        return ICNSGenerator._createIconBlockPNG(info.id, image)
+    }
+  }
 
-    return result
+  /**
+   * Create an icon block for PNG.
+   *
+   * @param {String}    id    Identifier of the icon.
+   * @param {ImageInfo} image Information of the image.
+   *
+   * @return {Buffer} If successful it wrote the icon block. "null" on failure.
+   */
+  static _createIconBlockPNG (id, image) {
+    const png = Fs.readFileSync(image.path)
+    if (!(png)) {
+      return null
+    }
+
+    const header = ICNSGenerator._createIconHeader(id, png.length)
+    return Buffer.concat([header, png], header.length + png.length)
+  }
+
+  /**
+   * Create an icon blocks (Color and mask) for PackBits.
+   *
+   * @param {String}    id    Identifier of the icon (color block).
+   * @param {String}    mask  Identifier of the icon (mask block).
+   * @param {ImageInfo} image Information of the image.
+   *
+   * @return {Buffer} If successful it wrote the icon block. "null" on failure.
+   *
+   * @see https://en.wikipedia.org/wiki/PackBits
+   */
+  static _createIconBlockPackBits (id, mask, image) {
+    // TODO: Implement later...
+    return null
   }
 
   /**
@@ -154,58 +201,48 @@ export default class ICNSGenerator {
    * @return {Buffer} Header data.
    */
   static _createFileHeader (fileSize) {
-    const b = Buffer.alloc(HEADER_SIZE)
-    b.write(FILE_HEADER_ID, 0, 'ascii')
-    b.writeUInt32BE(fileSize, 4)
+    const buffer = Buffer.alloc(HEADER_SIZE)
+    buffer.write(FILE_HEADER_ID, 0, 'ascii')
+    buffer.writeUInt32BE(fileSize, 4)
 
-    return b
+    return buffer
   }
 
   /**
    * Create the Icon header in ICNS file.
    *
-   * @param {Object} info      Infromation of the icon.
+   * @param {Object} id        Identifier of the icon.
    * @param {Number} imageSize Size of the image data.
    *
    * @return {Buffer} Header data.
    */
-  static _createIconHeader (info, imageSize) {
+  static _createIconHeader (id, imageSize) {
     const buffer = Buffer.alloc(HEADER_SIZE)
-    buffer.write(info.id, 0, 'ascii')
+    buffer.write(id, 0, 'ascii')
     buffer.writeUInt32BE(HEADER_SIZE + imageSize, 4)
 
     return buffer
   }
 
   /**
-   * Calculate the size of the ICNS file.
+   * Select the support image from the icon size.
    *
-   * @param {Array.<ImageInfo>} images File informations.
+   * @param {Number}            size   Sizo of icon.
+   * @param {Array.<ImageInfo>} images File informations..
    *
-   * @return {Number} File size.
+   * @return {ImageInfo} If successful image information, otherwise null.
    */
-  static _fileSizeFromImages (images) {
-    let size = 0
-    ICON_INFOS.forEach((info) => {
-      let path = null
-      images.some((image) => {
-        if (image.size === info.size) {
-          path = image.path
-          return true
-        }
-
-        return false
-      })
-
-      if (!(path)) {
-        return
+  static _imageFromIconSize (size, images) {
+    let result = null
+    images.some((image) => {
+      if (image.size === size) {
+        result = image
+        return true
       }
 
-      const stat = Fs.statSync(path)
-      size += HEADER_SIZE + stat.size
+      return false
     })
 
-    // File header + body
-    return HEADER_SIZE + size
+    return result
   }
 }

@@ -2,6 +2,7 @@ import Path from 'path'
 
 /**
  * CLI parameters [Short, Full].
+ * @type {Object}
  */
 const CLI_PARAMS = {
   help: ['-h', '--help'],
@@ -84,6 +85,10 @@ $ icon-gen -i sample.svg -o ./dist -n ico=foo,icns=bar
 See also:
 https://github.com/akabekobeko/npm-icon-gen`
 
+/**
+ * Default command line options.
+ * @type {Object}
+ */
 export const DEFAULT_OPTIONS = {
   type: SOURCE_TYPES.svg,
   modes: OUTPUT_MODES.all,

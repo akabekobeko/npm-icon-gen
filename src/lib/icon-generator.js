@@ -131,7 +131,6 @@ export default class IconGenerator {
           break
 
         case 'favicon':
-          tasks.push(FaviconGenerator.generateICO(images, dir, logger))
           tasks.push(FaviconGenerator.generate(images, dir, logger))
           break
 
