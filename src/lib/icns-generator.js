@@ -185,8 +185,6 @@ export default class ICNSGenerator {
    * @param {ImageInfo} image Information of the image.
    *
    * @return {Buffer} If successful it wrote the icon block. "null" on failure.
-   *
-   * @see https://en.wikipedia.org/wiki/PackBits
    */
   static _createIconBlockPackBits (id, mask, image) {
     // TODO: Implement later...
