@@ -15,19 +15,23 @@ export default class PackBits {
   /**
    * Compress PackBits binary.
    *
-   * @param {Buffer} src Source binary.
+   * @param {Array.<Number>} src Source binary.
    *
-   * @return {Buffer} PackBits Compressed binary.
+   * @return {Array.<Number>} PackBits Compressed binary.
    *
    */
   static pack (src) {
+    if (!(src && src.length && 0 < src.length)) {
+      return []
+    }
+
     let dest     = []
     let literals = []
 
     for (let i = 0, max = src.length; i < max; ++i) {
-      const current = src.readUInt8(i)
+      const current = PackBits._toUInt8(src[i])
       if (i + 1 < max) {
-        const next = src.readUInt8(i + 1)
+        const next = PackBits._toUInt8(src[i + 1])
         if (current === next) {
           dest = dest.concat(PackBits._literalToResult(literals))
           literals = []
@@ -37,7 +41,7 @@ export default class PackBits {
           let   runLength = 1
 
           for (let j = 2; j <= maxJ; ++j) {
-            const run = src.readUInt8(i + j)
+            const run = src[i + j]
             if (current !== run) {
               hitMax = false
               const count = PackBits._toUInt8(0 - runLength)
@@ -69,40 +73,40 @@ export default class PackBits {
       }
     }
 
-    return Buffer.from(dest)
+    return dest
   }
 
   /**
    * Decompress PackBits compressed binary.
    *
-   * @param {Buffer} src Source binary.
+   * @param {Array.<Number>} src Source binary.
    *
-   * @return {Buffer} Decompressed binary.
+   * @return {Array.<Number>} Decompressed binary.
    */
   static unpack (src) {
     const dest = []
     for (let i = 0, max = src.length; i < max; ++i) {
-      const count = src.readInt8(i)
+      const count = PackBits._toInt8(PackBits._toUInt8(src[i]))
       if (count === -128) {
         // Do nothing, skip it
       } else if (0 <= count) {
         const total = count + 1
         for (let j = 0; j < total; ++j) {
-          dest.push(src.readUInt8(i + j + 1))
+          dest.push(PackBits._toUInt8(src[i + j + 1]))
         }
 
         i += total
       } else {
         const total = Math.abs(count) + 1
         for (let j = 0; j < total; ++j) {
-          dest.push(src.readUInt8(i + 1))
+          dest.push(PackBits._toUInt8(src[i + 1]))
         }
 
         ++i
       }
     }
 
-    return Buffer.from(dest)
+    return dest
   }
 
   /**
@@ -124,7 +128,7 @@ export default class PackBits {
    * @return {Number} Unsigned value (0 to 255).
    */
   static _toUInt8 (value) {
-    return (value < -127 ? 255 : (127 < value ? 127 : value & 255))
+    return value & 0xFF
   }
 
   /**
@@ -133,8 +137,10 @@ export default class PackBits {
    * @param {Number} value 8bit unsigned value (0 to 255).
    *
    * @return {Number} Signed value (-127 to 127).
+   *
+   * @see https://github.com/inexorabletash/polyfill/blob/master/typedarray.js
    */
   static _toInt8 (value) {
-    return (value < 0 ? 0 : (255 < value ? 255 : (value < 127 ? value : value - 256)))
+    return (value << 24) >> 24
   }
 }
