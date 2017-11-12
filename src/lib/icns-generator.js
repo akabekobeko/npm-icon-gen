@@ -1,12 +1,16 @@
 import Fs from 'fs'
 import Path from 'path'
 import Util from './util.js'
+import {PNG} from 'pngjs'
+import PackBits from './packbits.js'
+import { Buffer } from 'buffer'
+import { Promise } from 'es6-promise'
 
 /**
  * Sizes required for the ICNS file.
  * @type {Array}
  */
-const REQUIRED_IMAGE_SIZES = [32, 64, 128, 256, 512, 1024]
+const REQUIRED_IMAGE_SIZES = [16, 32, 64, 128, 256, 512, 1024]
 
 /**
  * The size of the ICNS header.
@@ -43,14 +47,11 @@ const ICON_INFOS = [
   {id: 'ic11', size: 32},
   {id: 'ic12', size: 64},
   {id: 'ic13', size: 256},
-  {id: 'ic14', size: 512}
+  {id: 'ic14', size: 512},
 
-  // TODO: Implement later...
-  /*
   // Mac OS 8.5
   {id: 'is32', mask: 's8mk', size: 16},
   {id: 'il32', mask: 'l8mk', size: 32}
-  */
 ]
 
 /**
@@ -116,7 +117,18 @@ export default class ICNSGenerator {
         continue
       }
 
-      const block = ICNSGenerator._createIconBlock(info, image)
+      let block = null
+      switch (info.id) {
+        case 'is32':
+        case 'il32':
+          block = ICNSGenerator._createIconBlockPackBits(info.id, info.mask, Fs.readFileSync(image.path))
+          break
+
+        default:
+          block = ICNSGenerator._createIconBlock(info.id, Fs.readFileSync(image.path))
+          break
+      }
+
       if (block) {
         stream.write(block, 'binary')
         fileSize += block.length
@@ -141,56 +153,70 @@ export default class ICNSGenerator {
   }
 
   /**
-   * Create an icon block.
+   * Create an icon block's data.
    *
-   * @param {ICNSIconInfo} info  Information of the icon.
-   * @param {ImageInfo}    image Information of the image.
+   * @param {String} id   Identifier of the icon.
+   * @param {Buffer} data Body data of the icon.
    *
-   * @return {Buffer} If successful it wrote the icon block. "null" on failure.
+   * @return {Buffer} data.
    */
-  static _createIconBlock (info, image) {
-    switch (info.id) {
-      case 'is32':
-      case 'il32':
-        return ICNSGenerator._createIconBlockPackBits(info.id, info.mask, image)
-
-      default:
-        return ICNSGenerator._createIconBlockPNG(info.id, image)
-    }
-  }
-
-  /**
-   * Create an icon block for PNG.
-   *
-   * @param {String}    id    Identifier of the icon.
-   * @param {ImageInfo} image Information of the image.
-   *
-   * @return {Buffer} If successful it wrote the icon block. "null" on failure.
-   */
-  static _createIconBlockPNG (id, image) {
-    const png = Fs.readFileSync(image.path)
-    if (!(png)) {
+  static _createIconBlock (id, data) {
+    if (!(data)) {
       return null
     }
 
-    const header = ICNSGenerator._createIconHeader(id, png.length)
-    return Buffer.concat([header, png], header.length + png.length)
+    const header = ICNSGenerator._createIconHeader(id, data.length)
+    return Buffer.concat([header, data], header.length + data.length)
   }
 
   /**
    * Create an icon blocks (Color and mask) for PackBits.
    *
-   * @param {String}    id    Identifier of the icon (color block).
-   * @param {String}    mask  Identifier of the icon (mask block).
-   * @param {ImageInfo} image Information of the image.
+   * @param {String} id    Identifier of the icon (color block).
+   * @param {String} mask  Identifier of the icon (mask block).
+   * @param {Buffer} data Binary of the PNG image.
    *
    * @return {Buffer} If successful it wrote the icon block. "null" on failure.
-   *
-   * @see https://en.wikipedia.org/wiki/PackBits
    */
-  static _createIconBlockPackBits (id, mask, image) {
-    // TODO: Implement later...
-    return null
+  static _createIconBlockPackBits (id, mask, data) {
+    const bodies = ICNSGenerator._createIconBlockPackBitsBodies(data)
+    if (!(bodies)) {
+      return null
+    }
+
+    const colorBlock = ICNSGenerator._createIconBlock(id, Buffer.from(bodies.color))
+    const maskBlock  = ICNSGenerator._createIconBlock(mask, Buffer.from(bodies.mask))
+
+    return Buffer.concat([colorBlock, maskBlock], colorBlock.length + maskBlock.length)
+  }
+
+  /**
+   * Create a color and mask data.
+   *
+   * @param {ImageInfo} image Information of the image.
+   *
+   * @return {Object} Bodies, "color" is a color (Compressed by PackBits), "mask" is a mask.
+   */
+  static _createIconBlockPackBitsBodies (data) {
+    if (!(data)) {
+      return null
+    }
+
+    const png     = PNG.sync.read(data)
+    const results = {color: [], mask: []}
+
+    for (let i = 0, max = png.data.length; i < max; i += 4) {
+      // RGB
+      results.color.push(png.data.readUInt8(i))
+      results.color.push(png.data.readUInt8(i + 1))
+      results.color.push(png.data.readUInt8(i + 2))
+
+      // Alpha
+      results.mask.push(png.data.readUInt8(i + 3))
+    }
+
+    results.color = PackBits.pack(results.color)
+    return results
   }
 
   /**
@@ -244,5 +270,40 @@ export default class ICNSGenerator {
     })
 
     return result
+  }
+
+  /**
+   * Unpack an icon block files from ICNS file (For debug).
+   *
+   * @param {String} src  Path of the ICNS file.
+   * @param {String} dest Path of directory to output icon block files.
+   *
+   * @return {Promise} Promise object.
+   */
+  static _debugUnpackIconBlocks (src, dest) {
+    return new Promise((resolve, reject) => {
+      Fs.readFile(src, (err, data) => {
+        if (err) {
+          return reject(err)
+        }
+
+        for (let pos = HEADER_SIZE, max = data.length; pos < max;) {
+          const header = data.slice(pos, HEADER_SIZE)
+          const id     = header.toString('ascii', 0, 4)
+          const size   = header.readUInt32BE(4)
+
+          pos += HEADER_SIZE
+          const body   = data.slice(pos, size)
+          const block = Buffer.concat(header, body)
+
+          const path = Path.join(dest, id + '.block')
+          Fs.writeFileSync(path, block, 'binary')
+
+          pos += size
+        }
+
+        resolve()
+      })
+    })
   }
 }
