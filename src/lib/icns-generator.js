@@ -204,18 +204,25 @@ export default class ICNSGenerator {
 
     const png     = PNG.sync.read(data)
     const results = {color: [], mask: []}
+    const r = []
+    const g = []
+    const b = []
 
     for (let i = 0, max = png.data.length; i < max; i += 4) {
       // RGB
-      results.color.push(png.data.readUInt8(i))
-      results.color.push(png.data.readUInt8(i + 1))
-      results.color.push(png.data.readUInt8(i + 2))
+      r.push(png.data.readUInt8(i))
+      g.push(png.data.readUInt8(i + 1))
+      b.push(png.data.readUInt8(i + 2))
 
       // Alpha
       results.mask.push(png.data.readUInt8(i + 3))
     }
 
-    results.color = PackBits.pack(results.color)
+    // Compress
+    results.color = results.color.concat(PackBits.pack(r.color))
+    results.color = results.color.concat(PackBits.pack(g.color))
+    results.color = results.color.concat(PackBits.pack(b.color))
+
     return results
   }
 
@@ -288,18 +295,16 @@ export default class ICNSGenerator {
         }
 
         for (let pos = HEADER_SIZE, max = data.length; pos < max;) {
-          const header = data.slice(pos, HEADER_SIZE)
+          const header = data.slice(pos, pos + HEADER_SIZE)
           const id     = header.toString('ascii', 0, 4)
           const size   = header.readUInt32BE(4)
 
           pos += HEADER_SIZE
-          const body   = data.slice(pos, size)
-          const block = Buffer.concat(header, body)
+          const body  = data.slice(pos, pos + size)
+          Fs.writeFileSync(Path.join(dest, id + '.header'), header, 'binary')
+          Fs.writeFileSync(Path.join(dest, id + '.body'), body, 'binary')
 
-          const path = Path.join(dest, id + '.block')
-          Fs.writeFileSync(path, block, 'binary')
-
-          pos += size
+          pos += size - HEADER_SIZE
         }
 
         resolve()

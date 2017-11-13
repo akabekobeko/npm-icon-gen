@@ -49,4 +49,15 @@ describe('ICNSGenerator', () => {
     const size = 713 + 8
     assert(header.readUInt32BE(4) === size)
   })
+/*
+  it('unpack', () => {
+    return ICNSGenerator._debugUnpackIconBlocks('./examples/data/app.icns', './examples/data')
+      .then(() => {
+        assert(true)
+      })
+      .catch((err) => {
+        assert(!(err))
+      })
+  })
+*/
 })
