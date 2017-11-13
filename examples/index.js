@@ -5,9 +5,9 @@ const options = {
 }
 
 icongen('./data/sample.svg', './icons', options)
-.then((results) => {
-  console.log('Completed!!')
-})
-.catch((err) => {
-  console.error(err)
-})
+  .then((results) => {
+    console.log('Completed!!')
+  })
+  .catch((err) => {
+    console.error(err)
+  })
