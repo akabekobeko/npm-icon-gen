@@ -172,8 +172,8 @@ export default class ICNSGenerator {
   /**
    * Create an icon blocks (Color and mask) for PackBits.
    *
-   * @param {String} id    Identifier of the icon (color block).
-   * @param {String} mask  Identifier of the icon (mask block).
+   * @param {String} id   Identifier of the icon (color block).
+   * @param {String} mask Identifier of the icon (mask block).
    * @param {Buffer} data Binary of the PNG image.
    *
    * @return {Buffer} If successful it wrote the icon block. "null" on failure.
@@ -193,9 +193,9 @@ export default class ICNSGenerator {
   /**
    * Create a color and mask data.
    *
-   * @param {ImageInfo} image Information of the image.
+   * @param {ImageInfo} data Information of the image.
    *
-   * @return {Object} Bodies, "color" is a color (Compressed by PackBits), "mask" is a mask.
+   * @return {Object} Bodies, "color" is a color (Compressed by ICNS RLE), "mask" is a mask.
    */
   static _createIconBlockPackBitsBodies (data) {
     if (!(data)) {
@@ -219,9 +219,9 @@ export default class ICNSGenerator {
     }
 
     // Compress
-    results.colors = results.colors.concat(PackBits.pack(r))
-    results.colors = results.colors.concat(PackBits.pack(g))
-    results.colors = results.colors.concat(PackBits.pack(b))
+    results.colors = results.colors.concat(PackBits.packRLEForICNS(r))
+    results.colors = results.colors.concat(PackBits.packRLEForICNS(g))
+    results.colors = results.colors.concat(PackBits.packRLEForICNS(b))
 
     return results
   }

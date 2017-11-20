@@ -42,11 +42,7 @@ Rendering of svg2png is run by [phantomjs](https://www.npmjs.com/package/phantom
 const icongen = require('icon-gen');
 
 const options = {
-  report: true,
-  names: {
-    ico: 'foo',
-    icns: 'bar'
-  }
+  report: true
 };
 
 icongen('./sample.svg', './dist', options)
@@ -83,7 +79,7 @@ Required PNG files is below. Favicon outputs both the ICO and PNG files ( see: [
 
 | Name     | Size      | ICO      | ICNS     | Fav ICO  | Fav PNG  |
 |---------:|:----------|:--------:|:--------:|:--------:|:--------:|
-|   16.png |     16x16 | &#10004; |          | &#10004; |          |
+|   16.png |     16x16 | &#10004; | &#10004; | &#10004; |          |
 |   24.png |     24x24 | &#10004; |          | &#10004; |          |
 |   32.png |     32x32 | &#10004; | &#10004; | &#10004; | &#10004; |
 |   48.png |     48x48 | &#10004; |          | &#10004; |          |

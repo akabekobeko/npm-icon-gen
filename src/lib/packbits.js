@@ -6,19 +6,18 @@ const MAX_LITERAL_LENGTH = 127
 
 /**
  * It pack (compress)/unpack (decompress) based on PackBits.
- * This class port Geeks with Blogs's code (Apache License v2.0) to Node.
- *
- * @see https://en.wikipedia.org/wiki/PackBits
- * @see http://geekswithblogs.net/rakker/archive/2015/12/14/packbits-in-c.aspx
  */
 export default class PackBits {
   /**
-   * Compress PackBits binary.
+   * Compress binary with PackBits.
+   * This method port Geeks with Blogs's code (Apache License v2.0) to Node.
    *
    * @param {Array.<Number>} src Source binary.
    *
-   * @return {Array.<Number>} PackBits Compressed binary.
+   * @return {Array.<Number>} Compressed binary.
    *
+   * @see https://en.wikipedia.org/wiki/PackBits
+   * @see http://geekswithblogs.net/rakker/archive/2015/12/14/packbits-in-c.aspx
    */
   static pack (src) {
     if (!(src && src.length && 0 < src.length)) {
@@ -77,11 +76,90 @@ export default class PackBits {
   }
 
   /**
+   * Compress binary with ICNS RLE.
+   *
+   * @param {Array.<Number>} src Source binary.
+   *
+   * @return {Array.<Number>} Compressed binary.
+   *
+   * @see https://github.com/fiji/IO/blob/master/src/main/java/sc/fiji/io/icns/RunLengthEncoding.java
+   */
+  static packRLEForICNS (src) {
+    let   output     = 0
+    const packedData = (new Array(src.length)).fill(0)
+
+    for (let input = 0; input < src.length;) {
+      let literalStart = input
+      let currentData  = src[input++]
+
+      // Read up to 128 literal bytes
+      // Stop if 3 or more consecutive bytes are equal or EOF is reached
+      let readBytes     = 1
+      let repeatedBytes = 0
+      while (input < src.length && readBytes < 128 && repeatedBytes < 3) {
+        const nextData = src[input++]
+        if (nextData === currentData) {
+          if (repeatedBytes === 0) {
+            repeatedBytes = 2
+          } else {
+            repeatedBytes++
+          }
+        } else {
+          repeatedBytes = 0
+        }
+
+        readBytes++
+        currentData = nextData
+      }
+
+      let literalBytes = 0
+      if (repeatedBytes < 3) {
+        literalBytes = readBytes
+        repeatedBytes = 0
+      } else {
+        literalBytes = readBytes - repeatedBytes
+      }
+
+      // Write the literal bytes that were read
+      if (0 < literalBytes) {
+        packedData[output++] = PackBits._toUInt8(literalBytes - 1)
+        PackBits._arrayCopy(src, literalStart, packedData, output, literalBytes)
+        output += literalBytes
+      }
+
+      // Read up to 130 consecutive bytes that are equal
+      while (input < src.length && src[input] === currentData && repeatedBytes < 130) {
+        repeatedBytes++
+        input++
+      }
+
+      if (3 <= repeatedBytes) {
+        // Write the repeated bytes if there are 3 or more
+        packedData[output++] = PackBits._toUInt8(repeatedBytes + 125)
+        packedData[output++] = currentData
+      } else {
+        // Else move back the in pointer to ensure the repeated bytes are included in the next literal string
+        input -= repeatedBytes
+      }
+    }
+
+    // Trim to the actual size
+    const dest = (new Array(output)).fill(0)
+    PackBits._arrayCopy(packedData, 0, dest, 0, output)
+
+    return dest
+  }
+
+  /**
    * Decompress PackBits compressed binary.
+   * This method port Geeks with Blogs's code (Apache License v2.0) to Node.
    *
    * @param {Array.<Number>} src Source binary.
    *
    * @return {Array.<Number>} Decompressed binary.
+   *
+   * @see https://en.wikipedia.org/wiki/PackBits
+   * @see http://geekswithblogs.net/rakker/archive/2015/12/14/packbits-in-c.aspx
    */
   static unpack (src) {
     const dest = []
@@ -107,6 +185,25 @@ export default class PackBits {
     }
 
     return dest
+  }
+
+  /**
+   * Copies the array to the target array at the specified position and size.
+   *
+   * @param {Array.<Number>} src       Byte array of copy source.
+   * @param {Number}         srcBegin  Copying start position of source.
+   * @param {Array.<Number>} dest      Bayte array of copy destination.
+   * @param {Number}         destBegin Writing start position of destinnation.
+   * @param {Number}         size      Size of copy bytes.
+   */
+  static _arrayCopy (src, srcBegin, dest, destBegin, size) {
+    if (src.length <= srcBegin || src.length < size || dest.length <= destBegin || dest.length < size) {
+      return
+    }
+
+    for (let i = srcBegin, j = destBegin, k = 0; k < size; ++i, ++j, ++k) {
+      dest[j] = src[i]
+    }
   }
 
   /**
