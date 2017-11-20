@@ -172,8 +172,8 @@ export default class ICNSGenerator {
   /**
    * Create an icon blocks (Color and mask) for PackBits.
    *
-   * @param {String} id    Identifier of the icon (color block).
-   * @param {String} mask  Identifier of the icon (mask block).
+   * @param {String} id   Identifier of the icon (color block).
+   * @param {String} mask Identifier of the icon (mask block).
    * @param {Buffer} data Binary of the PNG image.
    *
    * @return {Buffer} If successful it wrote the icon block. "null" on failure.
@@ -184,8 +184,8 @@ export default class ICNSGenerator {
       return null
     }
 
-    const colorBlock = ICNSGenerator._createIconBlock(id, Buffer.from(bodies.color))
-    const maskBlock  = ICNSGenerator._createIconBlock(mask, Buffer.from(bodies.mask))
+    const colorBlock = ICNSGenerator._createIconBlock(id, Buffer.from(bodies.colors))
+    const maskBlock  = ICNSGenerator._createIconBlock(mask, Buffer.from(bodies.masks))
 
     return Buffer.concat([colorBlock, maskBlock], colorBlock.length + maskBlock.length)
   }
@@ -193,9 +193,9 @@ export default class ICNSGenerator {
   /**
    * Create a color and mask data.
    *
-   * @param {ImageInfo} image Information of the image.
+   * @param {ImageInfo} data Information of the image.
    *
-   * @return {Object} Bodies, "color" is a color (Compressed by PackBits), "mask" is a mask.
+   * @return {Object} Bodies, "color" is a color (Compressed by ICNS RLE), "mask" is a mask.
    */
   static _createIconBlockPackBitsBodies (data) {
     if (!(data)) {
@@ -203,7 +203,7 @@ export default class ICNSGenerator {
     }
 
     const png     = PNG.sync.read(data)
-    const results = {color: [], mask: []}
+    const results = {colors: [], masks: []}
     const r = []
     const g = []
     const b = []
@@ -215,13 +215,13 @@ export default class ICNSGenerator {
       b.push(png.data.readUInt8(i + 2))
 
       // Alpha
-      results.mask.push(png.data.readUInt8(i + 3))
+      results.masks.push(png.data.readUInt8(i + 3))
     }
 
     // Compress
-    results.color = results.color.concat(PackBits.pack(r.color))
-    results.color = results.color.concat(PackBits.pack(g.color))
-    results.color = results.color.concat(PackBits.pack(b.color))
+    results.colors = results.colors.concat(PackBits.packRLEForICNS(r))
+    results.colors = results.colors.concat(PackBits.packRLEForICNS(g))
+    results.colors = results.colors.concat(PackBits.packRLEForICNS(b))
 
     return results
   }
@@ -297,14 +297,14 @@ export default class ICNSGenerator {
         for (let pos = HEADER_SIZE, max = data.length; pos < max;) {
           const header = data.slice(pos, pos + HEADER_SIZE)
           const id     = header.toString('ascii', 0, 4)
-          const size   = header.readUInt32BE(4)
+          const size   = header.readUInt32BE(4) - HEADER_SIZE
 
           pos += HEADER_SIZE
           const body  = data.slice(pos, pos + size)
           Fs.writeFileSync(Path.join(dest, id + '.header'), header, 'binary')
           Fs.writeFileSync(Path.join(dest, id + '.body'), body, 'binary')
 
-          pos += size - HEADER_SIZE
+          pos += size
         }
 
         resolve()
