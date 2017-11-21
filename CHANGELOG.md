@@ -1,5 +1,11 @@
 # ChangeLog
 
+## v1.2.0
+
+### Changes
+
+* Supports `is32` and `il32` [#71](https://github.com/akabekobeko/npm-icon-gen/issues/71)
+
 ## v1.1.5
 
 ### Bug Fixes
