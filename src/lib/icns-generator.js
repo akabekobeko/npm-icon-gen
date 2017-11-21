@@ -2,7 +2,7 @@ import Fs from 'fs'
 import Path from 'path'
 import Util from './util.js'
 import {PNG} from 'pngjs'
-import PackBits from './packbits.js'
+import RLE from './rle.js'
 import { Buffer } from 'buffer'
 import { Promise } from 'es6-promise'
 
@@ -219,9 +219,9 @@ export default class ICNSGenerator {
     }
 
     // Compress
-    results.colors = results.colors.concat(PackBits.packRLEForICNS(r))
-    results.colors = results.colors.concat(PackBits.packRLEForICNS(g))
-    results.colors = results.colors.concat(PackBits.packRLEForICNS(b))
+    results.colors = results.colors.concat(RLE.packICNS(r))
+    results.colors = results.colors.concat(RLE.packICNS(g))
+    results.colors = results.colors.concat(RLE.packICNS(b))
 
     return results
   }
