@@ -26,7 +26,7 @@ export default class IconGenerator {
     return new Promise((resolve, reject) => {
       const svgFilePath = Path.resolve(src)
       const destDirPath = Path.resolve(dir)
-      logger.log('Icon generetor from SVG:')
+      logger.log('Icon generator from SVG:')
       logger.log('  src: ' + svgFilePath)
       logger.log('  dir: ' + destDirPath)
 
