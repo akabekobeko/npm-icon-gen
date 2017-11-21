@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import CLI from './cli-util.js'
+import CLI from './cli.js'
 import IconGen from '../lib/index.js'
 
 /**
