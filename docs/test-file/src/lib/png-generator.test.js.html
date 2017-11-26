@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../../">
+  <title data-ice="title">src/lib/png-generator.test.js | icon-gen</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  <script src="script/manual.js"></script>
+<meta name="description" content="Generate an icon files from the SVG or PNG files"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="icon-gen"><meta property="twitter:description" content="Generate an icon files from the SVG or PNG files"></head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="./">Home</a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  <a href="test.html" data-ice="testLink">Test</a>
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+<a style="position:relative; top:3px;" href="https://github.com/akabekobeko/npm-icon-gen"><img width="20px" src="./image/github.png"></a></header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-CLIOptions">CLIOptions</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-ICNSIconInfo">ICNSIconInfo</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-ICODirectory">ICODirectory</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-ICOHeader">ICOHeader</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-ImageInfo">ImageInfo</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-external">E</span><span data-ice="name"><span><a href="https://nodejs.org/api/buffer.html">Buffer</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-external">E</span><span data-ice="name"><span><a href="https://nodejs.org/api/stream.html">WritableStream</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#bin">bin</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/bin/cli.js~CLI.html">CLI</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-DEFAULT_OPTIONS">DEFAULT_OPTIONS</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#lib">lib</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/lib/favicon-generator.js~FaviconGenerator.html">FaviconGenerator</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/lib/icns-generator.js~ICNSGenerator.html">ICNSGenerator</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/lib/ico-generator.js~ICOGenerator.html">ICOGenerator</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/lib/icon-generator.js~IconGenerator.html">IconGenerator</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/lib/logger.js~Logger.html">Logger</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/lib/png-generator.js~PNGGenerator.html">PNGGenerator</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/lib/rle.js~RLE.html">RLE</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/lib/util.js~Util.html">Util</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">src/lib/png-generator.test.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import assert from &apos;assert&apos;
+import Fs from &apos;fs&apos;
+import Del from &apos;del&apos;
+import Logger from &apos;./logger.js&apos;
+import PNGGenerator from &apos;./png-generator.js&apos;
+import FaviconGenerator from &apos;./favicon-generator.js&apos;
+import ICNSGenerator from &apos;./icns-generator.js&apos;
+import ICOGenerator from &apos;./ico-generator.js&apos;
+import Util from &apos;./util.js&apos;
+
+/** @test {PNGGenerator} */
+describe(&apos;PNGGenerator&apos;, () =&gt; {
+  /** @test {PNGGenerator#getRequiredImageSizes} */
+  it(&apos;getRequiredImageSizes&apos;, () =&gt; {
+    let expected = PNGGenerator.getRequiredImageSizes()
+    let actual   = [16, 24, 32, 48, 57, 64, 72, 96, 120, 128, 144, 152, 195, 228, 256, 512, 1024]
+    assert.deepEqual(expected, actual)
+
+    expected = PNGGenerator.getRequiredImageSizes([&apos;ico&apos;])
+    actual   = ICOGenerator.getRequiredImageSizes()
+    assert.deepEqual(expected, actual)
+
+    expected = PNGGenerator.getRequiredImageSizes([&apos;icns&apos;])
+    actual   = ICNSGenerator.getRequiredImageSizes()
+    assert.deepEqual(expected, actual)
+
+    expected = PNGGenerator.getRequiredImageSizes([&apos;favicon&apos;])
+    actual   = FaviconGenerator.getRequiredImageSizes()
+    assert.deepEqual(expected, actual)
+  })
+
+  /** @test {PNGGenerator#_generetePNG} */
+  it(&apos;_generetePNG&apos;, () =&gt; {
+    const svg = Fs.readFileSync(&apos;./examples/data/sample.svg&apos;)
+    assert(svg)
+
+    const dir = Util.createWorkDir()
+    assert(dir)
+
+    const size = 16
+    return PNGGenerator
+      ._generatePNG(svg, size, dir, new Logger())
+      .then((result) =&gt; {
+        assert(result.size === size)
+        Del.sync([dir], {force: true})
+      })
+      .catch((err) =&gt; {
+        console.error(err)
+        assert()
+        Del.sync([dir], {force: true})
+      })
+  })
+})
+</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(1.0.4)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>

@@ -34,6 +34,6 @@ node_modules
 .node_repl_history
 
 dist/
-esdoc/
+docs/ast/
 icons/
 package-lock.json

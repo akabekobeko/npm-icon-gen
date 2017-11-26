@@ -28,7 +28,7 @@
   },
   "esdoc": {
     "source": "./src",
-    "destination": "./esdoc",
+    "destination": "./docs",
     "plugins": [
       {
         "name": "esdoc-standard-plugin",
