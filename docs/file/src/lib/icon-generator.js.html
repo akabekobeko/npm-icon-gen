@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../../">
+  <title data-ice="title">src/lib/icon-generator.js | icon-gen</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  <script src="script/manual.js"></script>
+<meta name="description" content="Generate an icon files from the SVG or PNG files"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="icon-gen"><meta property="twitter:description" content="Generate an icon files from the SVG or PNG files"></head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="./">Home</a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  <a href="test.html" data-ice="testLink">Test</a>
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+<a style="position:relative; top:3px;" href="https://github.com/akabekobeko/npm-icon-gen"><img width="20px" src="./image/github.png"></a></header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-CLIOptions">CLIOptions</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-ICNSIconInfo">ICNSIconInfo</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-ICODirectory">ICODirectory</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-ICOHeader">ICOHeader</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-ImageInfo">ImageInfo</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-external">E</span><span data-ice="name"><span><a href="https://nodejs.org/api/buffer.html">Buffer</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-external">E</span><span data-ice="name"><span><a href="https://nodejs.org/api/stream.html">WritableStream</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#bin">bin</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/bin/cli.js~CLI.html">CLI</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-DEFAULT_OPTIONS">DEFAULT_OPTIONS</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#lib">lib</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/lib/favicon-generator.js~FaviconGenerator.html">FaviconGenerator</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/lib/icns-generator.js~ICNSGenerator.html">ICNSGenerator</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/lib/ico-generator.js~ICOGenerator.html">ICOGenerator</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/lib/icon-generator.js~IconGenerator.html">IconGenerator</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/lib/logger.js~Logger.html">Logger</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/lib/png-generator.js~PNGGenerator.html">PNGGenerator</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/lib/rle.js~RLE.html">RLE</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/lib/util.js~Util.html">Util</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">src/lib/icon-generator.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import Fs from &apos;fs&apos;
+import Path from &apos;path&apos;
+import Del from &apos;del&apos;
+import MkdirP from &apos;mkdirp&apos;
+import PngGenerator from &apos;./png-generator.js&apos;
+import ICOGenerator from &apos;./ico-generator.js&apos;
+import ICNSGenerator from &apos;./icns-generator.js&apos;
+import FaviconGenerator from &apos;./favicon-generator.js&apos;
+import Util from &apos;./util.js&apos;
+
+/**
+ * Generate an icons.
+ */
+export default class IconGenerator {
+  /**
+   * Generate an icon = require(the SVG file.
+   *
+   * @param {String} src     Path of the SVG file.
+   * @param {String} dir     Path of the output files directory.
+   * @param {Object} options Options.
+   * @param {Logger} logger  Logger.
+   *
+   * @return {Promise} Promise object.
+   */
+  static fromSVG (src, dir, options, logger) {
+    return new Promise((resolve, reject) =&gt; {
+      const svgFilePath = Path.resolve(src)
+      const destDirPath = Path.resolve(dir)
+      logger.log(&apos;Icon generator from SVG:&apos;)
+      logger.log(&apos;  src: &apos; + svgFilePath)
+      logger.log(&apos;  dir: &apos; + destDirPath)
+
+      const workDir = Util.createWorkDir()
+      if (!(workDir)) {
+        reject(new Error(&apos;Failed to create the working directory.&apos;))
+        return
+      }
+
+      PngGenerator.generate(svgFilePath, workDir, options.modes, (err, images) =&gt; {
+        if (err) {
+          Del.sync([workDir], {force: true})
+          reject(err)
+          return
+        }
+
+        IconGenerator._generate(images, destDirPath, options, logger, (err2, results) =&gt; {
+          Del.sync([workDir], {force: true})
+          return (err2 ? reject(err2) : resolve(results))
+        })
+      }, logger)
+    })
+  }
+
+  /**
+   * Generate an icon = require(the SVG file.
+   *
+   * @param {String} src     Path of the PNG files direcgtory.
+   * @param {String} dir     Path of the output files directory.
+   * @param {Object} options Options.
+   * @param {Logger} logger  Logger.
+   *
+   * @return {Promise} Promise object.
+   */
+  static fromPNG (src, dir, options, logger) {
+    return new Promise((resolve, reject) =&gt; {
+      const pngDirPath  = Path.resolve(src)
+      const destDirPath = Path.resolve(dir)
+      logger.log(&apos;Icon generetor from PNG:&apos;)
+      logger.log(&apos;  src: &apos; + pngDirPath)
+      logger.log(&apos;  dir: &apos; + destDirPath)
+
+      const images = IconGenerator._getRequiredImageSizes(options.modes, options.sizes)
+        .map((size) =&gt; {
+          return Path.join(pngDirPath, size + &apos;.png&apos;)
+        })
+        .map((path) =&gt; {
+          const size = Number(Path.basename(path, &apos;.png&apos;))
+          return { path, size }
+        })
+
+      let notExistsFile = null
+      images.some((image) =&gt; {
+        const stat = Fs.statSync(image.path)
+        if (!(stat &amp;&amp; stat.isFile())) {
+          notExistsFile = Path.basename(image.path)
+          return true
+        }
+
+        return false
+      })
+
+      if (notExistsFile) {
+        reject(new Error(&apos;&quot;&apos; + notExistsFile + &apos;&quot; does not exist.&apos;))
+        return
+      }
+
+      IconGenerator._generate(images, dir, options, logger, (err, results) =&gt; {
+        return (err ? reject(err) : resolve(results))
+      })
+    })
+  }
+
+  static _getRequiredImageSizes (modes, sizes) {
+    if (!(sizes)) {
+      return PngGenerator.getRequiredImageSizes(modes)
+    }
+
+    let imageSizes = []
+    modes.forEach((mode) =&gt; {
+      if (sizes[mode]) {
+        imageSizes = imageSizes.concat(sizes[mode])
+      }
+    })
+
+    return 0 &lt; imageSizes.length ? imageSizes : PngGenerator.getRequiredImageSizes(modes)
+  }
+
+  /**
+   * Generate an icon = require(the image file infromations.
+   *
+   * @param {Array.&lt;ImageInfo&gt;} images  Image file informations.
+   * @param {String}            dest    Destination directory path.
+   * @param {Object}            options Options.
+   * @param {Logger}            logger  Logger.
+   * @param {Function}          cb      Callback function.
+   */
+  static _generate (images, dest, options, logger, cb) {
+    if (!(images &amp;&amp; 0 &lt; images.length)) {
+      cb(new Error(&apos;Targets is empty.&apos;))
+      return
+    }
+
+    const dir = Path.resolve(dest)
+    MkdirP.sync(dir)
+
+    // Select output mode
+    const tasks = []
+    options.modes.forEach((mode) =&gt; {
+      switch (mode) {
+        case &apos;icns&apos;:
+          tasks.push(ICNSGenerator.generate(images, dir, options, logger))
+          break
+
+        case &apos;ico&apos;:
+          tasks.push(ICOGenerator.generate(images, dir, options, logger))
+          break
+
+        case &apos;favicon&apos;:
+          tasks.push(FaviconGenerator.generate(images, dir, logger))
+          break
+
+        default:
+          break
+      }
+    })
+
+    Promise
+      .all(tasks)
+      .then((results) =&gt; {
+        cb(null, Util.flattenValues(results))
+      })
+      .catch((err) =&gt; {
+        cb(err)
+      })
+  }
+
+  /**
+   * Get the icon sizes.
+   *
+   * @param {Array.&lt;Number&gt;} defaltSizes Sizes of the defalt.
+   * @param {Object}         options     CLI options.
+   * @param {String}         type        Type of the icon, &apos;ico&apos; or &apos;icns&apos;.
+   *
+   * @return {Array.&lt;Number&gt;} Sizes.
+   */
+  static _getSizes (defaltSizes, options, type) {
+    return options &amp;&amp; options.sizes &amp;&amp; options.sizes[type] ? options.sizes[type] : defaltSizes
+  }
+}
+</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(1.0.4)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>

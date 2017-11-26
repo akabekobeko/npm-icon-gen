@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../../">
+  <title data-ice="title">src/bin/cli.js | icon-gen</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  <script src="script/manual.js"></script>
+<meta name="description" content="Generate an icon files from the SVG or PNG files"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="icon-gen"><meta property="twitter:description" content="Generate an icon files from the SVG or PNG files"></head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="./">Home</a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  <a href="test.html" data-ice="testLink">Test</a>
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+<a style="position:relative; top:3px;" href="https://github.com/akabekobeko/npm-icon-gen"><img width="20px" src="./image/github.png"></a></header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-CLIOptions">CLIOptions</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-ICNSIconInfo">ICNSIconInfo</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-ICODirectory">ICODirectory</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-ICOHeader">ICOHeader</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-ImageInfo">ImageInfo</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-external">E</span><span data-ice="name"><span><a href="https://nodejs.org/api/buffer.html">Buffer</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-external">E</span><span data-ice="name"><span><a href="https://nodejs.org/api/stream.html">WritableStream</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#bin">bin</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/bin/cli.js~CLI.html">CLI</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-DEFAULT_OPTIONS">DEFAULT_OPTIONS</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#lib">lib</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/lib/favicon-generator.js~FaviconGenerator.html">FaviconGenerator</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/lib/icns-generator.js~ICNSGenerator.html">ICNSGenerator</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/lib/ico-generator.js~ICOGenerator.html">ICOGenerator</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/lib/icon-generator.js~IconGenerator.html">IconGenerator</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/lib/logger.js~Logger.html">Logger</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/lib/png-generator.js~PNGGenerator.html">PNGGenerator</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/lib/rle.js~RLE.html">RLE</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/lib/util.js~Util.html">Util</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">src/bin/cli.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import Path from &apos;path&apos;
+
+/**
+ * CLI parameters [Short, Full].
+ * @type {Object}
+ */
+const CLI_PARAMS = {
+  help: [&apos;-h&apos;, &apos;--help&apos;],
+  version: [&apos;-v&apos;, &apos;--version&apos;],
+  input: [&apos;-i&apos;, &apos;--input&apos;],
+  output: [&apos;-o&apos;, &apos;--output&apos;],
+  type: [&apos;-t&apos;, &apos;--type&apos;],
+  modes: [&apos;-m&apos;, &apos;--modes&apos;],
+  sizes: [&apos;-s&apos;, &apos;--sizes&apos;],
+  names: [&apos;-n&apos;, &apos;--names&apos;],
+  report: [&apos;-r&apos;, &apos;--report&apos;]
+}
+
+/**
+ * Types of the source file.
+ * @type {Object}
+ */
+const SOURCE_TYPES = {
+  svg: &apos;svg&apos;,
+  png: &apos;png&apos;
+}
+
+/**
+ * Output file modes.
+ * @type {Object}
+ */
+const OUTPUT_MODES = {
+  ico: &apos;ico&apos;,
+  icns: &apos;icns&apos;,
+  favicon: &apos;favicon&apos;,
+  all: [&apos;ico&apos;, &apos;icns&apos;, &apos;favicon&apos;]
+}
+
+/**
+ * Text of help.
+ * @type {String}
+ */
+const HELP_TEXT = `
+Usage: icon-gen [OPTIONS]
+
+Generate an icon from the SVG or PNG file.
+
+Options:
+-h, --help    Display this text.
+
+-v, --version Display the version number.
+
+-i, --input   Path of the SVG file or PNG file directory.
+
+-o, --output  Path of the output directory.
+
+-t, --type    Type of the input file.
+              &apos;svg&apos; is the SVG file, &apos;png&apos; is the PNG files directory.
+              Allowed values: svg, png
+              Default is &apos;svg&apos;.
+
+-m, --modes   Mode of the output files.
+              Allowed values: ico, icns, favicon, all
+              Default is &apos;all&apos;.
+
+-n, --names   Change an output file names for ICO and ICNS.
+              ex: &apos;ico=foo,icns=bar&apos;
+              Default is &apos;app.ico&apos; and &apos;app.ico&apos;.
+
+-r, --report  Display the process reports.
+              Default is disable.
+
+-s, --sizes   List of sizes to include for ICO and ICNS.
+              ex: &apos;ico=[12,24,32],icns=[12,24,64]&apos;
+
+Examples:
+$ icon-gen -i sample.svg -o ./dist -r
+$ icon-gen -i ./images -o ./dist -t png -r
+$ icon-gen -i sample.svg -o ./dist -m ico,favicon -r
+$ icon-gen -i sample.svg -o ./dist -n ico=foo,icns=bar
+
+See also:
+https://github.com/akabekobeko/npm-icon-gen`
+
+/**
+ * Default command line options.
+ * @type {Object}
+ */
+export const DEFAULT_OPTIONS = {
+  type: SOURCE_TYPES.svg,
+  modes: OUTPUT_MODES.all,
+  names: {
+    ico: &apos;app&apos;,
+    icns: &apos;app&apos;
+  },
+  report: false
+}
+
+/**
+ * Utility of the commad line interface.
+ */
+export default class CLI {
+  /**
+   * Show the help text.
+   *
+   * @param {WritableStream} stream Target stream.
+   *
+   * @return {Promise} Promise object.
+   */
+  static showHelp (stream) {
+    return new Promise((resolve) =&gt; {
+      stream.write(HELP_TEXT)
+      resolve()
+    })
+  }
+
+  /**
+   * Show the version number.
+   *
+   * @param {WritableStream} stream Target stream.
+   *
+   * @return {Promise} Promise object.
+   */
+  static showVersion (stream) {
+    return new Promise((resolve) =&gt; {
+      const read = (path) =&gt; {
+        try {
+          return require(path).version
+        } catch (err) {
+          return null
+        }
+      }
+
+      const version = read(&apos;../package.json&apos;) || read(&apos;../../package.json&apos;)
+      stream.write(&apos;v&apos; + version + &apos;\n&apos;)
+
+      resolve()
+    })
+  }
+
+  /**
+   * Parse for the command line argumens.
+   *
+   * @param {Array.&lt;String&gt;} argv Arguments of the command line.
+   *
+   * @return {CLIOptions} Parse results.
+   */
+  static parse (argv) {
+    if (!(argv &amp;&amp; 0 &lt; argv.length)) {
+      return {help: true}
+    }
+
+    switch (argv[0]) {
+      case CLI_PARAMS.help[0]:
+      case CLI_PARAMS.help[1]:
+        return {help: true}
+
+      case CLI_PARAMS.version[0]:
+      case CLI_PARAMS.version[1]:
+        return {version: true}
+
+      default:
+        return CLI._parse(argv)
+    }
+  }
+
+  /**
+   * Parse for the command line argumens.
+   *
+   * @param {Array.&lt;String&gt;} argv Arguments of the command line.
+   *
+   * @return {CLIOptions} Parse results.
+   */
+  static _parse (argv) {
+    const options = {}
+    argv.forEach((arg, index) =&gt; {
+      switch (arg) {
+        case CLI_PARAMS.input[0]:
+        case CLI_PARAMS.input[1]:
+          if (index + 1 &lt; argv.length) {
+            options.input = Path.resolve(argv[index + 1])
+          }
+          break
+
+        case CLI_PARAMS.output[0]:
+        case CLI_PARAMS.output[1]:
+          if (index + 1 &lt; argv.length) {
+            options.output = Path.resolve(argv[index + 1])
+          }
+          break
+
+        case CLI_PARAMS.type[0]:
+        case CLI_PARAMS.type[1]:
+          if (index + 1 &lt; argv.length) {
+            options.type = argv[index + 1]
+          }
+          break
+
+        case CLI_PARAMS.report[0]:
+        case CLI_PARAMS.report[1]:
+          options.report = true
+          break
+
+        case CLI_PARAMS.modes[0]:
+        case CLI_PARAMS.modes[1]:
+          if (index + 1 &lt; argv.length) {
+            options.modes = CLI._parseMode(argv[index + 1])
+          }
+          break
+
+        case CLI_PARAMS.names[0]:
+        case CLI_PARAMS.names[1]:
+          if (index + 1 &lt; argv.length) {
+            options.names = CLI._parseNames(argv[index + 1])
+          }
+          break
+
+        case CLI_PARAMS.sizes[0]:
+        case CLI_PARAMS.sizes[1]:
+          if (index + 1 &lt; argv.length) {
+            options.sizes = CLI._parseSizes(argv[index + 1])
+          }
+          break
+
+        default:
+          break
+      }
+    })
+
+    if (!(options.type) || (options.type !== SOURCE_TYPES.svg &amp;&amp; options.type !== SOURCE_TYPES.png)) {
+      options.type = SOURCE_TYPES.svg
+    }
+
+    if (!(options.modes)) {
+      options.modes = OUTPUT_MODES.all
+    }
+
+    if (!(options.sizes)) {
+      options.sizes = {}
+    }
+
+    return options
+  }
+
+  /**
+   * Parse for the mode option.
+   *
+   * @param {String} arg Option. Format is a &apos;all&apos; or &apos;ico,icns,favicon&apos;.
+   *
+   * @return {Array.&lt;String&gt;} Parse results.
+   */
+  static _parseMode (arg) {
+    if (!(arg)) {
+      return OUTPUT_MODES.all
+    }
+
+    const values = arg.split(&apos;,&apos;).filter((value) =&gt; {
+      switch (value) {
+        case OUTPUT_MODES.ico:
+        case OUTPUT_MODES.icns:
+        case OUTPUT_MODES.favicon:
+          return true
+
+        default:
+          return false
+      }
+    })
+
+    return (0 &lt; values.length ? values : OUTPUT_MODES.all)
+  }
+
+  /**
+   * Parse the output file names.
+   *
+   * @param {String} arg Option. Format is a &apos;ico=foo,icns=bar&apos;.
+   *
+   * @return {Object} File names.
+   */
+  static _parseNames (arg) {
+    const names = {}
+    if (!(typeof arg === &apos;string&apos;)) {
+      return names
+    }
+
+    const params = arg.split(&apos;,&apos;)
+    params.forEach((param) =&gt; {
+      const units = param.split(&apos;=&apos;)
+      if (units.length &lt; 2) {
+        return
+      }
+
+      const key   = units[0]
+      const value = units[1]
+      switch (key) {
+        case OUTPUT_MODES.ico:
+        case OUTPUT_MODES.icns:
+          names[key] = value
+          break
+
+        default:
+          break
+      }
+    })
+
+    return names
+  }
+
+  /**
+   * Parse the input file sizes.
+   *
+   * @param {String} arg Option. Format is a &apos;ico=[16,24,32],icns=[16,24,32]&apos;.
+   *
+   * @return {Object} File sizes.
+   */
+  static _parseSizes (arg) {
+    const sizes = {}
+    if (!(typeof arg === &apos;string&apos;)) {
+      return sizes
+    }
+
+    const regexp = new RegExp(/((ico|icns)=\[[0-9,]+\])/g)
+
+    const params = arg.match(regexp)
+    params.forEach((param) =&gt; {
+      const units = param.split(&apos;=&apos;)
+      if (units.length &lt; 2) {
+        return
+      }
+
+      const key    = units[0]
+      const values = units[1].match(/\[([0-9,]+)\]/)[1].split(&apos;,&apos;)
+      switch (key) {
+        case OUTPUT_MODES.ico:
+        case OUTPUT_MODES.icns:
+          sizes[key] = values
+          break
+
+        default:
+          break
+      }
+    })
+
+    return sizes
+  }
+}
+</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(1.0.4)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>

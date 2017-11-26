@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../../">
+  <title data-ice="title">src/bin/cli.test.js | icon-gen</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  <script src="script/manual.js"></script>
+<meta name="description" content="Generate an icon files from the SVG or PNG files"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="icon-gen"><meta property="twitter:description" content="Generate an icon files from the SVG or PNG files"></head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="./">Home</a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  <a href="test.html" data-ice="testLink">Test</a>
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+<a style="position:relative; top:3px;" href="https://github.com/akabekobeko/npm-icon-gen"><img width="20px" src="./image/github.png"></a></header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-CLIOptions">CLIOptions</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-ICNSIconInfo">ICNSIconInfo</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-ICODirectory">ICODirectory</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-ICOHeader">ICOHeader</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-ImageInfo">ImageInfo</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-external">E</span><span data-ice="name"><span><a href="https://nodejs.org/api/buffer.html">Buffer</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-external">E</span><span data-ice="name"><span><a href="https://nodejs.org/api/stream.html">WritableStream</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#bin">bin</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/bin/cli.js~CLI.html">CLI</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-DEFAULT_OPTIONS">DEFAULT_OPTIONS</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#lib">lib</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/lib/favicon-generator.js~FaviconGenerator.html">FaviconGenerator</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/lib/icns-generator.js~ICNSGenerator.html">ICNSGenerator</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/lib/ico-generator.js~ICOGenerator.html">ICOGenerator</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/lib/icon-generator.js~IconGenerator.html">IconGenerator</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/lib/logger.js~Logger.html">Logger</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/lib/png-generator.js~PNGGenerator.html">PNGGenerator</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/lib/rle.js~RLE.html">RLE</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/lib/util.js~Util.html">Util</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">src/bin/cli.test.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import assert from &apos;assert&apos;
+import Path from &apos;path&apos;
+import CLI from &apos;./cli.js&apos;
+
+/** @test {CLI} */
+describe(&apos;CLI&apos;, () =&gt; {
+  /** @test {CLIl#parse} */
+  describe(&apos;parse&apos;, () =&gt; {
+    it(&apos;parse: Empty arguments&apos;, () =&gt; {
+      const options = CLI.parse([])
+      assert(options.help)
+    })
+
+    it(&apos;parse: -h --help&apos;, () =&gt; {
+      let options = CLI.parse([&apos;-h&apos;])
+      assert(options.help)
+
+      options = CLI.parse([&apos;--help&apos;])
+      assert(options.help)
+    })
+
+    it(&apos;parse: -v --version&apos;, () =&gt; {
+      let options = CLI.parse([&apos;-v&apos;])
+      assert(options.version)
+
+      options = CLI.parse([&apos;--version&apos;])
+      assert(options.version)
+    })
+
+    it(&apos;parse: -m --modes&apos;, () =&gt; {
+      let options = CLI.parse([&apos;-m&apos;, &apos;XXX&apos;])
+      assert(options.modes.length === 3)
+
+      options = CLI.parse([&apos;--modes&apos;, &apos;XXX&apos;])
+      assert(options.modes.length === 3)
+
+      options = CLI.parse([&apos;-m&apos;, &apos;ico&apos;])
+      assert(options.modes.length === 1)
+
+      options = CLI.parse([&apos;-m&apos;, &apos;ico,icns,favicon&apos;])
+      assert(options.modes.length === 3)
+
+      options = CLI.parse([&apos;-m&apos;, &apos;ico,XXX,icns&apos;])
+      assert(options.modes.length === 2)
+    })
+
+    it(&apos;parse: -i SVGFILE -o DESTDIR&apos;, () =&gt; {
+      const argv = [
+        &apos;-i&apos;,  &apos;./test/data/sample.svg&apos;,
+        &apos;-o&apos;, &apos;./test&apos;
+      ]
+
+      const options = CLI.parse(argv)
+
+      const actualInputPath = Path.resolve(argv[1])
+      assert(options.input === actualInputPath)
+
+      const actualOutputPath = Path.resolve(argv[3])
+      assert(options.output === actualOutputPath)
+
+      assert(options.type === &apos;svg&apos;)
+      assert(!(options.report))
+    })
+
+    it(&apos;parse: -i PNGDIR -o DESTDIR -t png -r&apos;, () =&gt; {
+      const argv = [
+        &apos;-i&apos;, &apos;./test/data&apos;,
+        &apos;-o&apos;, &apos;./test&apos;,
+        &apos;-t&apos;, &apos;png&apos;,
+        &apos;-r&apos;
+      ]
+
+      const options = CLI.parse(argv)
+
+      const actualInputPath = Path.resolve(argv[1])
+      assert(options.input === actualInputPath)
+
+      const actualOutputPath = Path.resolve(argv[3])
+      assert(options.output === actualOutputPath)
+
+      assert(options.type === &apos;png&apos;)
+      assert(options.report)
+    })
+  })
+
+  /** @test {CLI#_parseMode} */
+  describe(&apos;_parseMode&apos;, () =&gt; {
+    it(&apos;Default&apos;, () =&gt; {
+      const modes = CLI._parseMode()
+      assert.deepEqual(modes, [&apos;ico&apos;, &apos;icns&apos;, &apos;favicon&apos;])
+    })
+
+    it(&apos;ico, icns, favicon&apos;, () =&gt; {
+      const modes = CLI._parseMode(&apos;ico,icns,favicon&apos;)
+      assert(modes.length === 3)
+    })
+
+    it(&apos;ico&apos;, () =&gt; {
+      const modes = CLI._parseMode(&apos;ico&apos;)
+      assert(modes[0] === &apos;ico&apos;)
+    })
+
+    it(&apos;icns&apos;, () =&gt; {
+      const modes = CLI._parseMode(&apos;icns&apos;)
+      assert(modes[0] === &apos;icns&apos;)
+    })
+
+    it(&apos;favicon&apos;, () =&gt; {
+      const modes = CLI._parseMode(&apos;favicon&apos;)
+      assert(modes[0] === &apos;favicon&apos;)
+    })
+  })
+
+  /** @test {CLI#_parseNames} */
+  describe(&apos;_parseNames&apos;, () =&gt; {
+    it(&apos;ico &amp; icns&apos;, () =&gt; {
+      const names = CLI._parseNames(&apos;ico=foo,icns=bar&apos;)
+      assert.deepEqual({ ico: &apos;foo&apos;, icns: &apos;bar&apos; }, names)
+    })
+
+    it(&apos;ico&apos;, () =&gt; {
+      const names = CLI._parseNames(&apos;ico=foo&apos;)
+      assert.deepEqual({ ico: &apos;foo&apos; }, names)
+    })
+
+    it(&apos;icns&apos;, () =&gt; {
+      const names = CLI._parseNames(&apos;icns=bar&apos;)
+      assert.deepEqual({ icns: &apos;bar&apos; }, names)
+    })
+
+    it(&apos;Invalid value&apos;, () =&gt; {
+      const names = CLI._parseNames()
+      assert.deepEqual({}, names)
+    })
+  })
+
+  /** @test {CLI#_parseSizes} */
+  describe(&apos;_parseSizes&apos;, () =&gt; {
+    it(&apos;ico &amp; icns&apos;, () =&gt; {
+      const sizes = CLI._parseSizes(&apos;ico=[16,24,32],icns=[16,24,64]&apos;)
+      assert.deepEqual({ ico: [&apos;16&apos;, &apos;24&apos;, &apos;32&apos;], icns: [&apos;16&apos;, &apos;24&apos;, &apos;64&apos;] }, sizes)
+    })
+
+    it(&apos;ico&apos;, () =&gt; {
+      const sizes = CLI._parseSizes(&apos;ico=[16,24,32]&apos;)
+      assert.deepEqual({ ico: [&apos;16&apos;, &apos;24&apos;, &apos;32&apos;] }, sizes)
+    })
+
+    it(&apos;icns&apos;, () =&gt; {
+      const sizes = CLI._parseSizes(&apos;icns=[16,24,64]&apos;)
+      assert.deepEqual({ icns: [&apos;16&apos;, &apos;24&apos;, &apos;64&apos;] }, sizes)
+    })
+
+    it(&apos;Invalid value&apos;, () =&gt; {
+      const sizes = CLI._parseSizes()
+      assert.deepEqual({}, sizes)
+    })
+  })
+})
+</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(1.0.4)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>

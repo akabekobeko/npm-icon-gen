@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../../">
+  <title data-ice="title">src/lib/util.js | icon-gen</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  <script src="script/manual.js"></script>
+<meta name="description" content="Generate an icon files from the SVG or PNG files"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="icon-gen"><meta property="twitter:description" content="Generate an icon files from the SVG or PNG files"></head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="./">Home</a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  <a href="test.html" data-ice="testLink">Test</a>
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+<a style="position:relative; top:3px;" href="https://github.com/akabekobeko/npm-icon-gen"><img width="20px" src="./image/github.png"></a></header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-CLIOptions">CLIOptions</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-ICNSIconInfo">ICNSIconInfo</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-ICODirectory">ICODirectory</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-ICOHeader">ICOHeader</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-ImageInfo">ImageInfo</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-external">E</span><span data-ice="name"><span><a href="https://nodejs.org/api/buffer.html">Buffer</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-external">E</span><span data-ice="name"><span><a href="https://nodejs.org/api/stream.html">WritableStream</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#bin">bin</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/bin/cli.js~CLI.html">CLI</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-DEFAULT_OPTIONS">DEFAULT_OPTIONS</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#lib">lib</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/lib/favicon-generator.js~FaviconGenerator.html">FaviconGenerator</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/lib/icns-generator.js~ICNSGenerator.html">ICNSGenerator</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/lib/ico-generator.js~ICOGenerator.html">ICOGenerator</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/lib/icon-generator.js~IconGenerator.html">IconGenerator</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/lib/logger.js~Logger.html">Logger</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/lib/png-generator.js~PNGGenerator.html">PNGGenerator</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/lib/rle.js~RLE.html">RLE</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/lib/util.js~Util.html">Util</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">src/lib/util.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import Fs from &apos;fs&apos;
+import Path from &apos;path&apos;
+import OS from &apos;os&apos;
+import UUID from &apos;uuid&apos;
+
+export default class Util {
+  /**
+   * Create the work directory.
+   *
+   * @return {String} The path of the created directory, failure is null.
+   */
+  static createWorkDir () {
+    const dir = Path.join(OS.tmpdir(), UUID.v4())
+    Fs.mkdirSync(dir)
+
+    const stat = Fs.statSync(dir)
+    return (stat &amp;&amp; stat.isDirectory() ? dir : null)
+  }
+
+  /**
+   * Delete a files.
+   *
+   * @param {Array.&lt;String&gt;} paths File paths.
+   */
+  static deleteFiles (paths) {
+    paths.forEach((path) =&gt; {
+      try {
+        const stat = Fs.statSync(path)
+        if (stat &amp;&amp; stat.isFile()) {
+          Fs.unlinkSync(path)
+        }
+      } catch (err) {
+        console.error(err)
+      }
+    })
+  }
+
+  /**
+   * Filter by size to the specified image informations.
+   *
+   * @param {Array.&lt;ImageInfo&gt;} images Image file informations.
+   * @param {Array.&lt;Number&gt;}    sizes  Required sizes.
+   *
+   * @return {Array.&lt;ImageInfo&gt;} Filtered image informations.
+   */
+  static filterImagesBySizes (images, sizes) {
+    return images
+      .filter((image) =&gt; {
+        return sizes.some((size) =&gt; {
+          return (image.size === size)
+        })
+      })
+      .sort((a, b) =&gt; {
+        return (a.size - b.size)
+      })
+  }
+
+  /**
+   * Convert a values to a flat array.
+   *
+   * @param  {Array.&lt;String|Array&gt;} values Values ([ &apos;A&apos;, &apos;B&apos;, [ &apos;C&apos;, &apos;D&apos; ] ]).
+   *
+   * @return {Array.&lt;String&gt;} Flat array ([ &apos;A&apos;, &apos;B&apos;, &apos;C&apos;, &apos;D&apos; ]).
+   */
+  static flattenValues (values) {
+    const paths = []
+    values.forEach((value) =&gt; {
+      if (!(value)) {
+        return
+      }
+
+      if (Array.isArray(value)) {
+        value.forEach((path) =&gt; {
+          paths.push(path)
+        })
+      } else {
+        paths.push(value)
+      }
+    })
+
+    return paths
+  }
+
+  /**
+   * Check the icon sizes.
+   * Compare the standard sizes with the options specified sizes to get the sizes actually needed.
+   *
+   * @param {Array.&lt;Number&gt;} defaltSizes Sizes of the defalt.
+   * @param {Object}         options     CLI options.
+   * @param {String}         type        Type of the icon, &apos;ico&apos; or &apos;icns&apos;.
+   *
+   * @return {Array.&lt;Number&gt;} Checked sizes.
+   */
+  static checkImageSizes (defaltSizes, options, type) {
+    return options &amp;&amp; options.sizes &amp;&amp; options.sizes[type] ? options.sizes[type] : defaltSizes
+  }
+}
+</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(1.0.4)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>
