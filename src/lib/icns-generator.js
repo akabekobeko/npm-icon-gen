@@ -1,7 +1,7 @@
 import Fs from 'fs'
 import Path from 'path'
 import Util from './util.js'
-import {PNG} from 'pngjs'
+import {PNG} from 'pngjs-nozlib'
 import RLE from './rle.js'
 import { Buffer } from 'buffer'
 import { Promise } from 'es6-promise'
