@@ -2,7 +2,7 @@
   "name": "icon-gen-examples",
   "description": "Examples for the icon-gen.",
   "private": true,
-  "version": "1.2.0",
+  "version": "1.2.1",
   "author": "akabeko (http://akabeko.me/)",
   "license": "MIT",
   "main": "index.js",
@@ -10,6 +10,6 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "icon-gen": "^1.2.0"
+    "icon-gen": "^1.2.1"
   }
 }

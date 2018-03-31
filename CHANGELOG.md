@@ -1,5 +1,11 @@
 # ChangeLog
 
+## v1.2.1
+
+### Changes
+
+* Support Node 9 [#87](https://github.com/akabekobeko/npm-icon-gen/issues/87)
+
 ## v1.2.0
 
 ### Changes

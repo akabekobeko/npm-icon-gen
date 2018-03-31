@@ -1,7 +1,7 @@
 import Fs from 'fs'
 import Path from 'path'
 import Util from './util.js'
-import {PNG} from 'pngjs'
+import {PNG} from 'pngjs-nozlib'
 
 /**
  * Sizes required for the ICO file.
