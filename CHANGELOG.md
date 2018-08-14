@@ -1,5 +1,15 @@
 # ChangeLog
 
+## v1.2.2
+
+### Changes
+
+* Support Node v10.x [#90](https://github.com/akabekobeko/npm-icon-gen/issues/90)
+
+### Bug Fixes
+
+* CLI size specification is not working [#89](https://github.com/akabekobeko/npm-icon-gen/issues/89)
+
 ## v1.2.1
 
 ### Changes
