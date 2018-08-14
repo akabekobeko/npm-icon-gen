@@ -87,7 +87,7 @@ describe('CLI', () => {
   describe('_parseMode', () => {
     it('Default', () => {
       const modes = CLI._parseMode()
-      assert.deepEqual(modes, ['ico', 'icns', 'favicon'])
+      assert.deepStrictEqual(modes, ['ico', 'icns', 'favicon'])
     })
 
     it('ico, icns, favicon', () => {
@@ -115,22 +115,22 @@ describe('CLI', () => {
   describe('_parseNames', () => {
     it('ico & icns', () => {
       const names = CLI._parseNames('ico=foo,icns=bar')
-      assert.deepEqual({ ico: 'foo', icns: 'bar' }, names)
+      assert.deepStrictEqual({ ico: 'foo', icns: 'bar' }, names)
     })
 
     it('ico', () => {
       const names = CLI._parseNames('ico=foo')
-      assert.deepEqual({ ico: 'foo' }, names)
+      assert.deepStrictEqual({ ico: 'foo' }, names)
     })
 
     it('icns', () => {
       const names = CLI._parseNames('icns=bar')
-      assert.deepEqual({ icns: 'bar' }, names)
+      assert.deepStrictEqual({ icns: 'bar' }, names)
     })
 
     it('Invalid value', () => {
       const names = CLI._parseNames()
-      assert.deepEqual({}, names)
+      assert.deepStrictEqual({}, names)
     })
   })
 
@@ -138,22 +138,22 @@ describe('CLI', () => {
   describe('_parseSizes', () => {
     it('ico & icns', () => {
       const sizes = CLI._parseSizes('ico=[16,24,32],icns=[16,24,64]')
-      assert.deepEqual({ ico: ['16', '24', '32'], icns: ['16', '24', '64'] }, sizes)
+      assert.deepStrictEqual({ ico: [16, 24, 32], icns: [16, 24, 64] }, sizes)
     })
 
     it('ico', () => {
       const sizes = CLI._parseSizes('ico=[16,24,32]')
-      assert.deepEqual({ ico: ['16', '24', '32'] }, sizes)
+      assert.deepStrictEqual({ ico: [16, 24, 32] }, sizes)
     })
 
     it('icns', () => {
       const sizes = CLI._parseSizes('icns=[16,24,64]')
-      assert.deepEqual({ icns: ['16', '24', '64'] }, sizes)
+      assert.deepStrictEqual({ icns: [16, 24, 64] }, sizes)
     })
 
     it('Invalid value', () => {
       const sizes = CLI._parseSizes()
-      assert.deepEqual({}, sizes)
+      assert.deepStrictEqual({}, sizes)
     })
   })
 })

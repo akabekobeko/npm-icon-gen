@@ -47,29 +47,21 @@ Generate an icon from the SVG or PNG file.
 
 Options:
 -h, --help    Display this text.
-
 -v, --version Display the version number.
-
 -i, --input   Path of the SVG file or PNG file directory.
-
 -o, --output  Path of the output directory.
-
 -t, --type    Type of the input file.
               'svg' is the SVG file, 'png' is the PNG files directory.
               Allowed values: svg, png
               Default is 'svg'.
-
 -m, --modes   Mode of the output files.
               Allowed values: ico, icns, favicon, all
               Default is 'all'.
-
 -n, --names   Change an output file names for ICO and ICNS.
               ex: 'ico=foo,icns=bar'
               Default is 'app.ico' and 'app.ico'.
-
 -r, --report  Display the process reports.
               Default is disable.
-
 -s, --sizes   List of sizes to include for ICO and ICNS.
               ex: 'ico=[12,24,32],icns=[12,24,64]'
 
@@ -78,9 +70,11 @@ $ icon-gen -i sample.svg -o ./dist -r
 $ icon-gen -i ./images -o ./dist -t png -r
 $ icon-gen -i sample.svg -o ./dist -m ico,favicon -r
 $ icon-gen -i sample.svg -o ./dist -n ico=foo,icns=bar
+$ icon-gen -i sample.svg -o ./dist -s ico=[16,24,32],icns=[16,32,512]
 
 See also:
-https://github.com/akabekobeko/npm-icon-gen`
+https://github.com/akabekobeko/npm-icon-gen
+`
 
 /**
  * Default command line options.
@@ -332,7 +326,7 @@ export default class CLI {
       switch (key) {
         case OUTPUT_MODES.ico:
         case OUTPUT_MODES.icns:
-          sizes[key] = values
+          sizes[key] = values.map((value) => Number(value))
           break
 
         default:

@@ -1,7 +1,7 @@
 import Fs from 'fs'
 import Path from 'path'
 import Util from './util.js'
-import {PNG} from 'pngjs-nozlib'
+import { PNG } from 'pngjs-nozlib'
 import RLE from './rle.js'
 import { Buffer } from 'buffer'
 import { Promise } from 'es6-promise'
@@ -89,7 +89,7 @@ export default class ICNSGenerator {
   /**
    * Get the size of the required PNG.
    *
-   * @return {Array.<Number>} Sizes.
+   * @return {Number[]} Sizes.
    */
   static getRequiredImageSizes () {
     return REQUIRED_IMAGE_SIZES

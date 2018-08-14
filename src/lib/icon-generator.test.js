@@ -20,40 +20,40 @@ describe('IconGenerator', () => {
       const modes = ['ico', 'icns', 'favicon']
       let actual = IconGenerator._getRequiredImageSizes(modes)
       let expected = PNGGenerator.getRequiredImageSizes(modes)
-      assert.deepEqual(actual, expected)
+      assert.deepStrictEqual(actual, expected)
     })
 
     it('ico', () => {
       const modes = ['ico']
       const actual = IconGenerator._getRequiredImageSizes(modes)
       const expected = PNGGenerator.getRequiredImageSizes(modes)
-      assert.deepEqual(actual, expected)
+      assert.deepStrictEqual(actual, expected)
     })
 
     it('icns', () => {
       const modes = ['icns']
       const actual = IconGenerator._getRequiredImageSizes(modes)
       const expected = PNGGenerator.getRequiredImageSizes(modes)
-      assert.deepEqual(actual, expected)
+      assert.deepStrictEqual(actual, expected)
     })
 
     it('favicon', () => {
       const modes = ['favicon']
       const actual = IconGenerator._getRequiredImageSizes(modes)
       const expected = PNGGenerator.getRequiredImageSizes(modes)
-      assert.deepEqual(actual, expected)
+      assert.deepStrictEqual(actual, expected)
     })
 
     it('ico: sizes', () => {
       const sizes  = [16, 32]
       const actual = IconGenerator._getRequiredImageSizes(['ico'], {ico: sizes})
-      assert.deepEqual(actual, sizes)
+      assert.deepStrictEqual(actual, sizes)
     })
 
     it('icns: sizes', () => {
       const sizes  = [64, 128]
       const actual = IconGenerator._getRequiredImageSizes(['icns'], {icns: sizes})
-      assert.deepEqual(actual, sizes)
+      assert.deepStrictEqual(actual, sizes)
     })
   })
 })

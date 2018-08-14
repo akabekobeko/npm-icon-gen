@@ -10,7 +10,7 @@ describe('RLE', () => {
       const src      = [0xAA, 0xAA, 0xAA, 0x80, 0x00, 0x2A, 0xAA, 0xAA, 0xAA, 0xAA, 0x80, 0x00, 0x2A, 0x22, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA]
       const expected = [0xFE, 0xAA, 0x02, 0x80, 0x00, 0x2A, 0xFD, 0xAA, 0x03, 0x80, 0x00, 0x2A, 0x22, 0xF7, 0xAA]
       const actual   = RLE.packBits(src)
-      assert.deepEqual(actual, expected)
+      assert.deepStrictEqual(actual, expected)
     })
   })
 
@@ -20,7 +20,7 @@ describe('RLE', () => {
       const src      = [0, 0, 0, 249, 250, 128, 100, 101]
       const actual   = RLE.packICNS(src)
       const expected = [128, 0, 4, 249, 250, 128, 100, 101]
-      assert.deepEqual(actual, expected)
+      assert.deepStrictEqual(actual, expected)
     })
   })
 
@@ -31,17 +31,17 @@ describe('RLE', () => {
       const src = [0xFE, 0xAA, 0x02, 0x80, 0x00, 0x2A, 0xFD, 0xAA, 0x03, 0x80, 0x00, 0x2A, 0x22, 0xF7, 0xAA]
       const expected = [0xAA, 0xAA, 0xAA, 0x80, 0x00, 0x2A, 0xAA, 0xAA, 0xAA, 0xAA, 0x80, 0x00, 0x2A, 0x22, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA]
       const actual   = RLE.unpackBits(src)
-      assert.deepEqual(actual, expected)
+      assert.deepStrictEqual(actual, expected)
     })
   })
   /** @test {RLE#_packBitsLiteralToResult} */
   describe('_packBitsLiteralToResult', () => {
     it('Normaly', () => {
-      assert.deepEqual(RLE._packBitsLiteralToResult([7, 1, 5, 8]), [3, 7, 1, 5, 8])
+      assert.deepStrictEqual(RLE._packBitsLiteralToResult([7, 1, 5, 8]), [3, 7, 1, 5, 8])
     })
 
     it('Empty', () => {
-      assert.deepEqual(RLE._packBitsLiteralToResult([]), [])
+      assert.deepStrictEqual(RLE._packBitsLiteralToResult([]), [])
     })
   })
 
