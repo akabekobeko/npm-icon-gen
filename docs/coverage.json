@@ -1,7 +1,7 @@
 {
-  "coverage": "91.95%",
-  "expectCount": 87,
-  "actualCount": 80,
+  "coverage": "92.04%",
+  "expectCount": 88,
+  "actualCount": 81,
   "files": {
     "src/bin/cli.js": {
       "expectCount": 13,
@@ -10,7 +10,7 @@
         23,
         32,
         43,
-        102
+        96
       ]
     },
     "src/bin/index.js": {
@@ -53,8 +53,8 @@
       ]
     },
     "src/lib/png-generator.js": {
-      "expectCount": 4,
-      "actualCount": 4,
+      "expectCount": 5,
+      "actualCount": 5,
       "undocumentLines": []
     },
     "src/lib/rle.js": {
