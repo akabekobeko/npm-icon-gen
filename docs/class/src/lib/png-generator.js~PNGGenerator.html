@@ -51,13 +51,13 @@
 </nav>
 
 <div class="content" data-ice="content"><div class="header-notice">
-  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import PNGGenerator from &apos;<span><a href="file/src/lib/png-generator.js.html#lineNumber11">icon-gen/src/lib/png-generator.js</a></span>&apos;</code></pre></div>
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import PNGGenerator from &apos;<span><a href="file/src/lib/png-generator.js.html#lineNumber35">icon-gen/src/lib/png-generator.js</a></span>&apos;</code></pre></div>
   <span data-ice="access">public</span>
   <span data-ice="kind">class</span>
   
   
   
-  <span data-ice="source">| <span><a href="file/src/lib/png-generator.js.html#lineNumber11">source</a></span></span>
+  <span data-ice="source">| <span><a href="file/src/lib/png-generator.js.html#lineNumber35">source</a></span></span>
 </div>
 
 <div class="self-detail detail">
@@ -89,7 +89,7 @@
     <h4>Test:</h4>
     <ul>
       
-    <li data-ice="test"><span><a href="test-file/src/lib/png-generator.test.js.html#lineNumber12">PNGGenerator</a></span></li>
+    <li data-ice="test"><span><a href="test-file/src/lib/png-generator.test.js.html#lineNumber13">PNGGenerator</a></span></li>
 </ul>
   </div>
 
@@ -115,7 +115,7 @@
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/lib/png-generator.js~PNGGenerator.html#static-method-generate">generate</a></span></span><span class="code" data-ice="signature">(src: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span>, dir: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span>, modes: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a></span>&lt;<span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span>&gt;, cb: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">Function</a></span>, logger: <span><a href="class/src/lib/logger.js~Logger.html">Logger</a></span>)</span>
+          <span class="code" data-ice="name"><span><a href="class/src/lib/png-generator.js~PNGGenerator.html#static-method-generate">generate</a></span></span><span class="code" data-ice="signature">(src: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span>, dir: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span>, options: <span>CLIOption</span>, cb: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">Function</a></span>, logger: <span><a href="class/src/lib/logger.js~Logger.html">Logger</a></span>)</span>
         </p>
       </div>
       <div>
@@ -144,7 +144,7 @@
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/lib/png-generator.js~PNGGenerator.html#static-method-getRequiredImageSizes">getRequiredImageSizes</a></span></span><span class="code" data-ice="signature">(modes: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a></span>&lt;<span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span>&gt;): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a></span>&lt;<span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a></span>&gt;</span>
+          <span class="code" data-ice="name"><span><a href="class/src/lib/png-generator.js~PNGGenerator.html#static-method-getRequiredImageSizes">getRequiredImageSizes</a></span></span><span class="code" data-ice="signature">(options: <span>CLIOption</span>): <span><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a></span><span>[]</span></span></span>
         </p>
       </div>
       <div>
@@ -214,11 +214,11 @@
     
     
     
-    <span class="code" data-ice="name">generate</span><span class="code" data-ice="signature">(src: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span>, dir: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span>, modes: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a></span>&lt;<span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span>&gt;, cb: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">Function</a></span>, logger: <span><a href="class/src/lib/logger.js~Logger.html">Logger</a></span>)</span>
+    <span class="code" data-ice="name">generate</span><span class="code" data-ice="signature">(src: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span>, dir: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span>, options: <span>CLIOption</span>, cb: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">Function</a></span>, logger: <span><a href="class/src/lib/logger.js~Logger.html">Logger</a></span>)</span>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/lib/png-generator.js.html#lineNumber21">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/lib/png-generator.js.html#lineNumber45">source</a></span></span>
     </span>
   </h3>
 
@@ -253,10 +253,10 @@
 </td>
     </tr>
 <tr data-ice="property" data-depth="0">
-      <td data-ice="name" class="code" data-depth="0">modes</td>
-      <td data-ice="type" class="code"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a></span>&lt;<span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span>&gt;</td>
+      <td data-ice="name" class="code" data-depth="0">options</td>
+      <td data-ice="type" class="code"><span>CLIOption</span></td>
       <td data-ice="appendix"></td>
-      <td data-ice="description"><p>Modes of an output files.</p>
+      <td data-ice="description"><p>Options from command line.</p>
 </td>
     </tr>
 <tr data-ice="property" data-depth="0">
@@ -303,11 +303,11 @@
     
     
     
-    <span class="code" data-ice="name">getRequiredImageSizes</span><span class="code" data-ice="signature">(modes: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a></span>&lt;<span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span>&gt;): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a></span>&lt;<span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a></span>&gt;</span>
+    <span class="code" data-ice="name">getRequiredImageSizes</span><span class="code" data-ice="signature">(options: <span>CLIOption</span>): <span><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a></span><span>[]</span></span></span>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/lib/png-generator.js.html#lineNumber51">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/lib/png-generator.js.html#lineNumber75">source</a></span></span>
     </span>
   </h3>
 
@@ -328,10 +328,10 @@
     <tbody>
     
     <tr data-ice="property" data-depth="0">
-      <td data-ice="name" class="code" data-depth="0">modes</td>
-      <td data-ice="type" class="code"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a></span>&lt;<span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span>&gt;</td>
+      <td data-ice="name" class="code" data-depth="0">options</td>
+      <td data-ice="type" class="code"><span>CLIOption</span></td>
       <td data-ice="appendix"></td>
-      <td data-ice="description"><p>Modes of an output files.</p>
+      <td data-ice="description"><p>Options from command line.</p>
 </td>
     </tr>
 </tbody>
@@ -344,7 +344,7 @@
     <table>
       <tbody>
         <tr>
-          <td class="return-type code" data-ice="returnType"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a></span>&lt;<span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a></span>&gt;</td>
+          <td class="return-type code" data-ice="returnType"><span><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a></span><span>[]</span></span></td>
           <td class="return-desc" data-ice="returnDescription"><p>The sizes of the image.</p>
 </td>
         </tr>
@@ -383,7 +383,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/lib/png-generator.js.html#lineNumber99">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/lib/png-generator.js.html#lineNumber125">source</a></span></span>
     </span>
   </h3>
 
@@ -473,7 +473,7 @@
 </div>
 
 <footer class="footer">
-  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(1.0.4)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(1.1.0)</span><img src="./image/esdoc-logo-mini-black.png"></a>
 </footer>
 
 <script src="script/search_index.js"></script>

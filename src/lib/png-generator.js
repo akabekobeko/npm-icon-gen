@@ -6,19 +6,43 @@ import ICNSGenerator from './icns-generator.js'
 import ICOGenerator from './ico-generator.js'
 
 /**
+ * Filter the sizes.
+ *
+ * @param {Number[]} sizes Original sizes.
+ * @param {Number[]} filterSizes Filter sizes.
+ *
+ * @return {NUmber[]} Filterd sizes.
+ */
+const filterSizes = (sizes = [], filterSizes = []) => {
+  if (filterSizes.length === 0) {
+    return sizes
+  }
+
+  return sizes.filter((size) => {
+    for (let filterSize of filterSizes) {
+      if (size === filterSize) {
+        return true
+      }
+    }
+
+    return false
+  })
+}
+
+/**
  * Generate the PNG files = require(SVG file.
  */
 export default class PNGGenerator {
   /**
    * Generate the PNG files = require(the SVG file.
    *
-   * @param {String}         src    SVG file path.
-   * @param {String}         dir    Output destination The path of directory.
-   * @param {Array.<String>} modes  Modes of an output files.
-   * @param {Function}       cb     Callback function.
-   * @param {Logger}         logger Logger.
+   * @param {String} src SVG file path.
+   * @param {String} dir Output destination The path of directory.
+   * @param {CLIOption} options Options from command line.
+   * @param {Function} cb Callback function.
+   * @param {Logger} logger Logger.
    */
-  static generate (src, dir, modes, cb, logger) {
+  static generate (src, dir, options, cb, logger) {
     Fs.readFile(src, (err, svg) => {
       if (err) {
         cb(err)
@@ -27,7 +51,7 @@ export default class PNGGenerator {
 
       logger.log('SVG to PNG:')
 
-      const sizes = PNGGenerator.getRequiredImageSizes(modes)
+      const sizes = PNGGenerator.getRequiredImageSizes(options)
       Promise
         .all(sizes.map((size) => {
           return PNGGenerator._generatePNG(svg, size, dir, logger)
@@ -44,21 +68,21 @@ export default class PNGGenerator {
   /**
    * Gets the size of the images needed to create an icon.
    *
-   * @param {Array.<String>} modes Modes of an output files.
+   * @param {CLIOption} options Options from command line.
    *
-   * @return {Array.<Number>} The sizes of the image.
+   * @return {Number[]} The sizes of the image.
    */
-  static getRequiredImageSizes (modes) {
+  static getRequiredImageSizes (options = {}) {
     let sizes = []
-    if (modes && 0 < modes.length) {
-      modes.forEach((mode) => {
+    if (options.modes && 0 < options.modes.length) {
+      options.modes.forEach((mode) => {
         switch (mode) {
           case 'icns':
-            sizes = sizes.concat(ICNSGenerator.getRequiredImageSizes())
+            sizes = sizes.concat(filterSizes(ICNSGenerator.getRequiredImageSizes(), options.sizes && options.sizes.icns))
             break
 
           case 'ico':
-            sizes = sizes.concat(ICOGenerator.getRequiredImageSizes())
+            sizes = sizes.concat(filterSizes(ICOGenerator.getRequiredImageSizes(), options.sizes && options.sizes.ico))
             break
 
           case 'favicon':
@@ -73,7 +97,9 @@ export default class PNGGenerator {
 
     // 'all' mode
     if (sizes.length === 0) {
-      sizes = FaviconGenerator.getRequiredImageSizes().concat(ICNSGenerator.getRequiredImageSizes().concat(ICOGenerator.getRequiredImageSizes()))
+      sizes = FaviconGenerator.getRequiredImageSizes()
+      sizes = sizes.concat(filterSizes(ICNSGenerator.getRequiredImageSizes(), options.sizes && options.sizes.icns))
+      sizes = sizes.concat(filterSizes(ICOGenerator.getRequiredImageSizes(), options.sizes && options.sizes.ico))
     }
 
     return sizes
@@ -89,9 +115,9 @@ export default class PNGGenerator {
   /**
    * Generate the PNG file = require(the SVG data.
    *
-   * @param {Buffer} svg    SVG data that has been parse by svg2png.
-   * @param {Number} size   The size (width/height) of the image.
-   * @param {String} dir    Path of the file output directory.
+   * @param {Buffer} svg SVG data that has been parse by svg2png.
+   * @param {Number} size The size (width/height) of the image.
+   * @param {String} dir Path of the file output directory.
    * @param {Logger} logger Logger.
    *
    * @return {Promise} Image generation task.

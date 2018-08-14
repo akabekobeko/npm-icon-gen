@@ -337,20 +337,80 @@ window.esdocSearchIndex = [
   ],
   [
     "pnggenerator src/lib/png-generator.js~pnggenerator,pnggenerator",
-    "test-file/src/lib/png-generator.test.js.html#lineNumber12",
+    "test-file/src/lib/png-generator.test.js.html#lineNumber13",
     "PNGGenerator",
     "test"
   ],
   [
     "pnggenerator#_generetepng pnggenerator#_generetepng,pnggenerator#_generetepng",
-    "test-file/src/lib/png-generator.test.js.html#lineNumber33",
+    "test-file/src/lib/png-generator.test.js.html#lineNumber62",
     "PNGGenerator _generetePNG",
     "test"
   ],
   [
+    "",
+    "test-file/src/lib/png-generator.test.js.html#lineNumber83",
+    "PNGGenerator filterSizes",
+    "test"
+  ],
+  [
+    "",
+    "test-file/src/lib/png-generator.test.js.html#lineNumber86",
+    "PNGGenerator filterSizes Filter",
+    "test"
+  ],
+  [
+    "",
+    "test-file/src/lib/png-generator.test.js.html#lineNumber92",
+    "PNGGenerator filterSizes No filter",
+    "test"
+  ],
+  [
     "pnggenerator#getrequiredimagesizes pnggenerator#getrequiredimagesizes,pnggenerator#getrequiredimagesizes",
-    "test-file/src/lib/png-generator.test.js.html#lineNumber14",
+    "test-file/src/lib/png-generator.test.js.html#lineNumber17",
     "PNGGenerator getRequiredImageSizes",
+    "test"
+  ],
+  [
+    "",
+    "test-file/src/lib/png-generator.test.js.html#lineNumber18",
+    "PNGGenerator getRequiredImageSizes All",
+    "test"
+  ],
+  [
+    "",
+    "test-file/src/lib/png-generator.test.js.html#lineNumber24",
+    "PNGGenerator getRequiredImageSizes All with filter",
+    "test"
+  ],
+  [
+    "",
+    "test-file/src/lib/png-generator.test.js.html#lineNumber54",
+    "PNGGenerator getRequiredImageSizes Favicon",
+    "test"
+  ],
+  [
+    "",
+    "test-file/src/lib/png-generator.test.js.html#lineNumber42",
+    "PNGGenerator getRequiredImageSizes ICNS",
+    "test"
+  ],
+  [
+    "",
+    "test-file/src/lib/png-generator.test.js.html#lineNumber48",
+    "PNGGenerator getRequiredImageSizes ICNS with filter",
+    "test"
+  ],
+  [
+    "",
+    "test-file/src/lib/png-generator.test.js.html#lineNumber30",
+    "PNGGenerator getRequiredImageSizes ICO",
+    "test"
+  ],
+  [
+    "",
+    "test-file/src/lib/png-generator.test.js.html#lineNumber36",
+    "PNGGenerator getRequiredImageSizes ICO with filter",
     "test"
   ],
   [

@@ -41,6 +41,6 @@ describe('Util', () => {
     const actual   = ['A', 'B',  'C', 'D']
     const expected = Util.flattenValues(values)
 
-    assert.deepEqual(expected, actual)
+    assert.deepStrictEqual(expected, actual)
   })
 })

@@ -17,7 +17,7 @@ export default class IconGenerator {
    *
    * @param {String} src     Path of the SVG file.
    * @param {String} dir     Path of the output files directory.
-   * @param {Object} options Options.
+   * @param {CLIOption} options Options from command line.
    * @param {Logger} logger  Logger.
    *
    * @return {Promise} Promise object.
@@ -36,7 +36,7 @@ export default class IconGenerator {
         return
       }
 
-      PngGenerator.generate(svgFilePath, workDir, options.modes, (err, images) => {
+      PngGenerator.generate(svgFilePath, workDir, options, (err, images) => {
         if (err) {
           Del.sync([workDir], {force: true})
           reject(err)

@@ -567,7 +567,7 @@
     "__docId__": 48,
     "kind": "file",
     "name": "src/bin/cli.js",
-    "content": "import Path from 'path'\n\n/**\n * CLI parameters [Short, Full].\n * @type {Object}\n */\nconst CLI_PARAMS = {\n  help: ['-h', '--help'],\n  version: ['-v', '--version'],\n  input: ['-i', '--input'],\n  output: ['-o', '--output'],\n  type: ['-t', '--type'],\n  modes: ['-m', '--modes'],\n  sizes: ['-s', '--sizes'],\n  names: ['-n', '--names'],\n  report: ['-r', '--report']\n}\n\n/**\n * Types of the source file.\n * @type {Object}\n */\nconst SOURCE_TYPES = {\n  svg: 'svg',\n  png: 'png'\n}\n\n/**\n * Output file modes.\n * @type {Object}\n */\nconst OUTPUT_MODES = {\n  ico: 'ico',\n  icns: 'icns',\n  favicon: 'favicon',\n  all: ['ico', 'icns', 'favicon']\n}\n\n/**\n * Text of help.\n * @type {String}\n */\nconst HELP_TEXT = `\nUsage: icon-gen [OPTIONS]\n\nGenerate an icon from the SVG or PNG file.\n\nOptions:\n-h, --help    Display this text.\n\n-v, --version Display the version number.\n\n-i, --input   Path of the SVG file or PNG file directory.\n\n-o, --output  Path of the output directory.\n\n-t, --type    Type of the input file.\n              'svg' is the SVG file, 'png' is the PNG files directory.\n              Allowed values: svg, png\n              Default is 'svg'.\n\n-m, --modes   Mode of the output files.\n              Allowed values: ico, icns, favicon, all\n              Default is 'all'.\n\n-n, --names   Change an output file names for ICO and ICNS.\n              ex: 'ico=foo,icns=bar'\n              Default is 'app.ico' and 'app.ico'.\n\n-r, --report  Display the process reports.\n              Default is disable.\n\n-s, --sizes   List of sizes to include for ICO and ICNS.\n              ex: 'ico=[12,24,32],icns=[12,24,64]'\n\nExamples:\n$ icon-gen -i sample.svg -o ./dist -r\n$ icon-gen -i ./images -o ./dist -t png -r\n$ icon-gen -i sample.svg -o ./dist -m ico,favicon -r\n$ icon-gen -i sample.svg -o ./dist -n ico=foo,icns=bar\n\nSee also:\nhttps://github.com/akabekobeko/npm-icon-gen`\n\n/**\n * Default command line options.\n * @type {Object}\n */\nexport const DEFAULT_OPTIONS = {\n  type: SOURCE_TYPES.svg,\n  modes: OUTPUT_MODES.all,\n  names: {\n    ico: 'app',\n    icns: 'app'\n  },\n  report: false\n}\n\n/**\n * Utility of the commad line interface.\n */\nexport default class CLI {\n  /**\n   * Show the help text.\n   *\n   * @param {WritableStream} stream Target stream.\n   *\n   * @return {Promise} Promise object.\n   */\n  static showHelp (stream) {\n    return new Promise((resolve) => {\n      stream.write(HELP_TEXT)\n      resolve()\n    })\n  }\n\n  /**\n   * Show the version number.\n   *\n   * @param {WritableStream} stream Target stream.\n   *\n   * @return {Promise} Promise object.\n   */\n  static showVersion (stream) {\n    return new Promise((resolve) => {\n      const read = (path) => {\n        try {\n          return require(path).version\n        } catch (err) {\n          return null\n        }\n      }\n\n      const version = read('../package.json') || read('../../package.json')\n      stream.write('v' + version + '\\n')\n\n      resolve()\n    })\n  }\n\n  /**\n   * Parse for the command line argumens.\n   *\n   * @param {Array.<String>} argv Arguments of the command line.\n   *\n   * @return {CLIOptions} Parse results.\n   */\n  static parse (argv) {\n    if (!(argv && 0 < argv.length)) {\n      return {help: true}\n    }\n\n    switch (argv[0]) {\n      case CLI_PARAMS.help[0]:\n      case CLI_PARAMS.help[1]:\n        return {help: true}\n\n      case CLI_PARAMS.version[0]:\n      case CLI_PARAMS.version[1]:\n        return {version: true}\n\n      default:\n        return CLI._parse(argv)\n    }\n  }\n\n  /**\n   * Parse for the command line argumens.\n   *\n   * @param {Array.<String>} argv Arguments of the command line.\n   *\n   * @return {CLIOptions} Parse results.\n   */\n  static _parse (argv) {\n    const options = {}\n    argv.forEach((arg, index) => {\n      switch (arg) {\n        case CLI_PARAMS.input[0]:\n        case CLI_PARAMS.input[1]:\n          if (index + 1 < argv.length) {\n            options.input = Path.resolve(argv[index + 1])\n          }\n          break\n\n        case CLI_PARAMS.output[0]:\n        case CLI_PARAMS.output[1]:\n          if (index + 1 < argv.length) {\n            options.output = Path.resolve(argv[index + 1])\n          }\n          break\n\n        case CLI_PARAMS.type[0]:\n        case CLI_PARAMS.type[1]:\n          if (index + 1 < argv.length) {\n            options.type = argv[index + 1]\n          }\n          break\n\n        case CLI_PARAMS.report[0]:\n        case CLI_PARAMS.report[1]:\n          options.report = true\n          break\n\n        case CLI_PARAMS.modes[0]:\n        case CLI_PARAMS.modes[1]:\n          if (index + 1 < argv.length) {\n            options.modes = CLI._parseMode(argv[index + 1])\n          }\n          break\n\n        case CLI_PARAMS.names[0]:\n        case CLI_PARAMS.names[1]:\n          if (index + 1 < argv.length) {\n            options.names = CLI._parseNames(argv[index + 1])\n          }\n          break\n\n        case CLI_PARAMS.sizes[0]:\n        case CLI_PARAMS.sizes[1]:\n          if (index + 1 < argv.length) {\n            options.sizes = CLI._parseSizes(argv[index + 1])\n          }\n          break\n\n        default:\n          break\n      }\n    })\n\n    if (!(options.type) || (options.type !== SOURCE_TYPES.svg && options.type !== SOURCE_TYPES.png)) {\n      options.type = SOURCE_TYPES.svg\n    }\n\n    if (!(options.modes)) {\n      options.modes = OUTPUT_MODES.all\n    }\n\n    if (!(options.sizes)) {\n      options.sizes = {}\n    }\n\n    return options\n  }\n\n  /**\n   * Parse for the mode option.\n   *\n   * @param {String} arg Option. Format is a 'all' or 'ico,icns,favicon'.\n   *\n   * @return {Array.<String>} Parse results.\n   */\n  static _parseMode (arg) {\n    if (!(arg)) {\n      return OUTPUT_MODES.all\n    }\n\n    const values = arg.split(',').filter((value) => {\n      switch (value) {\n        case OUTPUT_MODES.ico:\n        case OUTPUT_MODES.icns:\n        case OUTPUT_MODES.favicon:\n          return true\n\n        default:\n          return false\n      }\n    })\n\n    return (0 < values.length ? values : OUTPUT_MODES.all)\n  }\n\n  /**\n   * Parse the output file names.\n   *\n   * @param {String} arg Option. Format is a 'ico=foo,icns=bar'.\n   *\n   * @return {Object} File names.\n   */\n  static _parseNames (arg) {\n    const names = {}\n    if (!(typeof arg === 'string')) {\n      return names\n    }\n\n    const params = arg.split(',')\n    params.forEach((param) => {\n      const units = param.split('=')\n      if (units.length < 2) {\n        return\n      }\n\n      const key   = units[0]\n      const value = units[1]\n      switch (key) {\n        case OUTPUT_MODES.ico:\n        case OUTPUT_MODES.icns:\n          names[key] = value\n          break\n\n        default:\n          break\n      }\n    })\n\n    return names\n  }\n\n  /**\n   * Parse the input file sizes.\n   *\n   * @param {String} arg Option. Format is a 'ico=[16,24,32],icns=[16,24,32]'.\n   *\n   * @return {Object} File sizes.\n   */\n  static _parseSizes (arg) {\n    const sizes = {}\n    if (!(typeof arg === 'string')) {\n      return sizes\n    }\n\n    const regexp = new RegExp(/((ico|icns)=\\[[0-9,]+\\])/g)\n\n    const params = arg.match(regexp)\n    params.forEach((param) => {\n      const units = param.split('=')\n      if (units.length < 2) {\n        return\n      }\n\n      const key    = units[0]\n      const values = units[1].match(/\\[([0-9,]+)\\]/)[1].split(',')\n      switch (key) {\n        case OUTPUT_MODES.ico:\n        case OUTPUT_MODES.icns:\n          sizes[key] = values\n          break\n\n        default:\n          break\n      }\n    })\n\n    return sizes\n  }\n}\n",
+    "content": "import Path from 'path'\n\n/**\n * CLI parameters [Short, Full].\n * @type {Object}\n */\nconst CLI_PARAMS = {\n  help: ['-h', '--help'],\n  version: ['-v', '--version'],\n  input: ['-i', '--input'],\n  output: ['-o', '--output'],\n  type: ['-t', '--type'],\n  modes: ['-m', '--modes'],\n  sizes: ['-s', '--sizes'],\n  names: ['-n', '--names'],\n  report: ['-r', '--report']\n}\n\n/**\n * Types of the source file.\n * @type {Object}\n */\nconst SOURCE_TYPES = {\n  svg: 'svg',\n  png: 'png'\n}\n\n/**\n * Output file modes.\n * @type {Object}\n */\nconst OUTPUT_MODES = {\n  ico: 'ico',\n  icns: 'icns',\n  favicon: 'favicon',\n  all: ['ico', 'icns', 'favicon']\n}\n\n/**\n * Text of help.\n * @type {String}\n */\nconst HELP_TEXT = `\nUsage: icon-gen [OPTIONS]\n\nGenerate an icon from the SVG or PNG file.\n\nOptions:\n-h, --help    Display this text.\n-v, --version Display the version number.\n-i, --input   Path of the SVG file or PNG file directory.\n-o, --output  Path of the output directory.\n-t, --type    Type of the input file.\n              'svg' is the SVG file, 'png' is the PNG files directory.\n              Allowed values: svg, png\n              Default is 'svg'.\n-m, --modes   Mode of the output files.\n              Allowed values: ico, icns, favicon, all\n              Default is 'all'.\n-n, --names   Change an output file names for ICO and ICNS.\n              ex: 'ico=foo,icns=bar'\n              Default is 'app.ico' and 'app.ico'.\n-r, --report  Display the process reports.\n              Default is disable.\n-s, --sizes   List of sizes to include for ICO and ICNS.\n              ex: 'ico=[12,24,32],icns=[12,24,64]'\n\nExamples:\n$ icon-gen -i sample.svg -o ./dist -r\n$ icon-gen -i ./images -o ./dist -t png -r\n$ icon-gen -i sample.svg -o ./dist -m ico,favicon -r\n$ icon-gen -i sample.svg -o ./dist -n ico=foo,icns=bar\n$ icon-gen -i sample.svg -o ./dist -s ico=[16,24,32],icns=[16,32,512]\n\nSee also:\nhttps://github.com/akabekobeko/npm-icon-gen\n`\n\n/**\n * Default command line options.\n * @type {Object}\n */\nexport const DEFAULT_OPTIONS = {\n  type: SOURCE_TYPES.svg,\n  modes: OUTPUT_MODES.all,\n  names: {\n    ico: 'app',\n    icns: 'app'\n  },\n  report: false\n}\n\n/**\n * Utility of the commad line interface.\n */\nexport default class CLI {\n  /**\n   * Show the help text.\n   *\n   * @param {WritableStream} stream Target stream.\n   *\n   * @return {Promise} Promise object.\n   */\n  static showHelp (stream) {\n    return new Promise((resolve) => {\n      stream.write(HELP_TEXT)\n      resolve()\n    })\n  }\n\n  /**\n   * Show the version number.\n   *\n   * @param {WritableStream} stream Target stream.\n   *\n   * @return {Promise} Promise object.\n   */\n  static showVersion (stream) {\n    return new Promise((resolve) => {\n      const read = (path) => {\n        try {\n          return require(path).version\n        } catch (err) {\n          return null\n        }\n      }\n\n      const version = read('../package.json') || read('../../package.json')\n      stream.write('v' + version + '\\n')\n\n      resolve()\n    })\n  }\n\n  /**\n   * Parse for the command line argumens.\n   *\n   * @param {Array.<String>} argv Arguments of the command line.\n   *\n   * @return {CLIOptions} Parse results.\n   */\n  static parse (argv) {\n    if (!(argv && 0 < argv.length)) {\n      return {help: true}\n    }\n\n    switch (argv[0]) {\n      case CLI_PARAMS.help[0]:\n      case CLI_PARAMS.help[1]:\n        return {help: true}\n\n      case CLI_PARAMS.version[0]:\n      case CLI_PARAMS.version[1]:\n        return {version: true}\n\n      default:\n        return CLI._parse(argv)\n    }\n  }\n\n  /**\n   * Parse for the command line argumens.\n   *\n   * @param {Array.<String>} argv Arguments of the command line.\n   *\n   * @return {CLIOptions} Parse results.\n   */\n  static _parse (argv) {\n    const options = {}\n    argv.forEach((arg, index) => {\n      switch (arg) {\n        case CLI_PARAMS.input[0]:\n        case CLI_PARAMS.input[1]:\n          if (index + 1 < argv.length) {\n            options.input = Path.resolve(argv[index + 1])\n          }\n          break\n\n        case CLI_PARAMS.output[0]:\n        case CLI_PARAMS.output[1]:\n          if (index + 1 < argv.length) {\n            options.output = Path.resolve(argv[index + 1])\n          }\n          break\n\n        case CLI_PARAMS.type[0]:\n        case CLI_PARAMS.type[1]:\n          if (index + 1 < argv.length) {\n            options.type = argv[index + 1]\n          }\n          break\n\n        case CLI_PARAMS.report[0]:\n        case CLI_PARAMS.report[1]:\n          options.report = true\n          break\n\n        case CLI_PARAMS.modes[0]:\n        case CLI_PARAMS.modes[1]:\n          if (index + 1 < argv.length) {\n            options.modes = CLI._parseMode(argv[index + 1])\n          }\n          break\n\n        case CLI_PARAMS.names[0]:\n        case CLI_PARAMS.names[1]:\n          if (index + 1 < argv.length) {\n            options.names = CLI._parseNames(argv[index + 1])\n          }\n          break\n\n        case CLI_PARAMS.sizes[0]:\n        case CLI_PARAMS.sizes[1]:\n          if (index + 1 < argv.length) {\n            options.sizes = CLI._parseSizes(argv[index + 1])\n          }\n          break\n\n        default:\n          break\n      }\n    })\n\n    if (!(options.type) || (options.type !== SOURCE_TYPES.svg && options.type !== SOURCE_TYPES.png)) {\n      options.type = SOURCE_TYPES.svg\n    }\n\n    if (!(options.modes)) {\n      options.modes = OUTPUT_MODES.all\n    }\n\n    if (!(options.sizes)) {\n      options.sizes = {}\n    }\n\n    return options\n  }\n\n  /**\n   * Parse for the mode option.\n   *\n   * @param {String} arg Option. Format is a 'all' or 'ico,icns,favicon'.\n   *\n   * @return {Array.<String>} Parse results.\n   */\n  static _parseMode (arg) {\n    if (!(arg)) {\n      return OUTPUT_MODES.all\n    }\n\n    const values = arg.split(',').filter((value) => {\n      switch (value) {\n        case OUTPUT_MODES.ico:\n        case OUTPUT_MODES.icns:\n        case OUTPUT_MODES.favicon:\n          return true\n\n        default:\n          return false\n      }\n    })\n\n    return (0 < values.length ? values : OUTPUT_MODES.all)\n  }\n\n  /**\n   * Parse the output file names.\n   *\n   * @param {String} arg Option. Format is a 'ico=foo,icns=bar'.\n   *\n   * @return {Object} File names.\n   */\n  static _parseNames (arg) {\n    const names = {}\n    if (!(typeof arg === 'string')) {\n      return names\n    }\n\n    const params = arg.split(',')\n    params.forEach((param) => {\n      const units = param.split('=')\n      if (units.length < 2) {\n        return\n      }\n\n      const key   = units[0]\n      const value = units[1]\n      switch (key) {\n        case OUTPUT_MODES.ico:\n        case OUTPUT_MODES.icns:\n          names[key] = value\n          break\n\n        default:\n          break\n      }\n    })\n\n    return names\n  }\n\n  /**\n   * Parse the input file sizes.\n   *\n   * @param {String} arg Option. Format is a 'ico=[16,24,32],icns=[16,24,32]'.\n   *\n   * @return {Object} File sizes.\n   */\n  static _parseSizes (arg) {\n    const sizes = {}\n    if (!(typeof arg === 'string')) {\n      return sizes\n    }\n\n    const regexp = new RegExp(/((ico|icns)=\\[[0-9,]+\\])/g)\n\n    const params = arg.match(regexp)\n    params.forEach((param) => {\n      const units = param.split('=')\n      if (units.length < 2) {\n        return\n      }\n\n      const key    = units[0]\n      const values = units[1].match(/\\[([0-9,]+)\\]/)[1].split(',')\n      switch (key) {\n        case OUTPUT_MODES.ico:\n        case OUTPUT_MODES.icns:\n          sizes[key] = values.map((value) => Number(value))\n          break\n\n        default:\n          break\n      }\n    })\n\n    return sizes\n  }\n}\n",
     "static": true,
     "longname": "/Users/akabeko/Documents/dev/node/icon-gen/src/bin/cli.js",
     "access": "public",
@@ -672,7 +672,7 @@
     "importPath": "icon-gen/src/bin/cli.js",
     "importStyle": "{DEFAULT_OPTIONS}",
     "description": "Default command line options.",
-    "lineNumber": 89,
+    "lineNumber": 83,
     "type": {
       "nullable": null,
       "types": [
@@ -694,7 +694,7 @@
     "importPath": "icon-gen/src/bin/cli.js",
     "importStyle": "CLI",
     "description": null,
-    "lineNumber": 102,
+    "lineNumber": 96,
     "undocument": true,
     "interface": false
   },
@@ -709,7 +709,7 @@
     "longname": "src/bin/cli.js~CLI.showHelp",
     "access": "public",
     "description": "Show the help text.",
-    "lineNumber": 110,
+    "lineNumber": 104,
     "params": [
       {
         "nullable": null,
@@ -742,7 +742,7 @@
     "longname": "src/bin/cli.js~CLI.showVersion",
     "access": "public",
     "description": "Show the version number.",
-    "lineNumber": 124,
+    "lineNumber": 118,
     "params": [
       {
         "nullable": null,
@@ -775,7 +775,7 @@
     "longname": "src/bin/cli.js~CLI.parse",
     "access": "public",
     "description": "Parse for the command line argumens.",
-    "lineNumber": 148,
+    "lineNumber": 142,
     "params": [
       {
         "nullable": null,
@@ -808,7 +808,7 @@
     "longname": "src/bin/cli.js~CLI._parse",
     "access": "private",
     "description": "Parse for the command line argumens.",
-    "lineNumber": 174,
+    "lineNumber": 168,
     "params": [
       {
         "nullable": null,
@@ -841,7 +841,7 @@
     "longname": "src/bin/cli.js~CLI._parseMode",
     "access": "private",
     "description": "Parse for the mode option.",
-    "lineNumber": 252,
+    "lineNumber": 246,
     "params": [
       {
         "nullable": null,
@@ -874,7 +874,7 @@
     "longname": "src/bin/cli.js~CLI._parseNames",
     "access": "private",
     "description": "Parse the output file names.",
-    "lineNumber": 279,
+    "lineNumber": 273,
     "params": [
       {
         "nullable": null,
@@ -907,7 +907,7 @@
     "longname": "src/bin/cli.js~CLI._parseSizes",
     "access": "private",
     "description": "Parse the input file sizes.",
-    "lineNumber": 315,
+    "lineNumber": 309,
     "params": [
       {
         "nullable": null,
@@ -1439,7 +1439,7 @@
     "__docId__": 78,
     "kind": "file",
     "name": "src/lib/icns-generator.js",
-    "content": "import Fs from 'fs'\nimport Path from 'path'\nimport Util from './util.js'\nimport {PNG} from 'pngjs-nozlib'\nimport RLE from './rle.js'\nimport { Buffer } from 'buffer'\nimport { Promise } from 'es6-promise'\n\n/**\n * Sizes required for the ICNS file.\n * @type {Array}\n */\nconst REQUIRED_IMAGE_SIZES = [16, 32, 64, 128, 256, 512, 1024]\n\n/**\n * The size of the ICNS header.\n * @type {Number}\n */\nconst HEADER_SIZE = 8\n\n/**\n * Identifier of the ICNS file, in ASCII \"icns\".\n * @type {Number}\n */\nconst FILE_HEADER_ID = 'icns'\n\n/**\n * ICNS file extension.\n * @type {String}\n */\nconst FILE_EXTENSION = '.icns'\n\n/**\n * Information of the images, Mac OS 8.x (il32, is32, l8mk, s8mk) is unsupported.\n * If icp4, icp5, icp6 is present, Icon will not be supported because it can not be set as Folder of Finder.\n *\n * @type {Array.<ICNSIconInfo>}\n */\nconst ICON_INFOS = [\n  // Normal\n  {id: 'ic07', size: 128},\n  {id: 'ic08', size: 256},\n  {id: 'ic09', size: 512},\n  {id: 'ic10', size: 1024},\n\n  // Retina\n  {id: 'ic11', size: 32},\n  {id: 'ic12', size: 64},\n  {id: 'ic13', size: 256},\n  {id: 'ic14', size: 512},\n\n  // Mac OS 8.5\n  {id: 'is32', mask: 's8mk', size: 16},\n  {id: 'il32', mask: 'l8mk', size: 32}\n]\n\n/**\n * Generate the ICNS file from a PNG images.\n * However, Mac OS 8.x is unsupported.\n */\nexport default class ICNSGenerator {\n  /**\n   * Create the ICNS file from a PNG images.\n   *\n   * @param {Array.<ImageInfo>} images Information of the image files.\n   * @param {String}            dir     Output destination the path of directory.\n   * @param {Object}            options Options.\n   * @param {Logger}            logger  Logger.\n   *\n   * @return {Promise} Promise object.\n   */\n  static generate (images, dir, options, logger) {\n    return new Promise((resolve, reject) => {\n      logger.log('ICNS:')\n\n      const dest    = Path.join(dir, options.names.icns + FILE_EXTENSION)\n      const targets = Util.filterImagesBySizes(images, Util.checkImageSizes(REQUIRED_IMAGE_SIZES, options, 'icns'))\n\n      if (ICNSGenerator._createIcon(targets, dest)) {\n        logger.log('  Create: ' + dest)\n        resolve(dest)\n      } else {\n        Fs.unlinkSync(dest)\n        reject(new Error('Faild to read/write image.'))\n      }\n    })\n  }\n\n  /**\n   * Get the size of the required PNG.\n   *\n   * @return {Array.<Number>} Sizes.\n   */\n  static getRequiredImageSizes () {\n    return REQUIRED_IMAGE_SIZES\n  }\n\n  /**\n   * Creat a file header and icon blocks.\n   *\n   * @param {Array.<ImageInfo>} images Information of the image files.\n   * @param {String}            dest   The path of the output destination file.\n   *\n   * @return {Boolean} \"true\" if it succeeds.\n   */\n  static _createIcon (images, dest) {\n    // Write a temporary file size\n    let fileSize = HEADER_SIZE\n    let stream   = Fs.createWriteStream(dest)\n    stream.write(ICNSGenerator._createFileHeader(fileSize), 'binary')\n\n    for (let i = 0, max = ICON_INFOS.length; i < max; ++i) {\n      const info = ICON_INFOS[i]\n      const image = ICNSGenerator._imageFromIconSize(info.size, images)\n      if (!(image)) {\n        // Depending on the command line option, there may be no corresponding size\n        continue\n      }\n\n      let block = null\n      switch (info.id) {\n        case 'is32':\n        case 'il32':\n          block = ICNSGenerator._createIconBlockPackBits(info.id, info.mask, Fs.readFileSync(image.path))\n          break\n\n        default:\n          block = ICNSGenerator._createIconBlock(info.id, Fs.readFileSync(image.path))\n          break\n      }\n\n      if (block) {\n        stream.write(block, 'binary')\n        fileSize += block.length\n      } else {\n        fileSize = 0\n        break\n      }\n    }\n\n    stream.end()\n\n    if (fileSize === 0) {\n      return false\n    }\n\n    // Update an actual file size\n    stream = Fs.createWriteStream(dest)\n    stream.write(ICNSGenerator._createFileHeader(fileSize), 'binary')\n    stream.end()\n\n    return true\n  }\n\n  /**\n   * Create an icon block's data.\n   *\n   * @param {String} id   Identifier of the icon.\n   * @param {Buffer} data Body data of the icon.\n   *\n   * @return {Buffer} data.\n   */\n  static _createIconBlock (id, data) {\n    if (!(data)) {\n      return null\n    }\n\n    const header = ICNSGenerator._createIconHeader(id, data.length)\n    return Buffer.concat([header, data], header.length + data.length)\n  }\n\n  /**\n   * Create an icon blocks (Color and mask) for PackBits.\n   *\n   * @param {String} id   Identifier of the icon (color block).\n   * @param {String} mask Identifier of the icon (mask block).\n   * @param {Buffer} data Binary of the PNG image.\n   *\n   * @return {Buffer} If successful it wrote the icon block. \"null\" on failure.\n   */\n  static _createIconBlockPackBits (id, mask, data) {\n    const bodies = ICNSGenerator._createIconBlockPackBitsBodies(data)\n    if (!(bodies)) {\n      return null\n    }\n\n    const colorBlock = ICNSGenerator._createIconBlock(id, Buffer.from(bodies.colors))\n    const maskBlock  = ICNSGenerator._createIconBlock(mask, Buffer.from(bodies.masks))\n\n    return Buffer.concat([colorBlock, maskBlock], colorBlock.length + maskBlock.length)\n  }\n\n  /**\n   * Create a color and mask data.\n   *\n   * @param {ImageInfo} data Information of the image.\n   *\n   * @return {Object} Bodies, \"color\" is a color (Compressed by ICNS RLE), \"mask\" is a mask.\n   */\n  static _createIconBlockPackBitsBodies (data) {\n    if (!(data)) {\n      return null\n    }\n\n    const png     = PNG.sync.read(data)\n    const results = {colors: [], masks: []}\n    const r = []\n    const g = []\n    const b = []\n\n    for (let i = 0, max = png.data.length; i < max; i += 4) {\n      // RGB\n      r.push(png.data.readUInt8(i))\n      g.push(png.data.readUInt8(i + 1))\n      b.push(png.data.readUInt8(i + 2))\n\n      // Alpha\n      results.masks.push(png.data.readUInt8(i + 3))\n    }\n\n    // Compress\n    results.colors = results.colors.concat(RLE.packICNS(r))\n    results.colors = results.colors.concat(RLE.packICNS(g))\n    results.colors = results.colors.concat(RLE.packICNS(b))\n\n    return results\n  }\n\n  /**\n   * Create the ICNS file header.\n   *\n   * @param {Number} fileSize File size.\n   *\n   * @return {Buffer} Header data.\n   */\n  static _createFileHeader (fileSize) {\n    const buffer = Buffer.alloc(HEADER_SIZE)\n    buffer.write(FILE_HEADER_ID, 0, 'ascii')\n    buffer.writeUInt32BE(fileSize, 4)\n\n    return buffer\n  }\n\n  /**\n   * Create the Icon header in ICNS file.\n   *\n   * @param {Object} id        Identifier of the icon.\n   * @param {Number} imageSize Size of the image data.\n   *\n   * @return {Buffer} Header data.\n   */\n  static _createIconHeader (id, imageSize) {\n    const buffer = Buffer.alloc(HEADER_SIZE)\n    buffer.write(id, 0, 'ascii')\n    buffer.writeUInt32BE(HEADER_SIZE + imageSize, 4)\n\n    return buffer\n  }\n\n  /**\n   * Select the support image from the icon size.\n   *\n   * @param {Number}            size   Sizo of icon.\n   * @param {Array.<ImageInfo>} images File informations..\n   *\n   * @return {ImageInfo} If successful image information, otherwise null.\n   */\n  static _imageFromIconSize (size, images) {\n    let result = null\n    images.some((image) => {\n      if (image.size === size) {\n        result = image\n        return true\n      }\n\n      return false\n    })\n\n    return result\n  }\n\n  /**\n   * Unpack an icon block files from ICNS file (For debug).\n   *\n   * @param {String} src  Path of the ICNS file.\n   * @param {String} dest Path of directory to output icon block files.\n   *\n   * @return {Promise} Promise object.\n   */\n  static _debugUnpackIconBlocks (src, dest) {\n    return new Promise((resolve, reject) => {\n      Fs.readFile(src, (err, data) => {\n        if (err) {\n          return reject(err)\n        }\n\n        for (let pos = HEADER_SIZE, max = data.length; pos < max;) {\n          const header = data.slice(pos, pos + HEADER_SIZE)\n          const id     = header.toString('ascii', 0, 4)\n          const size   = header.readUInt32BE(4) - HEADER_SIZE\n\n          pos += HEADER_SIZE\n          const body  = data.slice(pos, pos + size)\n          Fs.writeFileSync(Path.join(dest, id + '.header'), header, 'binary')\n          Fs.writeFileSync(Path.join(dest, id + '.body'), body, 'binary')\n\n          pos += size\n        }\n\n        resolve()\n      })\n    })\n  }\n}\n",
+    "content": "import Fs from 'fs'\nimport Path from 'path'\nimport Util from './util.js'\nimport { PNG } from 'pngjs-nozlib'\nimport RLE from './rle.js'\nimport { Buffer } from 'buffer'\nimport { Promise } from 'es6-promise'\n\n/**\n * Sizes required for the ICNS file.\n * @type {Array}\n */\nconst REQUIRED_IMAGE_SIZES = [16, 32, 64, 128, 256, 512, 1024]\n\n/**\n * The size of the ICNS header.\n * @type {Number}\n */\nconst HEADER_SIZE = 8\n\n/**\n * Identifier of the ICNS file, in ASCII \"icns\".\n * @type {Number}\n */\nconst FILE_HEADER_ID = 'icns'\n\n/**\n * ICNS file extension.\n * @type {String}\n */\nconst FILE_EXTENSION = '.icns'\n\n/**\n * Information of the images, Mac OS 8.x (il32, is32, l8mk, s8mk) is unsupported.\n * If icp4, icp5, icp6 is present, Icon will not be supported because it can not be set as Folder of Finder.\n *\n * @type {Array.<ICNSIconInfo>}\n */\nconst ICON_INFOS = [\n  // Normal\n  {id: 'ic07', size: 128},\n  {id: 'ic08', size: 256},\n  {id: 'ic09', size: 512},\n  {id: 'ic10', size: 1024},\n\n  // Retina\n  {id: 'ic11', size: 32},\n  {id: 'ic12', size: 64},\n  {id: 'ic13', size: 256},\n  {id: 'ic14', size: 512},\n\n  // Mac OS 8.5\n  {id: 'is32', mask: 's8mk', size: 16},\n  {id: 'il32', mask: 'l8mk', size: 32}\n]\n\n/**\n * Generate the ICNS file from a PNG images.\n * However, Mac OS 8.x is unsupported.\n */\nexport default class ICNSGenerator {\n  /**\n   * Create the ICNS file from a PNG images.\n   *\n   * @param {Array.<ImageInfo>} images Information of the image files.\n   * @param {String}            dir     Output destination the path of directory.\n   * @param {Object}            options Options.\n   * @param {Logger}            logger  Logger.\n   *\n   * @return {Promise} Promise object.\n   */\n  static generate (images, dir, options, logger) {\n    return new Promise((resolve, reject) => {\n      logger.log('ICNS:')\n\n      const dest    = Path.join(dir, options.names.icns + FILE_EXTENSION)\n      const targets = Util.filterImagesBySizes(images, Util.checkImageSizes(REQUIRED_IMAGE_SIZES, options, 'icns'))\n\n      if (ICNSGenerator._createIcon(targets, dest)) {\n        logger.log('  Create: ' + dest)\n        resolve(dest)\n      } else {\n        Fs.unlinkSync(dest)\n        reject(new Error('Faild to read/write image.'))\n      }\n    })\n  }\n\n  /**\n   * Get the size of the required PNG.\n   *\n   * @return {Number[]} Sizes.\n   */\n  static getRequiredImageSizes () {\n    return REQUIRED_IMAGE_SIZES\n  }\n\n  /**\n   * Creat a file header and icon blocks.\n   *\n   * @param {Array.<ImageInfo>} images Information of the image files.\n   * @param {String}            dest   The path of the output destination file.\n   *\n   * @return {Boolean} \"true\" if it succeeds.\n   */\n  static _createIcon (images, dest) {\n    // Write a temporary file size\n    let fileSize = HEADER_SIZE\n    let stream   = Fs.createWriteStream(dest)\n    stream.write(ICNSGenerator._createFileHeader(fileSize), 'binary')\n\n    for (let i = 0, max = ICON_INFOS.length; i < max; ++i) {\n      const info = ICON_INFOS[i]\n      const image = ICNSGenerator._imageFromIconSize(info.size, images)\n      if (!(image)) {\n        // Depending on the command line option, there may be no corresponding size\n        continue\n      }\n\n      let block = null\n      switch (info.id) {\n        case 'is32':\n        case 'il32':\n          block = ICNSGenerator._createIconBlockPackBits(info.id, info.mask, Fs.readFileSync(image.path))\n          break\n\n        default:\n          block = ICNSGenerator._createIconBlock(info.id, Fs.readFileSync(image.path))\n          break\n      }\n\n      if (block) {\n        stream.write(block, 'binary')\n        fileSize += block.length\n      } else {\n        fileSize = 0\n        break\n      }\n    }\n\n    stream.end()\n\n    if (fileSize === 0) {\n      return false\n    }\n\n    // Update an actual file size\n    stream = Fs.createWriteStream(dest)\n    stream.write(ICNSGenerator._createFileHeader(fileSize), 'binary')\n    stream.end()\n\n    return true\n  }\n\n  /**\n   * Create an icon block's data.\n   *\n   * @param {String} id   Identifier of the icon.\n   * @param {Buffer} data Body data of the icon.\n   *\n   * @return {Buffer} data.\n   */\n  static _createIconBlock (id, data) {\n    if (!(data)) {\n      return null\n    }\n\n    const header = ICNSGenerator._createIconHeader(id, data.length)\n    return Buffer.concat([header, data], header.length + data.length)\n  }\n\n  /**\n   * Create an icon blocks (Color and mask) for PackBits.\n   *\n   * @param {String} id   Identifier of the icon (color block).\n   * @param {String} mask Identifier of the icon (mask block).\n   * @param {Buffer} data Binary of the PNG image.\n   *\n   * @return {Buffer} If successful it wrote the icon block. \"null\" on failure.\n   */\n  static _createIconBlockPackBits (id, mask, data) {\n    const bodies = ICNSGenerator._createIconBlockPackBitsBodies(data)\n    if (!(bodies)) {\n      return null\n    }\n\n    const colorBlock = ICNSGenerator._createIconBlock(id, Buffer.from(bodies.colors))\n    const maskBlock  = ICNSGenerator._createIconBlock(mask, Buffer.from(bodies.masks))\n\n    return Buffer.concat([colorBlock, maskBlock], colorBlock.length + maskBlock.length)\n  }\n\n  /**\n   * Create a color and mask data.\n   *\n   * @param {ImageInfo} data Information of the image.\n   *\n   * @return {Object} Bodies, \"color\" is a color (Compressed by ICNS RLE), \"mask\" is a mask.\n   */\n  static _createIconBlockPackBitsBodies (data) {\n    if (!(data)) {\n      return null\n    }\n\n    const png     = PNG.sync.read(data)\n    const results = {colors: [], masks: []}\n    const r = []\n    const g = []\n    const b = []\n\n    for (let i = 0, max = png.data.length; i < max; i += 4) {\n      // RGB\n      r.push(png.data.readUInt8(i))\n      g.push(png.data.readUInt8(i + 1))\n      b.push(png.data.readUInt8(i + 2))\n\n      // Alpha\n      results.masks.push(png.data.readUInt8(i + 3))\n    }\n\n    // Compress\n    results.colors = results.colors.concat(RLE.packICNS(r))\n    results.colors = results.colors.concat(RLE.packICNS(g))\n    results.colors = results.colors.concat(RLE.packICNS(b))\n\n    return results\n  }\n\n  /**\n   * Create the ICNS file header.\n   *\n   * @param {Number} fileSize File size.\n   *\n   * @return {Buffer} Header data.\n   */\n  static _createFileHeader (fileSize) {\n    const buffer = Buffer.alloc(HEADER_SIZE)\n    buffer.write(FILE_HEADER_ID, 0, 'ascii')\n    buffer.writeUInt32BE(fileSize, 4)\n\n    return buffer\n  }\n\n  /**\n   * Create the Icon header in ICNS file.\n   *\n   * @param {Object} id        Identifier of the icon.\n   * @param {Number} imageSize Size of the image data.\n   *\n   * @return {Buffer} Header data.\n   */\n  static _createIconHeader (id, imageSize) {\n    const buffer = Buffer.alloc(HEADER_SIZE)\n    buffer.write(id, 0, 'ascii')\n    buffer.writeUInt32BE(HEADER_SIZE + imageSize, 4)\n\n    return buffer\n  }\n\n  /**\n   * Select the support image from the icon size.\n   *\n   * @param {Number}            size   Sizo of icon.\n   * @param {Array.<ImageInfo>} images File informations..\n   *\n   * @return {ImageInfo} If successful image information, otherwise null.\n   */\n  static _imageFromIconSize (size, images) {\n    let result = null\n    images.some((image) => {\n      if (image.size === size) {\n        result = image\n        return true\n      }\n\n      return false\n    })\n\n    return result\n  }\n\n  /**\n   * Unpack an icon block files from ICNS file (For debug).\n   *\n   * @param {String} src  Path of the ICNS file.\n   * @param {String} dest Path of directory to output icon block files.\n   *\n   * @return {Promise} Promise object.\n   */\n  static _debugUnpackIconBlocks (src, dest) {\n    return new Promise((resolve, reject) => {\n      Fs.readFile(src, (err, data) => {\n        if (err) {\n          return reject(err)\n        }\n\n        for (let pos = HEADER_SIZE, max = data.length; pos < max;) {\n          const header = data.slice(pos, pos + HEADER_SIZE)\n          const id     = header.toString('ascii', 0, 4)\n          const size   = header.readUInt32BE(4) - HEADER_SIZE\n\n          pos += HEADER_SIZE\n          const body  = data.slice(pos, pos + size)\n          Fs.writeFileSync(Path.join(dest, id + '.header'), header, 'binary')\n          Fs.writeFileSync(Path.join(dest, id + '.body'), body, 'binary')\n\n          pos += size\n        }\n\n        resolve()\n      })\n    })\n  }\n}\n",
     "static": true,
     "longname": "/Users/akabeko/Documents/dev/node/icon-gen/src/lib/icns-generator.js",
     "access": "public",
@@ -1654,7 +1654,7 @@
     "return": {
       "nullable": null,
       "types": [
-        "Array.<Number>"
+        "Number[]"
       ],
       "spread": false,
       "description": "Sizes."
@@ -2442,7 +2442,7 @@
     "__docId__": 109,
     "kind": "file",
     "name": "src/lib/icon-generator.js",
-    "content": "import Fs from 'fs'\nimport Path from 'path'\nimport Del from 'del'\nimport MkdirP from 'mkdirp'\nimport PngGenerator from './png-generator.js'\nimport ICOGenerator from './ico-generator.js'\nimport ICNSGenerator from './icns-generator.js'\nimport FaviconGenerator from './favicon-generator.js'\nimport Util from './util.js'\n\n/**\n * Generate an icons.\n */\nexport default class IconGenerator {\n  /**\n   * Generate an icon = require(the SVG file.\n   *\n   * @param {String} src     Path of the SVG file.\n   * @param {String} dir     Path of the output files directory.\n   * @param {Object} options Options.\n   * @param {Logger} logger  Logger.\n   *\n   * @return {Promise} Promise object.\n   */\n  static fromSVG (src, dir, options, logger) {\n    return new Promise((resolve, reject) => {\n      const svgFilePath = Path.resolve(src)\n      const destDirPath = Path.resolve(dir)\n      logger.log('Icon generator from SVG:')\n      logger.log('  src: ' + svgFilePath)\n      logger.log('  dir: ' + destDirPath)\n\n      const workDir = Util.createWorkDir()\n      if (!(workDir)) {\n        reject(new Error('Failed to create the working directory.'))\n        return\n      }\n\n      PngGenerator.generate(svgFilePath, workDir, options.modes, (err, images) => {\n        if (err) {\n          Del.sync([workDir], {force: true})\n          reject(err)\n          return\n        }\n\n        IconGenerator._generate(images, destDirPath, options, logger, (err2, results) => {\n          Del.sync([workDir], {force: true})\n          return (err2 ? reject(err2) : resolve(results))\n        })\n      }, logger)\n    })\n  }\n\n  /**\n   * Generate an icon = require(the SVG file.\n   *\n   * @param {String} src     Path of the PNG files direcgtory.\n   * @param {String} dir     Path of the output files directory.\n   * @param {Object} options Options.\n   * @param {Logger} logger  Logger.\n   *\n   * @return {Promise} Promise object.\n   */\n  static fromPNG (src, dir, options, logger) {\n    return new Promise((resolve, reject) => {\n      const pngDirPath  = Path.resolve(src)\n      const destDirPath = Path.resolve(dir)\n      logger.log('Icon generetor from PNG:')\n      logger.log('  src: ' + pngDirPath)\n      logger.log('  dir: ' + destDirPath)\n\n      const images = IconGenerator._getRequiredImageSizes(options.modes, options.sizes)\n        .map((size) => {\n          return Path.join(pngDirPath, size + '.png')\n        })\n        .map((path) => {\n          const size = Number(Path.basename(path, '.png'))\n          return { path, size }\n        })\n\n      let notExistsFile = null\n      images.some((image) => {\n        const stat = Fs.statSync(image.path)\n        if (!(stat && stat.isFile())) {\n          notExistsFile = Path.basename(image.path)\n          return true\n        }\n\n        return false\n      })\n\n      if (notExistsFile) {\n        reject(new Error('\"' + notExistsFile + '\" does not exist.'))\n        return\n      }\n\n      IconGenerator._generate(images, dir, options, logger, (err, results) => {\n        return (err ? reject(err) : resolve(results))\n      })\n    })\n  }\n\n  static _getRequiredImageSizes (modes, sizes) {\n    if (!(sizes)) {\n      return PngGenerator.getRequiredImageSizes(modes)\n    }\n\n    let imageSizes = []\n    modes.forEach((mode) => {\n      if (sizes[mode]) {\n        imageSizes = imageSizes.concat(sizes[mode])\n      }\n    })\n\n    return 0 < imageSizes.length ? imageSizes : PngGenerator.getRequiredImageSizes(modes)\n  }\n\n  /**\n   * Generate an icon = require(the image file infromations.\n   *\n   * @param {Array.<ImageInfo>} images  Image file informations.\n   * @param {String}            dest    Destination directory path.\n   * @param {Object}            options Options.\n   * @param {Logger}            logger  Logger.\n   * @param {Function}          cb      Callback function.\n   */\n  static _generate (images, dest, options, logger, cb) {\n    if (!(images && 0 < images.length)) {\n      cb(new Error('Targets is empty.'))\n      return\n    }\n\n    const dir = Path.resolve(dest)\n    MkdirP.sync(dir)\n\n    // Select output mode\n    const tasks = []\n    options.modes.forEach((mode) => {\n      switch (mode) {\n        case 'icns':\n          tasks.push(ICNSGenerator.generate(images, dir, options, logger))\n          break\n\n        case 'ico':\n          tasks.push(ICOGenerator.generate(images, dir, options, logger))\n          break\n\n        case 'favicon':\n          tasks.push(FaviconGenerator.generate(images, dir, logger))\n          break\n\n        default:\n          break\n      }\n    })\n\n    Promise\n      .all(tasks)\n      .then((results) => {\n        cb(null, Util.flattenValues(results))\n      })\n      .catch((err) => {\n        cb(err)\n      })\n  }\n\n  /**\n   * Get the icon sizes.\n   *\n   * @param {Array.<Number>} defaltSizes Sizes of the defalt.\n   * @param {Object}         options     CLI options.\n   * @param {String}         type        Type of the icon, 'ico' or 'icns'.\n   *\n   * @return {Array.<Number>} Sizes.\n   */\n  static _getSizes (defaltSizes, options, type) {\n    return options && options.sizes && options.sizes[type] ? options.sizes[type] : defaltSizes\n  }\n}\n",
+    "content": "import Fs from 'fs'\nimport Path from 'path'\nimport Del from 'del'\nimport MkdirP from 'mkdirp'\nimport PngGenerator from './png-generator.js'\nimport ICOGenerator from './ico-generator.js'\nimport ICNSGenerator from './icns-generator.js'\nimport FaviconGenerator from './favicon-generator.js'\nimport Util from './util.js'\n\n/**\n * Generate an icons.\n */\nexport default class IconGenerator {\n  /**\n   * Generate an icon = require(the SVG file.\n   *\n   * @param {String} src     Path of the SVG file.\n   * @param {String} dir     Path of the output files directory.\n   * @param {CLIOption} options Options from command line.\n   * @param {Logger} logger  Logger.\n   *\n   * @return {Promise} Promise object.\n   */\n  static fromSVG (src, dir, options, logger) {\n    return new Promise((resolve, reject) => {\n      const svgFilePath = Path.resolve(src)\n      const destDirPath = Path.resolve(dir)\n      logger.log('Icon generator from SVG:')\n      logger.log('  src: ' + svgFilePath)\n      logger.log('  dir: ' + destDirPath)\n\n      const workDir = Util.createWorkDir()\n      if (!(workDir)) {\n        reject(new Error('Failed to create the working directory.'))\n        return\n      }\n\n      PngGenerator.generate(svgFilePath, workDir, options, (err, images) => {\n        if (err) {\n          Del.sync([workDir], {force: true})\n          reject(err)\n          return\n        }\n\n        IconGenerator._generate(images, destDirPath, options, logger, (err2, results) => {\n          Del.sync([workDir], {force: true})\n          return (err2 ? reject(err2) : resolve(results))\n        })\n      }, logger)\n    })\n  }\n\n  /**\n   * Generate an icon = require(the SVG file.\n   *\n   * @param {String} src     Path of the PNG files direcgtory.\n   * @param {String} dir     Path of the output files directory.\n   * @param {Object} options Options.\n   * @param {Logger} logger  Logger.\n   *\n   * @return {Promise} Promise object.\n   */\n  static fromPNG (src, dir, options, logger) {\n    return new Promise((resolve, reject) => {\n      const pngDirPath  = Path.resolve(src)\n      const destDirPath = Path.resolve(dir)\n      logger.log('Icon generetor from PNG:')\n      logger.log('  src: ' + pngDirPath)\n      logger.log('  dir: ' + destDirPath)\n\n      const images = IconGenerator._getRequiredImageSizes(options.modes, options.sizes)\n        .map((size) => {\n          return Path.join(pngDirPath, size + '.png')\n        })\n        .map((path) => {\n          const size = Number(Path.basename(path, '.png'))\n          return { path, size }\n        })\n\n      let notExistsFile = null\n      images.some((image) => {\n        const stat = Fs.statSync(image.path)\n        if (!(stat && stat.isFile())) {\n          notExistsFile = Path.basename(image.path)\n          return true\n        }\n\n        return false\n      })\n\n      if (notExistsFile) {\n        reject(new Error('\"' + notExistsFile + '\" does not exist.'))\n        return\n      }\n\n      IconGenerator._generate(images, dir, options, logger, (err, results) => {\n        return (err ? reject(err) : resolve(results))\n      })\n    })\n  }\n\n  static _getRequiredImageSizes (modes, sizes) {\n    if (!(sizes)) {\n      return PngGenerator.getRequiredImageSizes(modes)\n    }\n\n    let imageSizes = []\n    modes.forEach((mode) => {\n      if (sizes[mode]) {\n        imageSizes = imageSizes.concat(sizes[mode])\n      }\n    })\n\n    return 0 < imageSizes.length ? imageSizes : PngGenerator.getRequiredImageSizes(modes)\n  }\n\n  /**\n   * Generate an icon = require(the image file infromations.\n   *\n   * @param {Array.<ImageInfo>} images  Image file informations.\n   * @param {String}            dest    Destination directory path.\n   * @param {Object}            options Options.\n   * @param {Logger}            logger  Logger.\n   * @param {Function}          cb      Callback function.\n   */\n  static _generate (images, dest, options, logger, cb) {\n    if (!(images && 0 < images.length)) {\n      cb(new Error('Targets is empty.'))\n      return\n    }\n\n    const dir = Path.resolve(dest)\n    MkdirP.sync(dir)\n\n    // Select output mode\n    const tasks = []\n    options.modes.forEach((mode) => {\n      switch (mode) {\n        case 'icns':\n          tasks.push(ICNSGenerator.generate(images, dir, options, logger))\n          break\n\n        case 'ico':\n          tasks.push(ICOGenerator.generate(images, dir, options, logger))\n          break\n\n        case 'favicon':\n          tasks.push(FaviconGenerator.generate(images, dir, logger))\n          break\n\n        default:\n          break\n      }\n    })\n\n    Promise\n      .all(tasks)\n      .then((results) => {\n        cb(null, Util.flattenValues(results))\n      })\n      .catch((err) => {\n        cb(err)\n      })\n  }\n\n  /**\n   * Get the icon sizes.\n   *\n   * @param {Array.<Number>} defaltSizes Sizes of the defalt.\n   * @param {Object}         options     CLI options.\n   * @param {String}         type        Type of the icon, 'ico' or 'icns'.\n   *\n   * @return {Array.<Number>} Sizes.\n   */\n  static _getSizes (defaltSizes, options, type) {\n    return options && options.sizes && options.sizes[type] ? options.sizes[type] : defaltSizes\n  }\n}\n",
     "static": true,
     "longname": "/Users/akabeko/Documents/dev/node/icon-gen/src/lib/icon-generator.js",
     "access": "public",
@@ -2500,12 +2500,12 @@
       {
         "nullable": null,
         "types": [
-          "Object"
+          "CLIOption"
         ],
         "spread": false,
         "optional": false,
         "name": "options",
-        "description": "Options."
+        "description": "Options from command line."
       },
       {
         "nullable": null,
@@ -2931,7 +2931,7 @@
     "__docId__": 124,
     "kind": "file",
     "name": "src/lib/png-generator.js",
-    "content": "import Fs from 'fs'\nimport Path from 'path'\nimport SVG2PNG from 'svg2png'\nimport FaviconGenerator from './favicon-generator.js'\nimport ICNSGenerator from './icns-generator.js'\nimport ICOGenerator from './ico-generator.js'\n\n/**\n * Generate the PNG files = require(SVG file.\n */\nexport default class PNGGenerator {\n  /**\n   * Generate the PNG files = require(the SVG file.\n   *\n   * @param {String}         src    SVG file path.\n   * @param {String}         dir    Output destination The path of directory.\n   * @param {Array.<String>} modes  Modes of an output files.\n   * @param {Function}       cb     Callback function.\n   * @param {Logger}         logger Logger.\n   */\n  static generate (src, dir, modes, cb, logger) {\n    Fs.readFile(src, (err, svg) => {\n      if (err) {\n        cb(err)\n        return\n      }\n\n      logger.log('SVG to PNG:')\n\n      const sizes = PNGGenerator.getRequiredImageSizes(modes)\n      Promise\n        .all(sizes.map((size) => {\n          return PNGGenerator._generatePNG(svg, size, dir, logger)\n        }))\n        .then((results) => {\n          cb(null, results)\n        })\n        .catch((err2) => {\n          cb(err2)\n        })\n    })\n  }\n\n  /**\n   * Gets the size of the images needed to create an icon.\n   *\n   * @param {Array.<String>} modes Modes of an output files.\n   *\n   * @return {Array.<Number>} The sizes of the image.\n   */\n  static getRequiredImageSizes (modes) {\n    let sizes = []\n    if (modes && 0 < modes.length) {\n      modes.forEach((mode) => {\n        switch (mode) {\n          case 'icns':\n            sizes = sizes.concat(ICNSGenerator.getRequiredImageSizes())\n            break\n\n          case 'ico':\n            sizes = sizes.concat(ICOGenerator.getRequiredImageSizes())\n            break\n\n          case 'favicon':\n            sizes = sizes.concat(FaviconGenerator.getRequiredImageSizes())\n            break\n\n          default:\n            break\n        }\n      })\n    }\n\n    // 'all' mode\n    if (sizes.length === 0) {\n      sizes = FaviconGenerator.getRequiredImageSizes().concat(ICNSGenerator.getRequiredImageSizes().concat(ICOGenerator.getRequiredImageSizes()))\n    }\n\n    return sizes\n      .filter((value, index, array) => {\n        return (array.indexOf(value) === index)\n      })\n      .sort((a, b) => {\n      // Always ensure the ascending order\n        return (a - b)\n      })\n  }\n\n  /**\n   * Generate the PNG file = require(the SVG data.\n   *\n   * @param {Buffer} svg    SVG data that has been parse by svg2png.\n   * @param {Number} size   The size (width/height) of the image.\n   * @param {String} dir    Path of the file output directory.\n   * @param {Logger} logger Logger.\n   *\n   * @return {Promise} Image generation task.\n   */\n  static _generatePNG (svg, size, dir, logger) {\n    return new Promise((resolve, reject) => {\n      if (!(svg && 0 < size && dir)) {\n        reject(new Error('Invalid parameters.'))\n        return\n      }\n\n      const dest = Path.join(dir, size + '.png')\n      logger.log('  Create: ' + dest)\n\n      const buffer = SVG2PNG.sync(svg, { width: size, height: size })\n      if (!(buffer)) {\n        reject(new Error('Faild to write the image, ' + size + 'x' + size))\n        return\n      }\n\n      Fs.writeFile(dest, buffer, (err) => {\n        if (err) {\n          reject(err)\n          return\n        }\n\n        resolve({ size: size, path: dest })\n      })\n    })\n  }\n}\n",
+    "content": "import Fs from 'fs'\nimport Path from 'path'\nimport SVG2PNG from 'svg2png'\nimport FaviconGenerator from './favicon-generator.js'\nimport ICNSGenerator from './icns-generator.js'\nimport ICOGenerator from './ico-generator.js'\n\n/**\n * Filter the sizes.\n *\n * @param {Number[]} sizes Original sizes.\n * @param {Number[]} filterSizes Filter sizes.\n *\n * @return {NUmber[]} Filterd sizes.\n */\nconst filterSizes = (sizes = [], filterSizes = []) => {\n  if (filterSizes.length === 0) {\n    return sizes\n  }\n\n  return sizes.filter((size) => {\n    for (let filterSize of filterSizes) {\n      if (size === filterSize) {\n        return true\n      }\n    }\n\n    return false\n  })\n}\n\n/**\n * Generate the PNG files = require(SVG file.\n */\nexport default class PNGGenerator {\n  /**\n   * Generate the PNG files = require(the SVG file.\n   *\n   * @param {String} src SVG file path.\n   * @param {String} dir Output destination The path of directory.\n   * @param {CLIOption} options Options from command line.\n   * @param {Function} cb Callback function.\n   * @param {Logger} logger Logger.\n   */\n  static generate (src, dir, options, cb, logger) {\n    Fs.readFile(src, (err, svg) => {\n      if (err) {\n        cb(err)\n        return\n      }\n\n      logger.log('SVG to PNG:')\n\n      const sizes = PNGGenerator.getRequiredImageSizes(options)\n      Promise\n        .all(sizes.map((size) => {\n          return PNGGenerator._generatePNG(svg, size, dir, logger)\n        }))\n        .then((results) => {\n          cb(null, results)\n        })\n        .catch((err2) => {\n          cb(err2)\n        })\n    })\n  }\n\n  /**\n   * Gets the size of the images needed to create an icon.\n   *\n   * @param {CLIOption} options Options from command line.\n   *\n   * @return {Number[]} The sizes of the image.\n   */\n  static getRequiredImageSizes (options = {}) {\n    let sizes = []\n    if (options.modes && 0 < options.modes.length) {\n      options.modes.forEach((mode) => {\n        switch (mode) {\n          case 'icns':\n            sizes = sizes.concat(filterSizes(ICNSGenerator.getRequiredImageSizes(), options.sizes && options.sizes.icns))\n            break\n\n          case 'ico':\n            sizes = sizes.concat(filterSizes(ICOGenerator.getRequiredImageSizes(), options.sizes && options.sizes.ico))\n            break\n\n          case 'favicon':\n            sizes = sizes.concat(FaviconGenerator.getRequiredImageSizes())\n            break\n\n          default:\n            break\n        }\n      })\n    }\n\n    // 'all' mode\n    if (sizes.length === 0) {\n      sizes = FaviconGenerator.getRequiredImageSizes()\n      sizes = sizes.concat(filterSizes(ICNSGenerator.getRequiredImageSizes(), options.sizes && options.sizes.icns))\n      sizes = sizes.concat(filterSizes(ICOGenerator.getRequiredImageSizes(), options.sizes && options.sizes.ico))\n    }\n\n    return sizes\n      .filter((value, index, array) => {\n        return (array.indexOf(value) === index)\n      })\n      .sort((a, b) => {\n      // Always ensure the ascending order\n        return (a - b)\n      })\n  }\n\n  /**\n   * Generate the PNG file = require(the SVG data.\n   *\n   * @param {Buffer} svg SVG data that has been parse by svg2png.\n   * @param {Number} size The size (width/height) of the image.\n   * @param {String} dir Path of the file output directory.\n   * @param {Logger} logger Logger.\n   *\n   * @return {Promise} Image generation task.\n   */\n  static _generatePNG (svg, size, dir, logger) {\n    return new Promise((resolve, reject) => {\n      if (!(svg && 0 < size && dir)) {\n        reject(new Error('Invalid parameters.'))\n        return\n      }\n\n      const dest = Path.join(dir, size + '.png')\n      logger.log('  Create: ' + dest)\n\n      const buffer = SVG2PNG.sync(svg, { width: size, height: size })\n      if (!(buffer)) {\n        reject(new Error('Faild to write the image, ' + size + 'x' + size))\n        return\n      }\n\n      Fs.writeFile(dest, buffer, (err) => {\n        if (err) {\n          reject(err)\n          return\n        }\n\n        resolve({ size: size, path: dest })\n      })\n    })\n  }\n}\n",
     "static": true,
     "longname": "/Users/akabeko/Documents/dev/node/icon-gen/src/lib/png-generator.js",
     "access": "public",
@@ -2940,6 +2940,53 @@
   },
   {
     "__docId__": 125,
+    "kind": "function",
+    "name": "filterSizes",
+    "memberof": "src/lib/png-generator.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/lib/png-generator.js~filterSizes",
+    "access": "public",
+    "export": false,
+    "importPath": "icon-gen/src/lib/png-generator.js",
+    "importStyle": null,
+    "description": "Filter the sizes.",
+    "lineNumber": 16,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Number[]"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "sizes",
+        "description": "Original sizes."
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Number[]"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "filterSizes",
+        "description": "Filter sizes."
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "NUmber[]"
+      ],
+      "spread": false,
+      "description": "Filterd sizes."
+    },
+    "ignore": true
+  },
+  {
+    "__docId__": 126,
     "kind": "class",
     "name": "PNGGenerator",
     "memberof": "src/lib/png-generator.js",
@@ -2950,11 +2997,11 @@
     "importPath": "icon-gen/src/lib/png-generator.js",
     "importStyle": "PNGGenerator",
     "description": "Generate the PNG files = require(SVG file.",
-    "lineNumber": 11,
+    "lineNumber": 35,
     "interface": false
   },
   {
-    "__docId__": 126,
+    "__docId__": 127,
     "kind": "method",
     "name": "generate",
     "memberof": "src/lib/png-generator.js~PNGGenerator",
@@ -2964,7 +3011,7 @@
     "longname": "src/lib/png-generator.js~PNGGenerator.generate",
     "access": "public",
     "description": "Generate the PNG files = require(the SVG file.",
-    "lineNumber": 21,
+    "lineNumber": 45,
     "params": [
       {
         "nullable": null,
@@ -2989,12 +3036,12 @@
       {
         "nullable": null,
         "types": [
-          "Array.<String>"
+          "CLIOption"
         ],
         "spread": false,
         "optional": false,
-        "name": "modes",
-        "description": "Modes of an output files."
+        "name": "options",
+        "description": "Options from command line."
       },
       {
         "nullable": null,
@@ -3020,7 +3067,7 @@
     "return": null
   },
   {
-    "__docId__": 127,
+    "__docId__": 128,
     "kind": "method",
     "name": "getRequiredImageSizes",
     "memberof": "src/lib/png-generator.js~PNGGenerator",
@@ -3030,30 +3077,30 @@
     "longname": "src/lib/png-generator.js~PNGGenerator.getRequiredImageSizes",
     "access": "public",
     "description": "Gets the size of the images needed to create an icon.",
-    "lineNumber": 51,
+    "lineNumber": 75,
     "params": [
       {
         "nullable": null,
         "types": [
-          "Array.<String>"
+          "CLIOption"
         ],
         "spread": false,
         "optional": false,
-        "name": "modes",
-        "description": "Modes of an output files."
+        "name": "options",
+        "description": "Options from command line."
       }
     ],
     "return": {
       "nullable": null,
       "types": [
-        "Array.<Number>"
+        "Number[]"
       ],
       "spread": false,
       "description": "The sizes of the image."
     }
   },
   {
-    "__docId__": 128,
+    "__docId__": 129,
     "kind": "method",
     "name": "_generatePNG",
     "memberof": "src/lib/png-generator.js~PNGGenerator",
@@ -3063,7 +3110,7 @@
     "longname": "src/lib/png-generator.js~PNGGenerator._generatePNG",
     "access": "private",
     "description": "Generate the PNG file = require(the SVG data.",
-    "lineNumber": 99,
+    "lineNumber": 125,
     "params": [
       {
         "nullable": null,
@@ -3116,7 +3163,7 @@
     }
   },
   {
-    "__docId__": 129,
+    "__docId__": 130,
     "kind": "file",
     "name": "src/lib/rle.js",
     "content": "/**\n * Max length of PackBits literal.\n * @type {Number}\n */\nconst MAX_LITERAL_LENGTH = 127\n\n/**\n * It pack compress/decompress based on RLE (Run Length Encoding).\n */\nexport default class RLE {\n  /**\n   * Compress binary with PackBits.\n   * This method port Geeks with Blogs's code (Apache License v2.0) to Node.\n   *\n   * @param {Array.<Number>} src Source binary.\n   *\n   * @return {Array.<Number>} Compressed binary.\n   *\n   * @see https://en.wikipedia.org/wiki/PackBits\n   * @see http://geekswithblogs.net/rakker/archive/2015/12/14/packbits-in-c.aspx\n   */\n  static packBits (src) {\n    if (!(src && src.length && 0 < src.length)) {\n      return []\n    }\n\n    let dest     = []\n    let literals = []\n\n    for (let i = 0, max = src.length; i < max; ++i) {\n      const current = RLE._toUInt8(src[i])\n      if (i + 1 < max) {\n        const next = RLE._toUInt8(src[i + 1])\n        if (current === next) {\n          dest = dest.concat(RLE._packBitsLiteralToResult(literals))\n          literals = []\n\n          const maxJ   = (max <= i + MAX_LITERAL_LENGTH ? max - i - 1 : MAX_LITERAL_LENGTH)\n          let   hitMax = true\n          let   runLength = 1\n\n          for (let j = 2; j <= maxJ; ++j) {\n            const run = src[i + j]\n            if (current !== run) {\n              hitMax = false\n              const count = RLE._toUInt8(0 - runLength)\n              i += j - 1\n              dest.push(count)\n              dest.push(current)\n              break\n            }\n\n            ++runLength\n          }\n\n          if (hitMax) {\n            dest.push(RLE._toUInt8(0 - maxJ))\n            dest.push(current)\n            i += maxJ\n          }\n        } else {\n          literals.push(current)\n          if (literals.length === MAX_LITERAL_LENGTH) {\n            dest = dest.concat(RLE._packBitsLiteralToResult(literals))\n            literals = []\n          }\n        }\n      } else {\n        literals.push(current)\n        dest = dest.concat(RLE._packBitsLiteralToResult(literals))\n        literals = []\n      }\n    }\n\n    return dest\n  }\n\n  /**\n   * Compress binary with ICNS RLE.\n   *\n   * @param {Array.<Number>} src Source binary.\n   *\n   * @return {Array.<Number>} Compressed binary.\n   *\n   * @see https://github.com/fiji/IO/blob/master/src/main/java/sc/fiji/io/icns/RunLengthEncoding.java\n   */\n  static packICNS (src) {\n    // If it is not redundant, keep the size large enough to increase the size\n    const packedData = (new Array(src.length * 2)).fill(0)\n\n    let output = 0\n    for (let input = 0; input < src.length;) {\n      let literalStart = input\n      let currentData  = src[input++]\n\n      // Read up to 128 literal bytes\n      // Stop if 3 or more consecutive bytes are equal or EOF is reached\n      let readBytes     = 1\n      let repeatedBytes = 0\n      while (input < src.length && readBytes < 128 && repeatedBytes < 3) {\n        const nextData = src[input++]\n        if (nextData === currentData) {\n          if (repeatedBytes === 0) {\n            repeatedBytes = 2\n          } else {\n            repeatedBytes++\n          }\n        } else {\n          repeatedBytes = 0\n        }\n\n        readBytes++\n        currentData = nextData\n      }\n\n      let literalBytes = 0\n      if (repeatedBytes < 3) {\n        literalBytes = readBytes\n        repeatedBytes = 0\n      } else {\n        literalBytes = readBytes - repeatedBytes\n      }\n\n      // Write the literal bytes that were read\n      if (0 < literalBytes) {\n        packedData[output++] = RLE._toUInt8(literalBytes - 1)\n        RLE._arrayCopy(src, literalStart, packedData, output, literalBytes)\n        output += literalBytes\n      }\n\n      // Read up to 130 consecutive bytes that are equal\n      while (input < src.length && src[input] === currentData && repeatedBytes < 130) {\n        repeatedBytes++\n        input++\n      }\n\n      if (3 <= repeatedBytes) {\n        // Write the repeated bytes if there are 3 or more\n        packedData[output++] = RLE._toUInt8(repeatedBytes + 125)\n        packedData[output++] = currentData\n      } else {\n        // Else move back the in pointer to ensure the repeated bytes are included in the next literal string\n        input -= repeatedBytes\n      }\n    }\n\n    // Trim to the actual size\n    const dest = (new Array(output)).fill(0)\n    RLE._arrayCopy(packedData, 0, dest, 0, output)\n\n    return dest\n  }\n\n  /**\n   * Decompress PackBits compressed binary.\n   * This method port Geeks with Blogs's code (Apache License v2.0) to Node.\n   *\n   * @param {Array.<Number>} src Source binary.\n   *\n   * @return {Array.<Number>} Decompressed binary.\n   *\n   * @see https://en.wikipedia.org/wiki/PackBits\n   * @see http://geekswithblogs.net/rakker/archive/2015/12/14/packbits-in-c.aspx\n   */\n  static unpackBits (src) {\n    const dest = []\n    for (let i = 0, max = src.length; i < max; ++i) {\n      const count = RLE._toInt8(RLE._toUInt8(src[i]))\n      if (count === -128) {\n        // Do nothing, skip it\n      } else if (0 <= count) {\n        const total = count + 1\n        for (let j = 0; j < total; ++j) {\n          dest.push(RLE._toUInt8(src[i + j + 1]))\n        }\n\n        i += total\n      } else {\n        const total = Math.abs(count) + 1\n        for (let j = 0; j < total; ++j) {\n          dest.push(RLE._toUInt8(src[i + 1]))\n        }\n\n        ++i\n      }\n    }\n\n    return dest\n  }\n\n  /**\n   * Copies the array to the target array at the specified position and size.\n   *\n   * @param {Array.<Number>} src       Byte array of copy source.\n   * @param {Number}         srcBegin  Copying start position of source.\n   * @param {Array.<Number>} dest      Bayte array of copy destination.\n   * @param {Number}         destBegin Writing start position of destinnation.\n   * @param {Number}         size      Size of copy bytes.\n   */\n  static _arrayCopy (src, srcBegin, dest, destBegin, size) {\n    if (src.length <= srcBegin || src.length < size || dest.length <= destBegin || dest.length < size) {\n      return\n    }\n\n    for (let i = srcBegin, j = destBegin, k = 0; k < size; ++i, ++j, ++k) {\n      dest[j] = src[i]\n    }\n  }\n\n  /**\n   * Convert PackBits literals to resuls.\n   *\n   * @param {Array.<Number>} literals PackBits literals.\n   *\n   * @return {Array.<Number>} Converted literals.\n   */\n  static _packBitsLiteralToResult (literals) {\n    return literals.length === 0 ? [] : [RLE._toUInt8(literals.length - 1)].concat(literals)\n  }\n\n  /**\n   * Convert a 8bit signed value to unsigned value.\n   *\n   * @param {Number} value 8bit signed value (-127 to 127)\n   *\n   * @return {Number} Unsigned value (0 to 255).\n   */\n  static _toUInt8 (value) {\n    return value & 0xFF\n  }\n\n  /**\n   * Convert a 8bit unsigned value to signed value.\n   *\n   * @param {Number} value 8bit unsigned value (0 to 255).\n   *\n   * @return {Number} Signed value (-127 to 127).\n   *\n   * @see https://github.com/inexorabletash/polyfill/blob/master/typedarray.js\n   */\n  static _toInt8 (value) {\n    return (value << 24) >> 24\n  }\n}\n",
@@ -3127,7 +3174,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 130,
+    "__docId__": 131,
     "kind": "variable",
     "name": "MAX_LITERAL_LENGTH",
     "memberof": "src/lib/rle.js",
@@ -3150,7 +3197,7 @@
     "ignore": true
   },
   {
-    "__docId__": 131,
+    "__docId__": 132,
     "kind": "class",
     "name": "RLE",
     "memberof": "src/lib/rle.js",
@@ -3165,7 +3212,7 @@
     "interface": false
   },
   {
-    "__docId__": 132,
+    "__docId__": 133,
     "kind": "method",
     "name": "packBits",
     "memberof": "src/lib/rle.js~RLE",
@@ -3202,7 +3249,7 @@
     }
   },
   {
-    "__docId__": 133,
+    "__docId__": 134,
     "kind": "method",
     "name": "packICNS",
     "memberof": "src/lib/rle.js~RLE",
@@ -3238,7 +3285,7 @@
     }
   },
   {
-    "__docId__": 134,
+    "__docId__": 135,
     "kind": "method",
     "name": "unpackBits",
     "memberof": "src/lib/rle.js~RLE",
@@ -3275,7 +3322,7 @@
     }
   },
   {
-    "__docId__": 135,
+    "__docId__": 136,
     "kind": "method",
     "name": "_arrayCopy",
     "memberof": "src/lib/rle.js~RLE",
@@ -3341,7 +3388,7 @@
     "return": null
   },
   {
-    "__docId__": 136,
+    "__docId__": 137,
     "kind": "method",
     "name": "_packBitsLiteralToResult",
     "memberof": "src/lib/rle.js~RLE",
@@ -3374,7 +3421,7 @@
     }
   },
   {
-    "__docId__": 137,
+    "__docId__": 138,
     "kind": "method",
     "name": "_toUInt8",
     "memberof": "src/lib/rle.js~RLE",
@@ -3407,7 +3454,7 @@
     }
   },
   {
-    "__docId__": 138,
+    "__docId__": 139,
     "kind": "method",
     "name": "_toInt8",
     "memberof": "src/lib/rle.js~RLE",
@@ -3443,7 +3490,7 @@
     }
   },
   {
-    "__docId__": 139,
+    "__docId__": 140,
     "kind": "file",
     "name": "src/lib/util.js",
     "content": "import Fs from 'fs'\nimport Path from 'path'\nimport OS from 'os'\nimport UUID from 'uuid'\n\nexport default class Util {\n  /**\n   * Create the work directory.\n   *\n   * @return {String} The path of the created directory, failure is null.\n   */\n  static createWorkDir () {\n    const dir = Path.join(OS.tmpdir(), UUID.v4())\n    Fs.mkdirSync(dir)\n\n    const stat = Fs.statSync(dir)\n    return (stat && stat.isDirectory() ? dir : null)\n  }\n\n  /**\n   * Delete a files.\n   *\n   * @param {Array.<String>} paths File paths.\n   */\n  static deleteFiles (paths) {\n    paths.forEach((path) => {\n      try {\n        const stat = Fs.statSync(path)\n        if (stat && stat.isFile()) {\n          Fs.unlinkSync(path)\n        }\n      } catch (err) {\n        console.error(err)\n      }\n    })\n  }\n\n  /**\n   * Filter by size to the specified image informations.\n   *\n   * @param {Array.<ImageInfo>} images Image file informations.\n   * @param {Array.<Number>}    sizes  Required sizes.\n   *\n   * @return {Array.<ImageInfo>} Filtered image informations.\n   */\n  static filterImagesBySizes (images, sizes) {\n    return images\n      .filter((image) => {\n        return sizes.some((size) => {\n          return (image.size === size)\n        })\n      })\n      .sort((a, b) => {\n        return (a.size - b.size)\n      })\n  }\n\n  /**\n   * Convert a values to a flat array.\n   *\n   * @param  {Array.<String|Array>} values Values ([ 'A', 'B', [ 'C', 'D' ] ]).\n   *\n   * @return {Array.<String>} Flat array ([ 'A', 'B', 'C', 'D' ]).\n   */\n  static flattenValues (values) {\n    const paths = []\n    values.forEach((value) => {\n      if (!(value)) {\n        return\n      }\n\n      if (Array.isArray(value)) {\n        value.forEach((path) => {\n          paths.push(path)\n        })\n      } else {\n        paths.push(value)\n      }\n    })\n\n    return paths\n  }\n\n  /**\n   * Check the icon sizes.\n   * Compare the standard sizes with the options specified sizes to get the sizes actually needed.\n   *\n   * @param {Array.<Number>} defaltSizes Sizes of the defalt.\n   * @param {Object}         options     CLI options.\n   * @param {String}         type        Type of the icon, 'ico' or 'icns'.\n   *\n   * @return {Array.<Number>} Checked sizes.\n   */\n  static checkImageSizes (defaltSizes, options, type) {\n    return options && options.sizes && options.sizes[type] ? options.sizes[type] : defaltSizes\n  }\n}\n",
@@ -3454,7 +3501,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 140,
+    "__docId__": 141,
     "kind": "class",
     "name": "Util",
     "memberof": "src/lib/util.js",
@@ -3470,7 +3517,7 @@
     "interface": false
   },
   {
-    "__docId__": 141,
+    "__docId__": 142,
     "kind": "method",
     "name": "createWorkDir",
     "memberof": "src/lib/util.js~Util",
@@ -3492,7 +3539,7 @@
     "params": []
   },
   {
-    "__docId__": 142,
+    "__docId__": 143,
     "kind": "method",
     "name": "deleteFiles",
     "memberof": "src/lib/util.js~Util",
@@ -3518,7 +3565,7 @@
     "return": null
   },
   {
-    "__docId__": 143,
+    "__docId__": 144,
     "kind": "method",
     "name": "filterImagesBySizes",
     "memberof": "src/lib/util.js~Util",
@@ -3561,7 +3608,7 @@
     }
   },
   {
-    "__docId__": 144,
+    "__docId__": 145,
     "kind": "method",
     "name": "flattenValues",
     "memberof": "src/lib/util.js~Util",
@@ -3594,7 +3641,7 @@
     }
   },
   {
-    "__docId__": 145,
+    "__docId__": 146,
     "kind": "method",
     "name": "checkImageSizes",
     "memberof": "src/lib/util.js~Util",
@@ -3647,7 +3694,7 @@
     }
   },
   {
-    "__docId__": 146,
+    "__docId__": 147,
     "kind": "file",
     "name": "src/typedef.js",
     "content": "/**\n * @external {Buffer} https://nodejs.org/api/buffer.html\n */\n\n/**\n * @external {WritableStream} https://nodejs.org/api/stream.html\n */\n\n/**\n * Image file infromations.\n *\n * @typedef {Object} ImageInfo\n * @property {Number} size Image size (width/height).\n * @property {String} path File path.\n */\n\n/**\n * Information of the icon.\n *\n * @typedef {Object} ICNSIconInfo\n * @property {String} id   Identifier of the icon block.\n * @property {String} mask Identifier of the icon block (PackBits mask).\n * @property {Number} size Image size (width/height).\n */\n\n/**\n * Header information of the ICO file.\n *\n * @typedef {Object} ICOHeader\n * @property {Number} reserved 2 bytes. Reserved. Must always be 0.\n * @property {Number} type     2 bytes. Specifies image type: 1 for icon (.ICO) image, 2 for cursor (.CUR) image. Other values are invalid.\n * @property {Number} counr    2 bytes. Specifies number of images in the file.\n *\n * @see https://en.wikipedia.org/wiki/ICO_%28file_format%29\n */\n\n/**\n * Directory information of the ICO file.\n *\n * @typedef {Object} ICODirectory\n * @property {Number} width    1 bytes. Specifies image width in pixels. Can be any number between 0 and 255. Value 0 means image width is 256 pixels.\n * @property {Number} height   1 bytes. Specifies image height in pixels. Can be any number between 0 and 255. Value 0 means image height is 256 pixels.\n * @property {Number} colors   1 bytes. Specifies number of colors in the color palette. Should be 0 if the image does not use a color palette.\n * @property {Number} reserved 1 bytes. Reserved. Should be 0.\n * @property {Number} planes   2 bytes. In ICO format: Specifies color planes. Should be 0 or 1. In CUR format: Specifies the horizontal coordinates of the hotspot in number ofpixels from the left.\n * @property {Number} bpp        2 bytes. In ICO format: Specifies bits per pixel. In CUR format: Specifies the vertical coordinates of the hotspot in number of pixels from thetop.\n * @property {Number} size     4 bytes. Specifies the size of the image's data in bytes.\n * @property {Number} offset   4 bytes. Specifies the offset of BMP or PNG data from the beginning of the ICO/CUR file.\n *\n * @see https://en.wikipedia.org/wiki/ICO_%28file_format%29\n */\n\n/**\n * Commad line options.\n *\n * @typedef {Object} CLIOptions\n * @property {Boolean} help    Mode to display the help text.\n * @property {Boolean} version Mode to display the version number.\n * @property {String}  input   Path of the SVG file or PNG file directory.\n * @property {String}  output  Path of the output directory.\n * @property {String}  type    Type of input file. 'svg' is the SVG file, 'png' is the PNG directory. Default is 'svg'.\n * @property {Boolean} report  Display the process reports. Default is disable.\n */\n",
@@ -3658,7 +3705,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 147,
+    "__docId__": 148,
     "kind": "external",
     "name": "Buffer",
     "externalLink": "https://nodejs.org/api/buffer.html",
@@ -3669,7 +3716,7 @@
     "description": ""
   },
   {
-    "__docId__": 148,
+    "__docId__": 149,
     "kind": "external",
     "name": "WritableStream",
     "externalLink": "https://nodejs.org/api/stream.html",
@@ -3680,7 +3727,7 @@
     "description": ""
   },
   {
-    "__docId__": 149,
+    "__docId__": 150,
     "kind": "typedef",
     "name": "ImageInfo",
     "memberof": "src/typedef.js",
@@ -3719,7 +3766,7 @@
     }
   },
   {
-    "__docId__": 150,
+    "__docId__": 151,
     "kind": "typedef",
     "name": "ICNSIconInfo",
     "memberof": "src/typedef.js",
@@ -3768,7 +3815,7 @@
     }
   },
   {
-    "__docId__": 151,
+    "__docId__": 152,
     "kind": "typedef",
     "name": "ICOHeader",
     "memberof": "src/typedef.js",
@@ -3820,7 +3867,7 @@
     }
   },
   {
-    "__docId__": 152,
+    "__docId__": 153,
     "kind": "typedef",
     "name": "ICODirectory",
     "memberof": "src/typedef.js",
@@ -3922,7 +3969,7 @@
     }
   },
   {
-    "__docId__": 153,
+    "__docId__": 154,
     "kind": "typedef",
     "name": "CLIOptions",
     "memberof": "src/typedef.js",
@@ -4002,7 +4049,7 @@
   },
   {
     "kind": "index",
-    "content": "# npm-icon-gen\n\n[![Support Node of LTS](https://img.shields.io/badge/node-LTS-brightgreen.svg)](https://nodejs.org/)\n[![npm version](https://badge.fury.io/js/icon-gen.svg)](https://badge.fury.io/js/icon-gen)\n[![Build Status](https://travis-ci.org/akabekobeko/npm-icon-gen.svg?branch=master)](https://travis-ci.org/akabekobeko/npm-icon-gen)\n[![Document](https://img.shields.io/badge/document-ESDoc-brightgreen.svg)](https://akabekobeko.github.io/npm-icon-gen/)\n[![Standard - JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](http://standardjs.com/)\n\nGenerate an icon files from the **SVG** or **PNG** files.\n\n## Node.js requirements\n\nThis module depends on [svg2png](https://github.com/domenic/svg2png). Therefore we need **Node v6 or later**. The following is a quotation from `README` of **svg2png**.\n\n> svg2png uses the latest in ES2015 features, and as such requires a recent version of Node.js. Only the 6.x series onward is supported.\n\n## Support formats\n\nSupported the output format of the icon are following.\n\n| Platform | Icon |\n|---------:|:-----|\n|  Windows | `app.ico` or specified name. |\n|    macOS | `app.icns` or specified name. |\n|  Favicon | `favicon.ico` and `favicon-XX.png`. |\n\n## Installation\n\n```\n$ npm install icon-gen\n```\n\n## Usage\n\n### SVG\n\nSVG files are rendering to PNG file in **svg2png**. Rendering files is output to a temporary directory of the each OS.\n\nRendering of svg2png is run by [phantomjs](https://www.npmjs.com/package/phantomjs). Please use the PNG directory If the rendering quality there is a problem.\n\n```js\nconst icongen = require('icon-gen');\n\nconst options = {\n  report: true\n};\n\nicongen('./sample.svg', './dist', options)\n.then((results) => {\n  console.log(results)\n})\n.catch((err) => {\n  console.error(err)\n});\n```\n\n### PNG\n\nGenerate an icon files from the directory of PNG files.\n\n```js\nconst icongen = require('icon-gen');\n\nconst options = {\n  type: 'png',\n  report: true\n};\n\nicongen('./images', './dist', options)\n.then((results) => {\n  console.log(results);\n} )\n.catch((err) => {\n  console.error(err);\n});\n```\n\nRequired PNG files is below. Favicon outputs both the ICO and PNG files ( see: [audreyr/favicon-cheat-sheet](https://github.com/audreyr/favicon-cheat-sheet) ).\n\n| Name     | Size      | ICO      | ICNS     | Fav ICO  | Fav PNG  |\n|---------:|:----------|:--------:|:--------:|:--------:|:--------:|\n|   16.png |     16x16 | &#10004; | &#10004; | &#10004; |          |\n|   24.png |     24x24 | &#10004; |          | &#10004; |          |\n|   32.png |     32x32 | &#10004; | &#10004; | &#10004; | &#10004; |\n|   48.png |     48x48 | &#10004; |          | &#10004; |          |\n|   57.png |     57x57 |          |          |          | &#10004; |\n|   64.png |     64x64 | &#10004; | &#10004; | &#10004; |          |\n|   72.png |     72x72 |          |          |          | &#10004; |\n|   96.png |     96x96 |          |          |          | &#10004; |\n|  120.png |   120x120 |          |          |          | &#10004; |\n|  128.png |   128x128 | &#10004; | &#10004; |          | &#10004; |\n|  144.png |   144x144 |          |          |          | &#10004; |\n|  152.png |   152x152 |          |          |          | &#10004; |\n|  195.png |   195x195 |          |          |          | &#10004; |\n|  228.png |   228x228 |          |          |          | &#10004; |\n|  256.png |   256x256 | &#10004; | &#10004; |          |          |\n|  512.png |   512x512 |          | &#10004; |          |          |\n| 1024.png | 1024x1024 |          | &#10004; |          |          |\n\n## Node API\n\n### icongen\n\n**icongen** is promisify function.\n\n`icongen(src, dest[, options])`\n\n|    Name |   Type | Description |\n|:--------|:-------|:------------|\n|     src | String | Path of the **SVG file** or **PNG files directory** that becomes the source. |\n|    dest | String | Destination directory path. |\n| options | Object | Options. |\n\noptions:\n\n|   Name |    Type | Description |\n|:-------|:--------|:------------|\n|   type |  String | Type of input file. Allowed value is a `svg` or `png`. 'svg' is SVG file, `png` is PNG files directory. Default is `svg`. |\n|  modes |   Array | Mode of output files. Allow value is a `ico`, `icns`, `favicon` and `all`. Default is `all`. |\n|  names |  Object | Change an output file names for **ICO** and **ICNS**. |\n| report | Boolean | Display the process reports. Default is `false`, disable a report. |\n|  sizes |  Object | List of sizes to include for **ICO** and **ICNS**. |\n\nnames:\n\nUse this property is specified without an extension. Default name is the `app`.\n\n| Name | Type | Description |\n|:--------|:--|:--|\n| ico | String | Name of the `ico` file. |\n| icns | String | Name of the `icns` file. |\n\nsizes:\n\nUse this property is specified without an extension. Default name is the `app`.\n\n| Name | Type | Description |\n|:--------|:--|:--|\n| ico | Array | List of sizes for the `ico` file. |\n| icns | Array | List of sizes for the `icns` file. |\n\n## CLI\n\n```\nUsage: icon-gen [OPTIONS]\n\n  Generate an icon from the SVG or PNG file.\n\n  Options:\n    -h, --help    Display this text.\n\n    -v, --version Display the version number.\n\n    -i, --input   Path of the SVG file or PNG file directory.\n\n    -o, --output  Path of the output directory.\n\n    -t, --type    Type of the input file.\n                  'svg' is the SVG file, 'png' is the PNG files directory.\n                  Allowed values: svg, png\n                  Default is 'svg'.\n\n    -m, --modes   Mode of the output files.\n                  Allowed values: ico, icns, favicon, all\n                  Default is 'all'.\n\n    -n, --names   Change an output file names for ICO and ICNS.\n                  ex: 'ico=foo,icns=bar'\n                  Default is 'app.ico' and 'app.ico'.\n\n    -r, --report  Display the process reports.\n                  Default is disable.\n\n    -s, --sizes   List of sizes to include for ICO and ICNS.\n                  ex: 'ico=[12,24,32],icns=[12,24,64]'\n\n  Examples:\n    $ icon-gen -i sample.svg -o ./dist -r\n    $ icon-gen -i ./images -o ./dist -t png -r\n    $ icon-gen -i sample.svg -o ./dist -m ico,favicon -r\n    $ icon-gen -i sample.svg -o ./dist -n ico=foo,icns=bar\n\n  See also:\n    https://github.com/akabekobeko/npm-icon-gen\n```\n\n# ChangeLog\n\n* [CHANGELOG](CHANGELOG.md)\n\n# License\n\n* [MIT](LICENSE.txt)\n",
+    "content": "# npm-icon-gen\n\n[![Support Node of LTS](https://img.shields.io/badge/node-LTS-brightgreen.svg)](https://nodejs.org/)\n[![npm version](https://badge.fury.io/js/icon-gen.svg)](https://badge.fury.io/js/icon-gen)\n[![Build Status](https://travis-ci.org/akabekobeko/npm-icon-gen.svg?branch=master)](https://travis-ci.org/akabekobeko/npm-icon-gen)\n[![Document](https://img.shields.io/badge/document-ESDoc-brightgreen.svg)](https://akabekobeko.github.io/npm-icon-gen/)\n[![Standard - JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](http://standardjs.com/)\n\nGenerate an icon files from the **SVG** or **PNG** files.\n\n## Node.js requirements\n\nThis module depends on [svg2png](https://github.com/domenic/svg2png). Therefore we need **Node v6 or later**. The following is a quotation from `README` of **svg2png**.\n\n> svg2png uses the latest in ES2015 features, and as such requires a recent version of Node.js. Only the 6.x series onward is supported.\n\n## Support formats\n\nSupported the output format of the icon are following.\n\n| Platform | Icon |\n|---------:|:-----|\n|  Windows | `app.ico` or specified name. |\n|    macOS | `app.icns` or specified name. |\n|  Favicon | `favicon.ico` and `favicon-XX.png`. |\n\n## Installation\n\n```\n$ npm install icon-gen\n```\n\n## Usage\n\n### SVG\n\nSVG files are rendering to PNG file in **svg2png**. Rendering files is output to a temporary directory of the each OS.\n\nRendering of svg2png is run by [phantomjs](https://www.npmjs.com/package/phantomjs). Please use the PNG directory If the rendering quality there is a problem.\n\n```js\nconst icongen = require('icon-gen');\n\nconst options = {\n  report: true\n};\n\nicongen('./sample.svg', './dist', options)\n.then((results) => {\n  console.log(results)\n})\n.catch((err) => {\n  console.error(err)\n});\n```\n\n### PNG\n\nGenerate an icon files from the directory of PNG files.\n\n```js\nconst icongen = require('icon-gen');\n\nconst options = {\n  type: 'png',\n  report: true\n};\n\nicongen('./images', './dist', options)\n.then((results) => {\n  console.log(results);\n} )\n.catch((err) => {\n  console.error(err);\n});\n```\n\nRequired PNG files is below. Favicon outputs both the ICO and PNG files (see: [audreyr/favicon-cheat-sheet](https://github.com/audreyr/favicon-cheat-sheet)).\n\n|Name    |Size     |ICO     |ICNS    |Fav ICO |Fav PNG |\n|-------:|--------:|:------:|:------:|:------:|:------:|\n|  16.png|    16x16|&#10004;|&#10004;|&#10004;|        |\n|  24.png|    24x24|&#10004;|        |&#10004;|        |\n|  32.png|    32x32|&#10004;|&#10004;|&#10004;|&#10004;|\n|  48.png|    48x48|&#10004;|        |&#10004;|        |\n|  57.png|    57x57|        |        |        |&#10004;|\n|  64.png|    64x64|&#10004;|&#10004;|&#10004;|        |\n|  72.png|    72x72|        |        |        |&#10004;|\n|  96.png|    96x96|        |        |        |&#10004;|\n| 120.png|  120x120|        |        |        |&#10004;|\n| 128.png|  128x128|&#10004;|&#10004;|        |&#10004;|\n| 144.png|  144x144|        |        |        |&#10004;|\n| 152.png|  152x152|        |        |        |&#10004;|\n| 195.png|  195x195|        |        |        |&#10004;|\n| 228.png|  228x228|        |        |        |&#10004;|\n| 256.png|  256x256|&#10004;|&#10004;|        |        |\n| 512.png|  512x512|        |&#10004;|        |        |\n|1024.png|1024x1024|        |&#10004;|        |        |\n\n## Node API\n\n### icongen\n\n**icongen** is promisify function.\n\n`icongen(src, dest[, options])`\n\n|Name|Type|Description|\n|---|---|---|\n|src |`String`|Path of the **SVG file** or **PNG files directory** that becomes the source.|\n|dest |`String`|Destination directory path.|\n|options|`Object`|see: _Options_.|\n\n_Options:_\n\n|Name|Type|Description|\n|---|---|---|\n|type |`String`|Type of input file. Allowed value is a `svg` or `png`. 'svg' is SVG file, `png` is PNG files directory. Default is `svg`.|\n|modes |`String[]`|Mode of output files. Allow value is a `ico`, `icns`, `favicon` and `all`. Default is `all`.|\n|names|`Object`  |Change an output file names for **ICO** and **ICNS**. see: _Names_|\n|report|`Boolean` |Display the process reports. Default is `false`, disable a report.|\n|sizes|`Object`|List of sizes to include for **ICO** and **ICNS**. see: _Sizes_|\n\n_Names:_\n\nUse this property is specified without an extension. Default name is the `app`.\n\n|Name|Type|Description|\n|---|---|---|\n|ico |`String`|Name of the `ico` file.|\n|icns|`String`|Name of the `icns` file.|\n\n_Sizes:_\n\nUse this property is specified without an extension. Default name is the `app`.\n\n|Name|Type|Description|\n|---|---|---|\n|ico|`Number[]`|List of sizes for the `ico` file.|\n|icns|`Number[]`|List of sizes for the `icns` file.|\n\n## CLI\n\n```\nUsage: icon-gen [OPTIONS]\n\nGenerate an icon from the SVG or PNG file.\n\nOptions:\n-h, --help    Display this text.\n-v, --version Display the version number.\n-i, --input   Path of the SVG file or PNG file directory.\n-o, --output  Path of the output directory.\n-t, --type    Type of the input file.\n              'svg' is the SVG file, 'png' is the PNG files directory.\n              Allowed values: svg, png\n              Default is 'svg'.\n-m, --modes   Mode of the output files.\n              Allowed values: ico, icns, favicon, all\n              Default is 'all'.\n-n, --names   Change an output file names for ICO and ICNS.\n              ex: 'ico=foo,icns=bar'\n              Default is 'app.ico' and 'app.ico'.\n-r, --report  Display the process reports.\n              Default is disable.\n-s, --sizes   List of sizes to include for ICO and ICNS.\n              ex: 'ico=[12,24,32],icns=[12,24,64]'\n\nExamples:\n$ icon-gen -i sample.svg -o ./dist -r\n$ icon-gen -i ./images -o ./dist -t png -r\n$ icon-gen -i sample.svg -o ./dist -m ico,favicon -r\n$ icon-gen -i sample.svg -o ./dist -n ico=foo,icns=bar\n$ icon-gen -i sample.svg -o ./dist -s ico=[16,24,32],icns=[16,32,512]\n\nSee also:\nhttps://github.com/akabekobeko/npm-icon-gen\n```\n\n# ChangeLog\n\n* [CHANGELOG](CHANGELOG.md)\n\n# License\n\n* [MIT](LICENSE.txt)\n",
     "longname": "/Users/akabeko/Documents/dev/node/icon-gen/README.md",
     "name": "./README.md",
     "static": true,
@@ -4010,17 +4057,17 @@
   },
   {
     "kind": "packageJSON",
-    "content": "{\n  \"name\": \"icon-gen\",\n  \"description\": \"Generate an icon files from the SVG or PNG files\",\n  \"version\": \"1.2.1\",\n  \"author\": \"akabeko (http://akabeko.me/)\",\n  \"license\": \"MIT\",\n  \"homepage\": \"https://github.com/akabekobeko/npm-icon-gen#readme\",\n  \"engines\": {\n    \"node\": \">= 6\"\n  },\n  \"main\": \"dist/lib/index.js\",\n  \"bin\": \"dist/bin/index.js\",\n  \"files\": [\n    \"dist\"\n  ],\n  \"keywords\": [\n    \"Icon\",\n    \"Generator\",\n    \"SVG\",\n    \"CLI\"\n  ],\n  \"repository\": {\n    \"type\": \"git\",\n    \"url\": \"git+https://github.com/akabekobeko/npm-icon-gen.git\"\n  },\n  \"bugs\": {\n    \"url\": \"https://github.com/akabekobeko/npm-icon-gen/issues\"\n  },\n  \"esdoc\": {\n    \"source\": \"./src\",\n    \"destination\": \"./docs\",\n    \"plugins\": [\n      {\n        \"name\": \"esdoc-standard-plugin\",\n        \"option\": {\n          \"test\": {\n            \"source\": \"./src\"\n          }\n        }\n      }\n    ]\n  },\n  \"babel\": {\n    \"presets\": [\n      [\n        \"env\",\n        {\n          \"targets\": {\n            \"node\": 6\n          }\n        }\n      ]\n    ],\n    \"env\": {\n      \"development\": {\n        \"presets\": [\n          \"power-assert\"\n        ]\n      }\n    }\n  },\n  \"scripts\": {\n    \"test\": \"mocha --timeout 50000 --require babel-register src/**/*.test.js\",\n    \"start\": \"npm run watch\",\n    \"esdoc\": \"esdoc\",\n    \"eslint\": \"eslint ./src\",\n    \"build\": \"babel src --out-dir dist --ignore *.test.js,typedef.js\",\n    \"watch\": \"babel src --out-dir dist --ignore *.test.js,typedef.js --watch\",\n    \"prepare\": \"npm run build\"\n  },\n  \"dependencies\": {\n    \"del\": \"^3.0.0\",\n    \"mkdirp\": \"^0.5.1\",\n    \"pngjs-nozlib\": \"^1.0.0\",\n    \"svg2png\": \"4.1.1\",\n    \"uuid\": \"^3.2.1\"\n  },\n  \"devDependencies\": {\n    \"babel-cli\": \"^6.26.0\",\n    \"babel-preset-env\": \"^1.6.1\",\n    \"babel-preset-power-assert\": \"^2.0.0\",\n    \"babel-register\": \"^6.26.0\",\n    \"esdoc\": \"^1.0.4\",\n    \"esdoc-standard-plugin\": \"^1.0.0\",\n    \"eslint\": \"^4.19.1\",\n    \"eslint-config-standard\": \"^11.0.0\",\n    \"eslint-plugin-import\": \"^2.9.0\",\n    \"eslint-plugin-node\": \"^6.0.1\",\n    \"eslint-plugin-promise\": \"^3.7.0\",\n    \"eslint-plugin-standard\": \"^3.0.1\",\n    \"mocha\": \"^5.0.5\",\n    \"power-assert\": \"^1.4.4\"\n  }\n}\n",
+    "content": "{\n  \"name\": \"icon-gen\",\n  \"description\": \"Generate an icon files from the SVG or PNG files\",\n  \"version\": \"1.2.2\",\n  \"author\": \"akabeko (http://akabeko.me/)\",\n  \"license\": \"MIT\",\n  \"homepage\": \"https://github.com/akabekobeko/npm-icon-gen#readme\",\n  \"engines\": {\n    \"node\": \">= 6\"\n  },\n  \"main\": \"dist/lib/index.js\",\n  \"bin\": \"dist/bin/index.js\",\n  \"files\": [\n    \"dist\"\n  ],\n  \"keywords\": [\n    \"Icon\",\n    \"Generator\",\n    \"SVG\",\n    \"CLI\"\n  ],\n  \"repository\": {\n    \"type\": \"git\",\n    \"url\": \"git+https://github.com/akabekobeko/npm-icon-gen.git\"\n  },\n  \"bugs\": {\n    \"url\": \"https://github.com/akabekobeko/npm-icon-gen/issues\"\n  },\n  \"esdoc\": {\n    \"source\": \"./src\",\n    \"destination\": \"./docs\",\n    \"plugins\": [\n      {\n        \"name\": \"esdoc-standard-plugin\",\n        \"option\": {\n          \"test\": {\n            \"source\": \"./src\"\n          }\n        }\n      }\n    ]\n  },\n  \"babel\": {\n    \"presets\": [\n      [\n        \"env\",\n        {\n          \"targets\": {\n            \"node\": 6\n          }\n        }\n      ]\n    ],\n    \"env\": {\n      \"development\": {\n        \"presets\": [\n          \"power-assert\"\n        ]\n      }\n    }\n  },\n  \"scripts\": {\n    \"test\": \"mocha --timeout 50000 --require babel-register src/**/*.test.js\",\n    \"start\": \"npm run watch\",\n    \"esdoc\": \"esdoc\",\n    \"eslint\": \"eslint ./src\",\n    \"build\": \"babel src --out-dir dist --ignore *.test.js,typedef.js\",\n    \"watch\": \"babel src --out-dir dist --ignore *.test.js,typedef.js --watch\",\n    \"prepare\": \"npm run build\"\n  },\n  \"dependencies\": {\n    \"del\": \"^3.0.0\",\n    \"mkdirp\": \"^0.5.1\",\n    \"pngjs-nozlib\": \"^1.0.0\",\n    \"svg2png\": \"4.1.1\",\n    \"uuid\": \"^3.3.2\"\n  },\n  \"devDependencies\": {\n    \"babel-cli\": \"^6.26.0\",\n    \"babel-preset-env\": \"^1.7.0\",\n    \"babel-preset-power-assert\": \"^2.0.0\",\n    \"babel-register\": \"^6.26.0\",\n    \"esdoc\": \"^1.1.0\",\n    \"esdoc-standard-plugin\": \"^1.0.0\",\n    \"eslint\": \"^5.3.0\",\n    \"eslint-config-standard\": \"^11.0.0\",\n    \"eslint-plugin-import\": \"^2.14.0\",\n    \"eslint-plugin-node\": \"^7.0.1\",\n    \"eslint-plugin-promise\": \"^3.8.0\",\n    \"eslint-plugin-standard\": \"^3.1.0\",\n    \"mocha\": \"^5.2.0\",\n    \"power-assert\": \"^1.6.0\",\n    \"rewire\": \"^4.0.1\"\n  }\n}\n",
     "longname": "/Users/akabeko/Documents/dev/node/icon-gen/package.json",
     "name": "package.json",
     "static": true,
     "access": "public"
   },
   {
-    "__docId__": 154,
+    "__docId__": 155,
     "kind": "testFile",
     "name": "src/bin/cli.test.js",
-    "content": "import assert from 'assert'\nimport Path from 'path'\nimport CLI from './cli.js'\n\n/** @test {CLI} */\ndescribe('CLI', () => {\n  /** @test {CLIl#parse} */\n  describe('parse', () => {\n    it('parse: Empty arguments', () => {\n      const options = CLI.parse([])\n      assert(options.help)\n    })\n\n    it('parse: -h --help', () => {\n      let options = CLI.parse(['-h'])\n      assert(options.help)\n\n      options = CLI.parse(['--help'])\n      assert(options.help)\n    })\n\n    it('parse: -v --version', () => {\n      let options = CLI.parse(['-v'])\n      assert(options.version)\n\n      options = CLI.parse(['--version'])\n      assert(options.version)\n    })\n\n    it('parse: -m --modes', () => {\n      let options = CLI.parse(['-m', 'XXX'])\n      assert(options.modes.length === 3)\n\n      options = CLI.parse(['--modes', 'XXX'])\n      assert(options.modes.length === 3)\n\n      options = CLI.parse(['-m', 'ico'])\n      assert(options.modes.length === 1)\n\n      options = CLI.parse(['-m', 'ico,icns,favicon'])\n      assert(options.modes.length === 3)\n\n      options = CLI.parse(['-m', 'ico,XXX,icns'])\n      assert(options.modes.length === 2)\n    })\n\n    it('parse: -i SVGFILE -o DESTDIR', () => {\n      const argv = [\n        '-i',  './test/data/sample.svg',\n        '-o', './test'\n      ]\n\n      const options = CLI.parse(argv)\n\n      const actualInputPath = Path.resolve(argv[1])\n      assert(options.input === actualInputPath)\n\n      const actualOutputPath = Path.resolve(argv[3])\n      assert(options.output === actualOutputPath)\n\n      assert(options.type === 'svg')\n      assert(!(options.report))\n    })\n\n    it('parse: -i PNGDIR -o DESTDIR -t png -r', () => {\n      const argv = [\n        '-i', './test/data',\n        '-o', './test',\n        '-t', 'png',\n        '-r'\n      ]\n\n      const options = CLI.parse(argv)\n\n      const actualInputPath = Path.resolve(argv[1])\n      assert(options.input === actualInputPath)\n\n      const actualOutputPath = Path.resolve(argv[3])\n      assert(options.output === actualOutputPath)\n\n      assert(options.type === 'png')\n      assert(options.report)\n    })\n  })\n\n  /** @test {CLI#_parseMode} */\n  describe('_parseMode', () => {\n    it('Default', () => {\n      const modes = CLI._parseMode()\n      assert.deepEqual(modes, ['ico', 'icns', 'favicon'])\n    })\n\n    it('ico, icns, favicon', () => {\n      const modes = CLI._parseMode('ico,icns,favicon')\n      assert(modes.length === 3)\n    })\n\n    it('ico', () => {\n      const modes = CLI._parseMode('ico')\n      assert(modes[0] === 'ico')\n    })\n\n    it('icns', () => {\n      const modes = CLI._parseMode('icns')\n      assert(modes[0] === 'icns')\n    })\n\n    it('favicon', () => {\n      const modes = CLI._parseMode('favicon')\n      assert(modes[0] === 'favicon')\n    })\n  })\n\n  /** @test {CLI#_parseNames} */\n  describe('_parseNames', () => {\n    it('ico & icns', () => {\n      const names = CLI._parseNames('ico=foo,icns=bar')\n      assert.deepEqual({ ico: 'foo', icns: 'bar' }, names)\n    })\n\n    it('ico', () => {\n      const names = CLI._parseNames('ico=foo')\n      assert.deepEqual({ ico: 'foo' }, names)\n    })\n\n    it('icns', () => {\n      const names = CLI._parseNames('icns=bar')\n      assert.deepEqual({ icns: 'bar' }, names)\n    })\n\n    it('Invalid value', () => {\n      const names = CLI._parseNames()\n      assert.deepEqual({}, names)\n    })\n  })\n\n  /** @test {CLI#_parseSizes} */\n  describe('_parseSizes', () => {\n    it('ico & icns', () => {\n      const sizes = CLI._parseSizes('ico=[16,24,32],icns=[16,24,64]')\n      assert.deepEqual({ ico: ['16', '24', '32'], icns: ['16', '24', '64'] }, sizes)\n    })\n\n    it('ico', () => {\n      const sizes = CLI._parseSizes('ico=[16,24,32]')\n      assert.deepEqual({ ico: ['16', '24', '32'] }, sizes)\n    })\n\n    it('icns', () => {\n      const sizes = CLI._parseSizes('icns=[16,24,64]')\n      assert.deepEqual({ icns: ['16', '24', '64'] }, sizes)\n    })\n\n    it('Invalid value', () => {\n      const sizes = CLI._parseSizes()\n      assert.deepEqual({}, sizes)\n    })\n  })\n})\n",
+    "content": "import assert from 'assert'\nimport Path from 'path'\nimport CLI from './cli.js'\n\n/** @test {CLI} */\ndescribe('CLI', () => {\n  /** @test {CLIl#parse} */\n  describe('parse', () => {\n    it('parse: Empty arguments', () => {\n      const options = CLI.parse([])\n      assert(options.help)\n    })\n\n    it('parse: -h --help', () => {\n      let options = CLI.parse(['-h'])\n      assert(options.help)\n\n      options = CLI.parse(['--help'])\n      assert(options.help)\n    })\n\n    it('parse: -v --version', () => {\n      let options = CLI.parse(['-v'])\n      assert(options.version)\n\n      options = CLI.parse(['--version'])\n      assert(options.version)\n    })\n\n    it('parse: -m --modes', () => {\n      let options = CLI.parse(['-m', 'XXX'])\n      assert(options.modes.length === 3)\n\n      options = CLI.parse(['--modes', 'XXX'])\n      assert(options.modes.length === 3)\n\n      options = CLI.parse(['-m', 'ico'])\n      assert(options.modes.length === 1)\n\n      options = CLI.parse(['-m', 'ico,icns,favicon'])\n      assert(options.modes.length === 3)\n\n      options = CLI.parse(['-m', 'ico,XXX,icns'])\n      assert(options.modes.length === 2)\n    })\n\n    it('parse: -i SVGFILE -o DESTDIR', () => {\n      const argv = [\n        '-i',  './test/data/sample.svg',\n        '-o', './test'\n      ]\n\n      const options = CLI.parse(argv)\n\n      const actualInputPath = Path.resolve(argv[1])\n      assert(options.input === actualInputPath)\n\n      const actualOutputPath = Path.resolve(argv[3])\n      assert(options.output === actualOutputPath)\n\n      assert(options.type === 'svg')\n      assert(!(options.report))\n    })\n\n    it('parse: -i PNGDIR -o DESTDIR -t png -r', () => {\n      const argv = [\n        '-i', './test/data',\n        '-o', './test',\n        '-t', 'png',\n        '-r'\n      ]\n\n      const options = CLI.parse(argv)\n\n      const actualInputPath = Path.resolve(argv[1])\n      assert(options.input === actualInputPath)\n\n      const actualOutputPath = Path.resolve(argv[3])\n      assert(options.output === actualOutputPath)\n\n      assert(options.type === 'png')\n      assert(options.report)\n    })\n  })\n\n  /** @test {CLI#_parseMode} */\n  describe('_parseMode', () => {\n    it('Default', () => {\n      const modes = CLI._parseMode()\n      assert.deepStrictEqual(modes, ['ico', 'icns', 'favicon'])\n    })\n\n    it('ico, icns, favicon', () => {\n      const modes = CLI._parseMode('ico,icns,favicon')\n      assert(modes.length === 3)\n    })\n\n    it('ico', () => {\n      const modes = CLI._parseMode('ico')\n      assert(modes[0] === 'ico')\n    })\n\n    it('icns', () => {\n      const modes = CLI._parseMode('icns')\n      assert(modes[0] === 'icns')\n    })\n\n    it('favicon', () => {\n      const modes = CLI._parseMode('favicon')\n      assert(modes[0] === 'favicon')\n    })\n  })\n\n  /** @test {CLI#_parseNames} */\n  describe('_parseNames', () => {\n    it('ico & icns', () => {\n      const names = CLI._parseNames('ico=foo,icns=bar')\n      assert.deepStrictEqual({ ico: 'foo', icns: 'bar' }, names)\n    })\n\n    it('ico', () => {\n      const names = CLI._parseNames('ico=foo')\n      assert.deepStrictEqual({ ico: 'foo' }, names)\n    })\n\n    it('icns', () => {\n      const names = CLI._parseNames('icns=bar')\n      assert.deepStrictEqual({ icns: 'bar' }, names)\n    })\n\n    it('Invalid value', () => {\n      const names = CLI._parseNames()\n      assert.deepStrictEqual({}, names)\n    })\n  })\n\n  /** @test {CLI#_parseSizes} */\n  describe('_parseSizes', () => {\n    it('ico & icns', () => {\n      const sizes = CLI._parseSizes('ico=[16,24,32],icns=[16,24,64]')\n      assert.deepStrictEqual({ ico: [16, 24, 32], icns: [16, 24, 64] }, sizes)\n    })\n\n    it('ico', () => {\n      const sizes = CLI._parseSizes('ico=[16,24,32]')\n      assert.deepStrictEqual({ ico: [16, 24, 32] }, sizes)\n    })\n\n    it('icns', () => {\n      const sizes = CLI._parseSizes('icns=[16,24,64]')\n      assert.deepStrictEqual({ icns: [16, 24, 64] }, sizes)\n    })\n\n    it('Invalid value', () => {\n      const sizes = CLI._parseSizes()\n      assert.deepStrictEqual({}, sizes)\n    })\n  })\n})\n",
     "static": true,
     "longname": "/Users/akabeko/Documents/dev/node/icon-gen/src/bin/cli.test.js",
     "access": null,
@@ -4028,7 +4075,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 155,
+    "__docId__": 156,
     "kind": "test",
     "name": "describe0",
     "testId": 0,
@@ -4044,7 +4091,7 @@
     ]
   },
   {
-    "__docId__": 156,
+    "__docId__": 157,
     "kind": "test",
     "name": "describe1",
     "testId": 1,
@@ -4060,7 +4107,7 @@
     ]
   },
   {
-    "__docId__": 157,
+    "__docId__": 158,
     "kind": "test",
     "name": "it2",
     "testId": 2,
@@ -4073,7 +4120,7 @@
     "lineNumber": 9
   },
   {
-    "__docId__": 158,
+    "__docId__": 159,
     "kind": "test",
     "name": "it3",
     "testId": 3,
@@ -4086,7 +4133,7 @@
     "lineNumber": 14
   },
   {
-    "__docId__": 159,
+    "__docId__": 160,
     "kind": "test",
     "name": "it4",
     "testId": 4,
@@ -4099,7 +4146,7 @@
     "lineNumber": 22
   },
   {
-    "__docId__": 160,
+    "__docId__": 161,
     "kind": "test",
     "name": "it5",
     "testId": 5,
@@ -4112,7 +4159,7 @@
     "lineNumber": 30
   },
   {
-    "__docId__": 161,
+    "__docId__": 162,
     "kind": "test",
     "name": "it6",
     "testId": 6,
@@ -4125,7 +4172,7 @@
     "lineNumber": 47
   },
   {
-    "__docId__": 162,
+    "__docId__": 163,
     "kind": "test",
     "name": "it7",
     "testId": 7,
@@ -4138,7 +4185,7 @@
     "lineNumber": 65
   },
   {
-    "__docId__": 163,
+    "__docId__": 164,
     "kind": "test",
     "name": "describe8",
     "testId": 8,
@@ -4154,7 +4201,7 @@
     ]
   },
   {
-    "__docId__": 164,
+    "__docId__": 165,
     "kind": "test",
     "name": "it9",
     "testId": 9,
@@ -4167,7 +4214,7 @@
     "lineNumber": 88
   },
   {
-    "__docId__": 165,
+    "__docId__": 166,
     "kind": "test",
     "name": "it10",
     "testId": 10,
@@ -4180,7 +4227,7 @@
     "lineNumber": 93
   },
   {
-    "__docId__": 166,
+    "__docId__": 167,
     "kind": "test",
     "name": "it11",
     "testId": 11,
@@ -4193,7 +4240,7 @@
     "lineNumber": 98
   },
   {
-    "__docId__": 167,
+    "__docId__": 168,
     "kind": "test",
     "name": "it12",
     "testId": 12,
@@ -4206,7 +4253,7 @@
     "lineNumber": 103
   },
   {
-    "__docId__": 168,
+    "__docId__": 169,
     "kind": "test",
     "name": "it13",
     "testId": 13,
@@ -4219,7 +4266,7 @@
     "lineNumber": 108
   },
   {
-    "__docId__": 169,
+    "__docId__": 170,
     "kind": "test",
     "name": "describe14",
     "testId": 14,
@@ -4235,7 +4282,7 @@
     ]
   },
   {
-    "__docId__": 170,
+    "__docId__": 171,
     "kind": "test",
     "name": "it15",
     "testId": 15,
@@ -4248,7 +4295,7 @@
     "lineNumber": 116
   },
   {
-    "__docId__": 171,
+    "__docId__": 172,
     "kind": "test",
     "name": "it16",
     "testId": 16,
@@ -4261,7 +4308,7 @@
     "lineNumber": 121
   },
   {
-    "__docId__": 172,
+    "__docId__": 173,
     "kind": "test",
     "name": "it17",
     "testId": 17,
@@ -4274,7 +4321,7 @@
     "lineNumber": 126
   },
   {
-    "__docId__": 173,
+    "__docId__": 174,
     "kind": "test",
     "name": "it18",
     "testId": 18,
@@ -4287,7 +4334,7 @@
     "lineNumber": 131
   },
   {
-    "__docId__": 174,
+    "__docId__": 175,
     "kind": "test",
     "name": "describe19",
     "testId": 19,
@@ -4303,7 +4350,7 @@
     ]
   },
   {
-    "__docId__": 175,
+    "__docId__": 176,
     "kind": "test",
     "name": "it20",
     "testId": 20,
@@ -4316,7 +4363,7 @@
     "lineNumber": 139
   },
   {
-    "__docId__": 176,
+    "__docId__": 177,
     "kind": "test",
     "name": "it21",
     "testId": 21,
@@ -4329,7 +4376,7 @@
     "lineNumber": 144
   },
   {
-    "__docId__": 177,
+    "__docId__": 178,
     "kind": "test",
     "name": "it22",
     "testId": 22,
@@ -4342,7 +4389,7 @@
     "lineNumber": 149
   },
   {
-    "__docId__": 178,
+    "__docId__": 179,
     "kind": "test",
     "name": "it23",
     "testId": 23,
@@ -4355,7 +4402,7 @@
     "lineNumber": 154
   },
   {
-    "__docId__": 179,
+    "__docId__": 180,
     "kind": "testFile",
     "name": "src/lib/favicon-generator.test.js",
     "content": "import assert from 'assert'\nimport Fs from 'fs'\nimport Path from 'path'\nimport Util from './util.js'\nimport Logger from '../lib/logger.js'\nimport FaviconGenerator from './favicon-generator.js'\n\n/** @test {FaviconGenerator} */\ndescribe('FaviconGenerator', () => {\n  /** @test {FaviconGenerator#generate} */\n  it('generate', () => {\n    const images = FaviconGenerator.getRequiredImageSizes().map((size) => {\n      const path = Path.join('./examples/data', size + '.png')\n      return {size: size, path: path}\n    })\n\n    return FaviconGenerator\n      .generate(images, './examples/data', new Logger())\n      .then((results) => {\n        assert(results.length === 11)\n        Util.deleteFiles(results)\n      })\n  })\n\n  /** @test {FaviconGenerator#_generateICO} */\n  it('_generateICO', () => {\n    const images = [16, 24, 32, 48, 64].map((size) => {\n      const path = Path.join('./examples/data', size + '.png')\n      return {size: size, path: path}\n    })\n\n    return FaviconGenerator\n      ._generateICO(images, './examples/data', new Logger())\n      .then((result) => {\n        assert(Path.basename(result) === 'favicon.ico')\n        Fs.unlinkSync(result)\n      })\n  })\n\n  /** @test {FaviconGenerator#_generatePNG} */\n  it('_generatePNG', () => {\n    const images = FaviconGenerator.getRequiredImageSizes().map((size) => {\n      const path = Path.join('./examples/data', size + '.png')\n      return {size: size, path: path}\n    })\n\n    return FaviconGenerator\n      ._generatePNG(images, './examples/data', new Logger())\n      .then((results) => {\n        assert(results.length === 10)\n        Util.deleteFiles(results)\n      })\n  })\n})\n",
@@ -4366,7 +4413,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 180,
+    "__docId__": 181,
     "kind": "test",
     "name": "describe24",
     "testId": 24,
@@ -4382,7 +4429,7 @@
     ]
   },
   {
-    "__docId__": 181,
+    "__docId__": 182,
     "kind": "test",
     "name": "it25",
     "testId": 25,
@@ -4398,7 +4445,7 @@
     ]
   },
   {
-    "__docId__": 182,
+    "__docId__": 183,
     "kind": "test",
     "name": "it26",
     "testId": 26,
@@ -4414,7 +4461,7 @@
     ]
   },
   {
-    "__docId__": 183,
+    "__docId__": 184,
     "kind": "test",
     "name": "it27",
     "testId": 27,
@@ -4430,7 +4477,7 @@
     ]
   },
   {
-    "__docId__": 184,
+    "__docId__": 185,
     "kind": "testFile",
     "name": "src/lib/icns-generator.test.js",
     "content": "import assert from 'assert'\nimport Fs from 'fs'\nimport Path from 'path'\nimport Logger from './logger.js'\nimport ICNSGenerator from './icns-generator.js'\n\n/** @test {ICNSGenerator} */\ndescribe('ICNSGenerator', () => {\n  /** @test {ICNSGenerator#generate} */\n  it('generate', () => {\n    const images = ICNSGenerator.getRequiredImageSizes().map((size) => {\n      const path = Path.join('./examples/data', size + '.png')\n      return { size: size, path: path }\n    })\n\n    return ICNSGenerator\n      .generate(images, './examples/data', {names: {icns: 'sample'}}, new Logger())\n      .then((result) => {\n        assert(result)\n        Fs.unlinkSync(result)\n      })\n  })\n\n  /** @test {ICNSGenerator#_createFileHeader} */\n  it('_createFileHeader', () => {\n    const header = ICNSGenerator._createFileHeader(401)\n\n    // In ASCII \"icns\"\n    assert(header.readUInt8(0) === 0x69)\n    assert(header.readUInt8(1) === 0x63)\n    assert(header.readUInt8(2) === 0x6e)\n    assert(header.readUInt8(3) === 0x73)\n\n    // File size\n    assert(header.readUInt32BE(4) === 401)\n  })\n\n  /** @test {ICNSGenerator#_createIconHeader} */\n  it('_createIconHeader', () => {\n    const header = ICNSGenerator._createIconHeader(`ic07`, 713)\n\n    // In ASCII \"ic07\"\n    assert(header.readUInt8(0) === 0x69)\n    assert(header.readUInt8(1) === 0x63)\n    assert(header.readUInt8(2) === 0x30)\n    assert(header.readUInt8(3) === 0x37)\n\n    // Image size (specified size + header size)\n    const size = 713 + 8\n    assert(header.readUInt32BE(4) === size)\n  })\n/*\n  it('unpack', () => {\n    return ICNSGenerator._debugUnpackIconBlocks('./examples/data/app.icns', './examples/data')\n      .then(() => {\n        assert(true)\n      })\n      .catch((err) => {\n        assert(!(err))\n      })\n  })\n*/\n})\n",
@@ -4441,7 +4488,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 185,
+    "__docId__": 186,
     "kind": "test",
     "name": "describe28",
     "testId": 28,
@@ -4457,7 +4504,7 @@
     ]
   },
   {
-    "__docId__": 186,
+    "__docId__": 187,
     "kind": "test",
     "name": "it29",
     "testId": 29,
@@ -4473,7 +4520,7 @@
     ]
   },
   {
-    "__docId__": 187,
+    "__docId__": 188,
     "kind": "test",
     "name": "it30",
     "testId": 30,
@@ -4489,7 +4536,7 @@
     ]
   },
   {
-    "__docId__": 188,
+    "__docId__": 189,
     "kind": "test",
     "name": "it31",
     "testId": 31,
@@ -4505,7 +4552,7 @@
     ]
   },
   {
-    "__docId__": 189,
+    "__docId__": 190,
     "kind": "testFile",
     "name": "src/lib/ico-generator.test.js",
     "content": "import assert from 'assert'\nimport Fs from 'fs'\nimport Path from 'path'\nimport Logger from './logger.js'\nimport ICOGenerator from './ico-generator.js'\n\n/** @test {ICOGenerator} */\ndescribe('ICOGenerator', () => {\n  // Private constants\n  const HEADER_SIZE           = 6\n  const DIRECTORY_SIZE        = 16\n  const BITMAPINFOHEADER_SIZE = 40\n  const BI_RGB                = 0\n\n  /** @test {ICOGenerator#generate} */\n  it('generate', () => {\n    const targets = ICOGenerator.getRequiredImageSizes().map((size) => {\n      const path = Path.join('./examples/data', size + '.png')\n      return { size: size, path: path, stat: Fs.statSync(path) }\n    })\n\n    ICOGenerator\n      .generate(targets, './examples/data', {names: {ico: 'sample'}}, new Logger())\n      .then((result) => {\n        assert(result)\n        Fs.unlinkSync(result)\n      })\n  })\n\n  /** @test {ICOGenerator#_createFileHeader} */\n  it('_createFileHeader', () => {\n    const count = 7\n    const b = ICOGenerator._createFileHeader(count)\n\n    assert(b.readUInt16LE(0) === 0)\n    assert(b.readUInt16LE(2) === 1)\n    assert(b.readUInt16LE(4) === count)\n  })\n\n  /** @test {ICOGenerator#_createDirectory} */\n  it('_createDirectory', () => {\n    const png = {\n      width: 16,\n      height: 16,\n      bpp: 4,\n      data: {\n        length: 1024\n      }\n    }\n\n    const offset = HEADER_SIZE + DIRECTORY_SIZE\n    const b      = ICOGenerator._createDirectory(png, offset)\n\n    assert(b.readUInt8(0) === png.width)\n    assert(b.readUInt8(1) === png.height)\n    assert(b.readUInt8(2) === 0)\n    assert(b.readUInt8(3) === 0)\n    assert(b.readUInt16LE(4) === 1)\n    assert(b.readUInt16LE(6) === png.bpp * 8)\n    assert(b.readUInt32LE(8) === png.data.length + BITMAPINFOHEADER_SIZE)\n    assert(b.readUInt32LE(12) === offset)\n  })\n\n  /** @test {ICOGenerator#_createBitmapInfoHeader} */\n  it('_createBitmapInfoHeader', () => {\n    const png = {\n      width: 16,\n      height: 16,\n      bpp: 4,\n      data: {\n        length: 1024\n      }\n    }\n\n    const b = ICOGenerator._createBitmapInfoHeader(png, BI_RGB)\n    assert(b.readUInt32LE(0) === BITMAPINFOHEADER_SIZE)\n    assert(b.readInt32LE(4) === png.width)\n    assert(b.readInt32LE(8) === png.height * 2)\n    assert(b.readUInt16LE(12) === 1)\n    assert(b.readUInt16LE(14) === png.bpp * 8)\n    assert(b.readUInt32LE(16) === BI_RGB)\n    assert(b.readUInt32LE(20) === png.data.length)\n    assert(b.readInt32LE(24) === 0)\n    assert(b.readInt32LE(28) === 0)\n    assert(b.readUInt32LE(32) === 0)\n    assert(b.readUInt32LE(36) === 0)\n  })\n})\n",
@@ -4516,7 +4563,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 190,
+    "__docId__": 191,
     "kind": "test",
     "name": "describe32",
     "testId": 32,
@@ -4532,7 +4579,7 @@
     ]
   },
   {
-    "__docId__": 191,
+    "__docId__": 192,
     "kind": "test",
     "name": "it33",
     "testId": 33,
@@ -4548,7 +4595,7 @@
     ]
   },
   {
-    "__docId__": 192,
+    "__docId__": 193,
     "kind": "test",
     "name": "it34",
     "testId": 34,
@@ -4564,7 +4611,7 @@
     ]
   },
   {
-    "__docId__": 193,
+    "__docId__": 194,
     "kind": "test",
     "name": "it35",
     "testId": 35,
@@ -4580,7 +4627,7 @@
     ]
   },
   {
-    "__docId__": 194,
+    "__docId__": 195,
     "kind": "test",
     "name": "it36",
     "testId": 36,
@@ -4596,10 +4643,10 @@
     ]
   },
   {
-    "__docId__": 195,
+    "__docId__": 196,
     "kind": "testFile",
     "name": "src/lib/icon-generator.test.js",
-    "content": "import assert from 'assert'\nimport Util from './util.js'\nimport Logger from './logger.js'\nimport IconGenerator from './icon-generator.js'\nimport PNGGenerator from './png-generator.js'\n\n/** @test {IconGenerator} */\ndescribe('IconGenerator', () => {\n  /** @test {IconGenerator#fromPNG} */\n  it('fromPNG', () => {\n    return IconGenerator.fromPNG('./examples/data', './examples/data', {modes: ['ico', 'icns', 'favicon'], names: {ico: 'app', icns: 'app'}, sizes: {}}, new Logger())\n      .then((results) => {\n        assert(0 < results.length)\n        Util.deleteFiles(results)\n      })\n  })\n\n  describe('_getRequiredImageSizes', () => {\n    it('ico, icns, favicon', () => {\n      const modes = ['ico', 'icns', 'favicon']\n      let actual = IconGenerator._getRequiredImageSizes(modes)\n      let expected = PNGGenerator.getRequiredImageSizes(modes)\n      assert.deepEqual(actual, expected)\n    })\n\n    it('ico', () => {\n      const modes = ['ico']\n      const actual = IconGenerator._getRequiredImageSizes(modes)\n      const expected = PNGGenerator.getRequiredImageSizes(modes)\n      assert.deepEqual(actual, expected)\n    })\n\n    it('icns', () => {\n      const modes = ['icns']\n      const actual = IconGenerator._getRequiredImageSizes(modes)\n      const expected = PNGGenerator.getRequiredImageSizes(modes)\n      assert.deepEqual(actual, expected)\n    })\n\n    it('favicon', () => {\n      const modes = ['favicon']\n      const actual = IconGenerator._getRequiredImageSizes(modes)\n      const expected = PNGGenerator.getRequiredImageSizes(modes)\n      assert.deepEqual(actual, expected)\n    })\n\n    it('ico: sizes', () => {\n      const sizes  = [16, 32]\n      const actual = IconGenerator._getRequiredImageSizes(['ico'], {ico: sizes})\n      assert.deepEqual(actual, sizes)\n    })\n\n    it('icns: sizes', () => {\n      const sizes  = [64, 128]\n      const actual = IconGenerator._getRequiredImageSizes(['icns'], {icns: sizes})\n      assert.deepEqual(actual, sizes)\n    })\n  })\n})\n",
+    "content": "import assert from 'assert'\nimport Util from './util.js'\nimport Logger from './logger.js'\nimport IconGenerator from './icon-generator.js'\nimport PNGGenerator from './png-generator.js'\n\n/** @test {IconGenerator} */\ndescribe('IconGenerator', () => {\n  /** @test {IconGenerator#fromPNG} */\n  it('fromPNG', () => {\n    return IconGenerator.fromPNG('./examples/data', './examples/data', {modes: ['ico', 'icns', 'favicon'], names: {ico: 'app', icns: 'app'}, sizes: {}}, new Logger())\n      .then((results) => {\n        assert(0 < results.length)\n        Util.deleteFiles(results)\n      })\n  })\n\n  describe('_getRequiredImageSizes', () => {\n    it('ico, icns, favicon', () => {\n      const modes = ['ico', 'icns', 'favicon']\n      let actual = IconGenerator._getRequiredImageSizes(modes)\n      let expected = PNGGenerator.getRequiredImageSizes(modes)\n      assert.deepStrictEqual(actual, expected)\n    })\n\n    it('ico', () => {\n      const modes = ['ico']\n      const actual = IconGenerator._getRequiredImageSizes(modes)\n      const expected = PNGGenerator.getRequiredImageSizes(modes)\n      assert.deepStrictEqual(actual, expected)\n    })\n\n    it('icns', () => {\n      const modes = ['icns']\n      const actual = IconGenerator._getRequiredImageSizes(modes)\n      const expected = PNGGenerator.getRequiredImageSizes(modes)\n      assert.deepStrictEqual(actual, expected)\n    })\n\n    it('favicon', () => {\n      const modes = ['favicon']\n      const actual = IconGenerator._getRequiredImageSizes(modes)\n      const expected = PNGGenerator.getRequiredImageSizes(modes)\n      assert.deepStrictEqual(actual, expected)\n    })\n\n    it('ico: sizes', () => {\n      const sizes  = [16, 32]\n      const actual = IconGenerator._getRequiredImageSizes(['ico'], {ico: sizes})\n      assert.deepStrictEqual(actual, sizes)\n    })\n\n    it('icns: sizes', () => {\n      const sizes  = [64, 128]\n      const actual = IconGenerator._getRequiredImageSizes(['icns'], {icns: sizes})\n      assert.deepStrictEqual(actual, sizes)\n    })\n  })\n})\n",
     "static": true,
     "longname": "/Users/akabeko/Documents/dev/node/icon-gen/src/lib/icon-generator.test.js",
     "access": null,
@@ -4607,7 +4654,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 196,
+    "__docId__": 197,
     "kind": "test",
     "name": "describe37",
     "testId": 37,
@@ -4623,7 +4670,7 @@
     ]
   },
   {
-    "__docId__": 197,
+    "__docId__": 198,
     "kind": "test",
     "name": "it38",
     "testId": 38,
@@ -4639,7 +4686,7 @@
     ]
   },
   {
-    "__docId__": 198,
+    "__docId__": 199,
     "kind": "test",
     "name": "describe39",
     "testId": 39,
@@ -4652,7 +4699,7 @@
     "lineNumber": 18
   },
   {
-    "__docId__": 199,
+    "__docId__": 200,
     "kind": "test",
     "name": "it40",
     "testId": 40,
@@ -4665,7 +4712,7 @@
     "lineNumber": 19
   },
   {
-    "__docId__": 200,
+    "__docId__": 201,
     "kind": "test",
     "name": "it41",
     "testId": 41,
@@ -4678,7 +4725,7 @@
     "lineNumber": 26
   },
   {
-    "__docId__": 201,
+    "__docId__": 202,
     "kind": "test",
     "name": "it42",
     "testId": 42,
@@ -4691,7 +4738,7 @@
     "lineNumber": 33
   },
   {
-    "__docId__": 202,
+    "__docId__": 203,
     "kind": "test",
     "name": "it43",
     "testId": 43,
@@ -4704,7 +4751,7 @@
     "lineNumber": 40
   },
   {
-    "__docId__": 203,
+    "__docId__": 204,
     "kind": "test",
     "name": "it44",
     "testId": 44,
@@ -4717,7 +4764,7 @@
     "lineNumber": 47
   },
   {
-    "__docId__": 204,
+    "__docId__": 205,
     "kind": "test",
     "name": "it45",
     "testId": 45,
@@ -4730,10 +4777,10 @@
     "lineNumber": 53
   },
   {
-    "__docId__": 205,
+    "__docId__": 206,
     "kind": "testFile",
     "name": "src/lib/png-generator.test.js",
-    "content": "import assert from 'assert'\nimport Fs from 'fs'\nimport Del from 'del'\nimport Logger from './logger.js'\nimport PNGGenerator from './png-generator.js'\nimport FaviconGenerator from './favicon-generator.js'\nimport ICNSGenerator from './icns-generator.js'\nimport ICOGenerator from './ico-generator.js'\nimport Util from './util.js'\n\n/** @test {PNGGenerator} */\ndescribe('PNGGenerator', () => {\n  /** @test {PNGGenerator#getRequiredImageSizes} */\n  it('getRequiredImageSizes', () => {\n    let expected = PNGGenerator.getRequiredImageSizes()\n    let actual   = [16, 24, 32, 48, 57, 64, 72, 96, 120, 128, 144, 152, 195, 228, 256, 512, 1024]\n    assert.deepEqual(expected, actual)\n\n    expected = PNGGenerator.getRequiredImageSizes(['ico'])\n    actual   = ICOGenerator.getRequiredImageSizes()\n    assert.deepEqual(expected, actual)\n\n    expected = PNGGenerator.getRequiredImageSizes(['icns'])\n    actual   = ICNSGenerator.getRequiredImageSizes()\n    assert.deepEqual(expected, actual)\n\n    expected = PNGGenerator.getRequiredImageSizes(['favicon'])\n    actual   = FaviconGenerator.getRequiredImageSizes()\n    assert.deepEqual(expected, actual)\n  })\n\n  /** @test {PNGGenerator#_generetePNG} */\n  it('_generetePNG', () => {\n    const svg = Fs.readFileSync('./examples/data/sample.svg')\n    assert(svg)\n\n    const dir = Util.createWorkDir()\n    assert(dir)\n\n    const size = 16\n    return PNGGenerator\n      ._generatePNG(svg, size, dir, new Logger())\n      .then((result) => {\n        assert(result.size === size)\n        Del.sync([dir], {force: true})\n      })\n      .catch((err) => {\n        console.error(err)\n        assert()\n        Del.sync([dir], {force: true})\n      })\n  })\n})\n",
+    "content": "import assert from 'assert'\nimport Fs from 'fs'\nimport Del from 'del'\nimport Logger from './logger.js'\nimport PNGGenerator from './png-generator.js'\nimport FaviconGenerator from './favicon-generator.js'\nimport ICNSGenerator from './icns-generator.js'\nimport ICOGenerator from './ico-generator.js'\nimport Util from './util.js'\nimport Rewire from 'rewire'\n\n/** @test {PNGGenerator} */\ndescribe('PNGGenerator', () => {\n  const Module = Rewire('./png-generator.js')\n\n  /** @test {PNGGenerator#getRequiredImageSizes} */\n  describe('getRequiredImageSizes', () => {\n    it('All', () => {\n      let actual = PNGGenerator.getRequiredImageSizes()\n      let expected = [16, 24, 32, 48, 57, 64, 72, 96, 120, 128, 144, 152, 195, 228, 256, 512, 1024]\n      assert.deepStrictEqual(actual, expected)\n    })\n\n    it('All with filter', () => {\n      let actual = PNGGenerator.getRequiredImageSizes({ sizes: { ico: [256], icns: [512] } })\n      let expected = [16, 24, 32, 48, 57, 64, 72, 96, 120, 128, 144, 152, 195, 228, 256, 512]\n      assert.deepStrictEqual(actual, expected)\n    })\n\n    it('ICO', () => {\n      let actual = PNGGenerator.getRequiredImageSizes({ modes: ['ico'] })\n      let expected = ICOGenerator.getRequiredImageSizes()\n      assert.deepStrictEqual(actual, expected)\n    })\n\n    it('ICO with filter', () => {\n      let actual = PNGGenerator.getRequiredImageSizes({ modes: ['ico'], sizes: { ico: [16, 32, 64] } })\n      let expected = [16, 32, 64]\n      assert.deepStrictEqual(actual, expected)\n    })\n\n    it('ICNS', () => {\n      let actual = PNGGenerator.getRequiredImageSizes({ modes: ['icns'] })\n      let expected = ICNSGenerator.getRequiredImageSizes()\n      assert.deepStrictEqual(actual, expected)\n    })\n\n    it('ICNS with filter', () => {\n      let actual = PNGGenerator.getRequiredImageSizes({ modes: ['icns'], sizes: { icns: [16, 1024] } })\n      let expected = [16, 1024]\n      assert.deepStrictEqual(actual, expected)\n    })\n\n    it('Favicon', () => {\n      let actual = PNGGenerator.getRequiredImageSizes({ modes: ['favicon'] })\n      let expected = FaviconGenerator.getRequiredImageSizes()\n      assert.deepStrictEqual(actual, expected)\n    })\n  })\n\n  /** @test {PNGGenerator#_generetePNG} */\n  it('_generetePNG', () => {\n    const svg = Fs.readFileSync('./examples/data/sample.svg')\n    assert(svg)\n\n    const dir = Util.createWorkDir()\n    assert(dir)\n\n    const size = 16\n    return PNGGenerator\n      ._generatePNG(svg, size, dir, new Logger())\n      .then((result) => {\n        assert(result.size === size)\n        Del.sync([dir], {force: true})\n      })\n      .catch((err) => {\n        console.error(err)\n        assert()\n        Del.sync([dir], {force: true})\n      })\n  })\n\n  describe('filterSizes', () => {\n    const filterSizes = Module.__get__('filterSizes')\n\n    it('Filter', () => {\n      const actual = filterSizes(ICNSGenerator.getRequiredImageSizes(), [16, 18, 32, 64])\n      const expected = [16, 32, 64]\n      assert.deepStrictEqual(actual, expected)\n    })\n\n    it('No filter', () => {\n      const actual = filterSizes(ICNSGenerator.getRequiredImageSizes())\n      const expected = [16, 32, 64, 128, 256, 512, 1024]\n      assert.deepStrictEqual(actual, expected)\n    })\n  })\n})\n",
     "static": true,
     "longname": "/Users/akabeko/Documents/dev/node/icon-gen/src/lib/png-generator.test.js",
     "access": null,
@@ -4741,7 +4788,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 206,
+    "__docId__": 207,
     "kind": "test",
     "name": "describe46",
     "testId": 46,
@@ -4751,48 +4798,178 @@
     "longname": "src/lib/png-generator.test.js~describe46",
     "access": null,
     "description": "PNGGenerator",
-    "lineNumber": 12,
+    "lineNumber": 13,
     "testTargets": [
       "PNGGenerator"
     ]
   },
   {
-    "__docId__": 207,
+    "__docId__": 208,
     "kind": "test",
-    "name": "it47",
+    "name": "describe47",
     "testId": 47,
     "memberof": "src/lib/png-generator.test.js~describe46",
     "testDepth": 1,
     "static": true,
-    "longname": "src/lib/png-generator.test.js~describe46.it47",
+    "longname": "src/lib/png-generator.test.js~describe46.describe47",
     "access": null,
     "description": "getRequiredImageSizes",
-    "lineNumber": 14,
+    "lineNumber": 17,
     "testTargets": [
       "PNGGenerator#getRequiredImageSizes"
     ]
   },
   {
-    "__docId__": 208,
+    "__docId__": 209,
     "kind": "test",
     "name": "it48",
     "testId": 48,
+    "memberof": "src/lib/png-generator.test.js~describe46.describe47",
+    "testDepth": 2,
+    "static": true,
+    "longname": "src/lib/png-generator.test.js~describe46.describe47.it48",
+    "access": null,
+    "description": "All",
+    "lineNumber": 18
+  },
+  {
+    "__docId__": 210,
+    "kind": "test",
+    "name": "it49",
+    "testId": 49,
+    "memberof": "src/lib/png-generator.test.js~describe46.describe47",
+    "testDepth": 2,
+    "static": true,
+    "longname": "src/lib/png-generator.test.js~describe46.describe47.it49",
+    "access": null,
+    "description": "All with filter",
+    "lineNumber": 24
+  },
+  {
+    "__docId__": 211,
+    "kind": "test",
+    "name": "it50",
+    "testId": 50,
+    "memberof": "src/lib/png-generator.test.js~describe46.describe47",
+    "testDepth": 2,
+    "static": true,
+    "longname": "src/lib/png-generator.test.js~describe46.describe47.it50",
+    "access": null,
+    "description": "ICO",
+    "lineNumber": 30
+  },
+  {
+    "__docId__": 212,
+    "kind": "test",
+    "name": "it51",
+    "testId": 51,
+    "memberof": "src/lib/png-generator.test.js~describe46.describe47",
+    "testDepth": 2,
+    "static": true,
+    "longname": "src/lib/png-generator.test.js~describe46.describe47.it51",
+    "access": null,
+    "description": "ICO with filter",
+    "lineNumber": 36
+  },
+  {
+    "__docId__": 213,
+    "kind": "test",
+    "name": "it52",
+    "testId": 52,
+    "memberof": "src/lib/png-generator.test.js~describe46.describe47",
+    "testDepth": 2,
+    "static": true,
+    "longname": "src/lib/png-generator.test.js~describe46.describe47.it52",
+    "access": null,
+    "description": "ICNS",
+    "lineNumber": 42
+  },
+  {
+    "__docId__": 214,
+    "kind": "test",
+    "name": "it53",
+    "testId": 53,
+    "memberof": "src/lib/png-generator.test.js~describe46.describe47",
+    "testDepth": 2,
+    "static": true,
+    "longname": "src/lib/png-generator.test.js~describe46.describe47.it53",
+    "access": null,
+    "description": "ICNS with filter",
+    "lineNumber": 48
+  },
+  {
+    "__docId__": 215,
+    "kind": "test",
+    "name": "it54",
+    "testId": 54,
+    "memberof": "src/lib/png-generator.test.js~describe46.describe47",
+    "testDepth": 2,
+    "static": true,
+    "longname": "src/lib/png-generator.test.js~describe46.describe47.it54",
+    "access": null,
+    "description": "Favicon",
+    "lineNumber": 54
+  },
+  {
+    "__docId__": 216,
+    "kind": "test",
+    "name": "it55",
+    "testId": 55,
     "memberof": "src/lib/png-generator.test.js~describe46",
     "testDepth": 1,
     "static": true,
-    "longname": "src/lib/png-generator.test.js~describe46.it48",
+    "longname": "src/lib/png-generator.test.js~describe46.it55",
     "access": null,
     "description": "_generetePNG",
-    "lineNumber": 33,
+    "lineNumber": 62,
     "testTargets": [
       "PNGGenerator#_generetePNG"
     ]
   },
   {
-    "__docId__": 209,
+    "__docId__": 217,
+    "kind": "test",
+    "name": "describe56",
+    "testId": 56,
+    "memberof": "src/lib/png-generator.test.js~describe46",
+    "testDepth": 1,
+    "static": true,
+    "longname": "src/lib/png-generator.test.js~describe46.describe56",
+    "access": null,
+    "description": "filterSizes",
+    "lineNumber": 83
+  },
+  {
+    "__docId__": 218,
+    "kind": "test",
+    "name": "it57",
+    "testId": 57,
+    "memberof": "src/lib/png-generator.test.js~describe46.describe56",
+    "testDepth": 2,
+    "static": true,
+    "longname": "src/lib/png-generator.test.js~describe46.describe56.it57",
+    "access": null,
+    "description": "Filter",
+    "lineNumber": 86
+  },
+  {
+    "__docId__": 219,
+    "kind": "test",
+    "name": "it58",
+    "testId": 58,
+    "memberof": "src/lib/png-generator.test.js~describe46.describe56",
+    "testDepth": 2,
+    "static": true,
+    "longname": "src/lib/png-generator.test.js~describe46.describe56.it58",
+    "access": null,
+    "description": "No filter",
+    "lineNumber": 92
+  },
+  {
+    "__docId__": 220,
     "kind": "testFile",
     "name": "src/lib/rle.test.js",
-    "content": "import assert from 'assert'\nimport RLE from './rle.js'\n\n/** @test {RLE} */\ndescribe('RLE', () => {\n  /** @test {RLE#packBits} */\n  describe('packBits', () => {\n    it('Normaly', () => {\n      // Sample data : https://en.wikipedia.org/wiki/PackBits\n      const src      = [0xAA, 0xAA, 0xAA, 0x80, 0x00, 0x2A, 0xAA, 0xAA, 0xAA, 0xAA, 0x80, 0x00, 0x2A, 0x22, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA]\n      const expected = [0xFE, 0xAA, 0x02, 0x80, 0x00, 0x2A, 0xFD, 0xAA, 0x03, 0x80, 0x00, 0x2A, 0x22, 0xF7, 0xAA]\n      const actual   = RLE.packBits(src)\n      assert.deepEqual(actual, expected)\n    })\n  })\n\n  /** @test {RLE#packICNS} */\n  describe('packICNS', () => {\n    it('Normaly', () => {\n      const src      = [0, 0, 0, 249, 250, 128, 100, 101]\n      const actual   = RLE.packICNS(src)\n      const expected = [128, 0, 4, 249, 250, 128, 100, 101]\n      assert.deepEqual(actual, expected)\n    })\n  })\n\n  /** @test {RLE#unpackBits} */\n  describe('unpackBits', () => {\n    it('Normaly', () => {\n      // Sample data : https://en.wikipedia.org/wiki/PackBits\n      const src = [0xFE, 0xAA, 0x02, 0x80, 0x00, 0x2A, 0xFD, 0xAA, 0x03, 0x80, 0x00, 0x2A, 0x22, 0xF7, 0xAA]\n      const expected = [0xAA, 0xAA, 0xAA, 0x80, 0x00, 0x2A, 0xAA, 0xAA, 0xAA, 0xAA, 0x80, 0x00, 0x2A, 0x22, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA]\n      const actual   = RLE.unpackBits(src)\n      assert.deepEqual(actual, expected)\n    })\n  })\n  /** @test {RLE#_packBitsLiteralToResult} */\n  describe('_packBitsLiteralToResult', () => {\n    it('Normaly', () => {\n      assert.deepEqual(RLE._packBitsLiteralToResult([7, 1, 5, 8]), [3, 7, 1, 5, 8])\n    })\n\n    it('Empty', () => {\n      assert.deepEqual(RLE._packBitsLiteralToResult([]), [])\n    })\n  })\n\n  /** @test {RLE#_toUInt8} */\n  describe('_toUInt8', () => {\n    it('Normaly', () => {\n      assert(RLE._toUInt8(-1) === 255)\n      assert(RLE._toUInt8(71) === 71)\n      assert(RLE._toUInt8(0xAA) === 0xAA)\n    })\n\n    it('Out of range', () => {\n      assert(RLE._toUInt8(-180) === 76)\n      assert(RLE._toUInt8(571) === 59)\n    })\n  })\n\n  /** @test {RLE#_toInt8} */\n  describe('_toInt8', () => {\n    it('Normaly', () => {\n      assert(RLE._toInt8(241) === -15)\n      assert(RLE._toInt8(83) === 83)\n    })\n\n    it('Out of range', () => {\n      assert(RLE._toInt8(-129) === 127)\n      assert(RLE._toInt8(195) === -61)\n      assert(RLE._toInt8(571) === 59)\n    })\n  })\n})\n",
+    "content": "import assert from 'assert'\nimport RLE from './rle.js'\n\n/** @test {RLE} */\ndescribe('RLE', () => {\n  /** @test {RLE#packBits} */\n  describe('packBits', () => {\n    it('Normaly', () => {\n      // Sample data : https://en.wikipedia.org/wiki/PackBits\n      const src      = [0xAA, 0xAA, 0xAA, 0x80, 0x00, 0x2A, 0xAA, 0xAA, 0xAA, 0xAA, 0x80, 0x00, 0x2A, 0x22, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA]\n      const expected = [0xFE, 0xAA, 0x02, 0x80, 0x00, 0x2A, 0xFD, 0xAA, 0x03, 0x80, 0x00, 0x2A, 0x22, 0xF7, 0xAA]\n      const actual   = RLE.packBits(src)\n      assert.deepStrictEqual(actual, expected)\n    })\n  })\n\n  /** @test {RLE#packICNS} */\n  describe('packICNS', () => {\n    it('Normaly', () => {\n      const src      = [0, 0, 0, 249, 250, 128, 100, 101]\n      const actual   = RLE.packICNS(src)\n      const expected = [128, 0, 4, 249, 250, 128, 100, 101]\n      assert.deepStrictEqual(actual, expected)\n    })\n  })\n\n  /** @test {RLE#unpackBits} */\n  describe('unpackBits', () => {\n    it('Normaly', () => {\n      // Sample data : https://en.wikipedia.org/wiki/PackBits\n      const src = [0xFE, 0xAA, 0x02, 0x80, 0x00, 0x2A, 0xFD, 0xAA, 0x03, 0x80, 0x00, 0x2A, 0x22, 0xF7, 0xAA]\n      const expected = [0xAA, 0xAA, 0xAA, 0x80, 0x00, 0x2A, 0xAA, 0xAA, 0xAA, 0xAA, 0x80, 0x00, 0x2A, 0x22, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA]\n      const actual   = RLE.unpackBits(src)\n      assert.deepStrictEqual(actual, expected)\n    })\n  })\n  /** @test {RLE#_packBitsLiteralToResult} */\n  describe('_packBitsLiteralToResult', () => {\n    it('Normaly', () => {\n      assert.deepStrictEqual(RLE._packBitsLiteralToResult([7, 1, 5, 8]), [3, 7, 1, 5, 8])\n    })\n\n    it('Empty', () => {\n      assert.deepStrictEqual(RLE._packBitsLiteralToResult([]), [])\n    })\n  })\n\n  /** @test {RLE#_toUInt8} */\n  describe('_toUInt8', () => {\n    it('Normaly', () => {\n      assert(RLE._toUInt8(-1) === 255)\n      assert(RLE._toUInt8(71) === 71)\n      assert(RLE._toUInt8(0xAA) === 0xAA)\n    })\n\n    it('Out of range', () => {\n      assert(RLE._toUInt8(-180) === 76)\n      assert(RLE._toUInt8(571) === 59)\n    })\n  })\n\n  /** @test {RLE#_toInt8} */\n  describe('_toInt8', () => {\n    it('Normaly', () => {\n      assert(RLE._toInt8(241) === -15)\n      assert(RLE._toInt8(83) === 83)\n    })\n\n    it('Out of range', () => {\n      assert(RLE._toInt8(-129) === 127)\n      assert(RLE._toInt8(195) === -61)\n      assert(RLE._toInt8(571) === 59)\n    })\n  })\n})\n",
     "static": true,
     "longname": "/Users/akabeko/Documents/dev/node/icon-gen/src/lib/rle.test.js",
     "access": null,
@@ -4800,14 +4977,14 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 210,
+    "__docId__": 221,
     "kind": "test",
-    "name": "describe49",
-    "testId": 49,
+    "name": "describe59",
+    "testId": 59,
     "memberof": "src/lib/rle.test.js",
     "testDepth": 0,
     "static": true,
-    "longname": "src/lib/rle.test.js~describe49",
+    "longname": "src/lib/rle.test.js~describe59",
     "access": null,
     "description": "RLE",
     "lineNumber": 5,
@@ -4816,14 +4993,14 @@
     ]
   },
   {
-    "__docId__": 211,
+    "__docId__": 222,
     "kind": "test",
-    "name": "describe50",
-    "testId": 50,
-    "memberof": "src/lib/rle.test.js~describe49",
+    "name": "describe60",
+    "testId": 60,
+    "memberof": "src/lib/rle.test.js~describe59",
     "testDepth": 1,
     "static": true,
-    "longname": "src/lib/rle.test.js~describe49.describe50",
+    "longname": "src/lib/rle.test.js~describe59.describe60",
     "access": null,
     "description": "packBits",
     "lineNumber": 7,
@@ -4832,27 +5009,27 @@
     ]
   },
   {
-    "__docId__": 212,
+    "__docId__": 223,
     "kind": "test",
-    "name": "it51",
-    "testId": 51,
-    "memberof": "src/lib/rle.test.js~describe49.describe50",
+    "name": "it61",
+    "testId": 61,
+    "memberof": "src/lib/rle.test.js~describe59.describe60",
     "testDepth": 2,
     "static": true,
-    "longname": "src/lib/rle.test.js~describe49.describe50.it51",
+    "longname": "src/lib/rle.test.js~describe59.describe60.it61",
     "access": null,
     "description": "Normaly",
     "lineNumber": 8
   },
   {
-    "__docId__": 213,
+    "__docId__": 224,
     "kind": "test",
-    "name": "describe52",
-    "testId": 52,
-    "memberof": "src/lib/rle.test.js~describe49",
+    "name": "describe62",
+    "testId": 62,
+    "memberof": "src/lib/rle.test.js~describe59",
     "testDepth": 1,
     "static": true,
-    "longname": "src/lib/rle.test.js~describe49.describe52",
+    "longname": "src/lib/rle.test.js~describe59.describe62",
     "access": null,
     "description": "packICNS",
     "lineNumber": 18,
@@ -4861,27 +5038,27 @@
     ]
   },
   {
-    "__docId__": 214,
+    "__docId__": 225,
     "kind": "test",
-    "name": "it53",
-    "testId": 53,
-    "memberof": "src/lib/rle.test.js~describe49.describe52",
+    "name": "it63",
+    "testId": 63,
+    "memberof": "src/lib/rle.test.js~describe59.describe62",
     "testDepth": 2,
     "static": true,
-    "longname": "src/lib/rle.test.js~describe49.describe52.it53",
+    "longname": "src/lib/rle.test.js~describe59.describe62.it63",
     "access": null,
     "description": "Normaly",
     "lineNumber": 19
   },
   {
-    "__docId__": 215,
+    "__docId__": 226,
     "kind": "test",
-    "name": "describe54",
-    "testId": 54,
-    "memberof": "src/lib/rle.test.js~describe49",
+    "name": "describe64",
+    "testId": 64,
+    "memberof": "src/lib/rle.test.js~describe59",
     "testDepth": 1,
     "static": true,
-    "longname": "src/lib/rle.test.js~describe49.describe54",
+    "longname": "src/lib/rle.test.js~describe59.describe64",
     "access": null,
     "description": "unpackBits",
     "lineNumber": 28,
@@ -4890,27 +5067,27 @@
     ]
   },
   {
-    "__docId__": 216,
+    "__docId__": 227,
     "kind": "test",
-    "name": "it55",
-    "testId": 55,
-    "memberof": "src/lib/rle.test.js~describe49.describe54",
+    "name": "it65",
+    "testId": 65,
+    "memberof": "src/lib/rle.test.js~describe59.describe64",
     "testDepth": 2,
     "static": true,
-    "longname": "src/lib/rle.test.js~describe49.describe54.it55",
+    "longname": "src/lib/rle.test.js~describe59.describe64.it65",
     "access": null,
     "description": "Normaly",
     "lineNumber": 29
   },
   {
-    "__docId__": 217,
+    "__docId__": 228,
     "kind": "test",
-    "name": "describe56",
-    "testId": 56,
-    "memberof": "src/lib/rle.test.js~describe49",
+    "name": "describe66",
+    "testId": 66,
+    "memberof": "src/lib/rle.test.js~describe59",
     "testDepth": 1,
     "static": true,
-    "longname": "src/lib/rle.test.js~describe49.describe56",
+    "longname": "src/lib/rle.test.js~describe59.describe66",
     "access": null,
     "description": "_packBitsLiteralToResult",
     "lineNumber": 38,
@@ -4919,40 +5096,40 @@
     ]
   },
   {
-    "__docId__": 218,
+    "__docId__": 229,
     "kind": "test",
-    "name": "it57",
-    "testId": 57,
-    "memberof": "src/lib/rle.test.js~describe49.describe56",
+    "name": "it67",
+    "testId": 67,
+    "memberof": "src/lib/rle.test.js~describe59.describe66",
     "testDepth": 2,
     "static": true,
-    "longname": "src/lib/rle.test.js~describe49.describe56.it57",
+    "longname": "src/lib/rle.test.js~describe59.describe66.it67",
     "access": null,
     "description": "Normaly",
     "lineNumber": 39
   },
   {
-    "__docId__": 219,
+    "__docId__": 230,
     "kind": "test",
-    "name": "it58",
-    "testId": 58,
-    "memberof": "src/lib/rle.test.js~describe49.describe56",
+    "name": "it68",
+    "testId": 68,
+    "memberof": "src/lib/rle.test.js~describe59.describe66",
     "testDepth": 2,
     "static": true,
-    "longname": "src/lib/rle.test.js~describe49.describe56.it58",
+    "longname": "src/lib/rle.test.js~describe59.describe66.it68",
     "access": null,
     "description": "Empty",
     "lineNumber": 43
   },
   {
-    "__docId__": 220,
+    "__docId__": 231,
     "kind": "test",
-    "name": "describe59",
-    "testId": 59,
-    "memberof": "src/lib/rle.test.js~describe49",
+    "name": "describe69",
+    "testId": 69,
+    "memberof": "src/lib/rle.test.js~describe59",
     "testDepth": 1,
     "static": true,
-    "longname": "src/lib/rle.test.js~describe49.describe59",
+    "longname": "src/lib/rle.test.js~describe59.describe69",
     "access": null,
     "description": "_toUInt8",
     "lineNumber": 49,
@@ -4961,40 +5138,40 @@
     ]
   },
   {
-    "__docId__": 221,
+    "__docId__": 232,
     "kind": "test",
-    "name": "it60",
-    "testId": 60,
-    "memberof": "src/lib/rle.test.js~describe49.describe59",
+    "name": "it70",
+    "testId": 70,
+    "memberof": "src/lib/rle.test.js~describe59.describe69",
     "testDepth": 2,
     "static": true,
-    "longname": "src/lib/rle.test.js~describe49.describe59.it60",
+    "longname": "src/lib/rle.test.js~describe59.describe69.it70",
     "access": null,
     "description": "Normaly",
     "lineNumber": 50
   },
   {
-    "__docId__": 222,
+    "__docId__": 233,
     "kind": "test",
-    "name": "it61",
-    "testId": 61,
-    "memberof": "src/lib/rle.test.js~describe49.describe59",
+    "name": "it71",
+    "testId": 71,
+    "memberof": "src/lib/rle.test.js~describe59.describe69",
     "testDepth": 2,
     "static": true,
-    "longname": "src/lib/rle.test.js~describe49.describe59.it61",
+    "longname": "src/lib/rle.test.js~describe59.describe69.it71",
     "access": null,
     "description": "Out of range",
     "lineNumber": 56
   },
   {
-    "__docId__": 223,
+    "__docId__": 234,
     "kind": "test",
-    "name": "describe62",
-    "testId": 62,
-    "memberof": "src/lib/rle.test.js~describe49",
+    "name": "describe72",
+    "testId": 72,
+    "memberof": "src/lib/rle.test.js~describe59",
     "testDepth": 1,
     "static": true,
-    "longname": "src/lib/rle.test.js~describe49.describe62",
+    "longname": "src/lib/rle.test.js~describe59.describe72",
     "access": null,
     "description": "_toInt8",
     "lineNumber": 63,
@@ -5003,36 +5180,36 @@
     ]
   },
   {
-    "__docId__": 224,
+    "__docId__": 235,
     "kind": "test",
-    "name": "it63",
-    "testId": 63,
-    "memberof": "src/lib/rle.test.js~describe49.describe62",
+    "name": "it73",
+    "testId": 73,
+    "memberof": "src/lib/rle.test.js~describe59.describe72",
     "testDepth": 2,
     "static": true,
-    "longname": "src/lib/rle.test.js~describe49.describe62.it63",
+    "longname": "src/lib/rle.test.js~describe59.describe72.it73",
     "access": null,
     "description": "Normaly",
     "lineNumber": 64
   },
   {
-    "__docId__": 225,
+    "__docId__": 236,
     "kind": "test",
-    "name": "it64",
-    "testId": 64,
-    "memberof": "src/lib/rle.test.js~describe49.describe62",
+    "name": "it74",
+    "testId": 74,
+    "memberof": "src/lib/rle.test.js~describe59.describe72",
     "testDepth": 2,
     "static": true,
-    "longname": "src/lib/rle.test.js~describe49.describe62.it64",
+    "longname": "src/lib/rle.test.js~describe59.describe72.it74",
     "access": null,
     "description": "Out of range",
     "lineNumber": 69
   },
   {
-    "__docId__": 226,
+    "__docId__": 237,
     "kind": "testFile",
     "name": "src/lib/util.test.js",
-    "content": "import assert from 'assert'\nimport Del from 'del'\nimport PNGGenerator from './png-generator.js'\nimport FaviconGenerator from './favicon-generator.js'\nimport ICNSGenerator from './icns-generator.js'\nimport ICOGenerator from './ico-generator.js'\nimport Util from './util.js'\n\n/** @test {Util} */\ndescribe('Util', () => {\n  /** @test {Util#createWorkDir} */\n  it('createWorkDir', () => {\n    const dir = Util.createWorkDir()\n    assert(dir)\n\n    Del.sync([dir], {force: true})\n  })\n\n  /** @test {Util#filterImagesBySizes} */\n  it('filterImagesBySizes', () => {\n    const targets = PNGGenerator.getRequiredImageSizes().map((size) => {\n      return {size: size}\n    })\n\n    let actual = ICOGenerator.getRequiredImageSizes()\n    let expected = Util.filterImagesBySizes(targets, actual)\n    assert(expected.length === actual.length)\n\n    actual = ICNSGenerator.getRequiredImageSizes()\n    expected = Util.filterImagesBySizes(targets, actual)\n    assert(expected.length === actual.length)\n\n    actual = FaviconGenerator.getRequiredImageSizes()\n    expected = Util.filterImagesBySizes(targets, actual)\n    assert(expected.length === actual.length)\n  })\n\n  /** @test {Util#flattenValues} */\n  it('flattenValues', () => {\n    const values   = ['A', 'B', ['C', 'D']]\n    const actual   = ['A', 'B',  'C', 'D']\n    const expected = Util.flattenValues(values)\n\n    assert.deepEqual(expected, actual)\n  })\n})\n",
+    "content": "import assert from 'assert'\nimport Del from 'del'\nimport PNGGenerator from './png-generator.js'\nimport FaviconGenerator from './favicon-generator.js'\nimport ICNSGenerator from './icns-generator.js'\nimport ICOGenerator from './ico-generator.js'\nimport Util from './util.js'\n\n/** @test {Util} */\ndescribe('Util', () => {\n  /** @test {Util#createWorkDir} */\n  it('createWorkDir', () => {\n    const dir = Util.createWorkDir()\n    assert(dir)\n\n    Del.sync([dir], {force: true})\n  })\n\n  /** @test {Util#filterImagesBySizes} */\n  it('filterImagesBySizes', () => {\n    const targets = PNGGenerator.getRequiredImageSizes().map((size) => {\n      return {size: size}\n    })\n\n    let actual = ICOGenerator.getRequiredImageSizes()\n    let expected = Util.filterImagesBySizes(targets, actual)\n    assert(expected.length === actual.length)\n\n    actual = ICNSGenerator.getRequiredImageSizes()\n    expected = Util.filterImagesBySizes(targets, actual)\n    assert(expected.length === actual.length)\n\n    actual = FaviconGenerator.getRequiredImageSizes()\n    expected = Util.filterImagesBySizes(targets, actual)\n    assert(expected.length === actual.length)\n  })\n\n  /** @test {Util#flattenValues} */\n  it('flattenValues', () => {\n    const values   = ['A', 'B', ['C', 'D']]\n    const actual   = ['A', 'B',  'C', 'D']\n    const expected = Util.flattenValues(values)\n\n    assert.deepStrictEqual(expected, actual)\n  })\n})\n",
     "static": true,
     "longname": "/Users/akabeko/Documents/dev/node/icon-gen/src/lib/util.test.js",
     "access": null,
@@ -5040,14 +5217,14 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 227,
+    "__docId__": 238,
     "kind": "test",
-    "name": "describe65",
-    "testId": 65,
+    "name": "describe75",
+    "testId": 75,
     "memberof": "src/lib/util.test.js",
     "testDepth": 0,
     "static": true,
-    "longname": "src/lib/util.test.js~describe65",
+    "longname": "src/lib/util.test.js~describe75",
     "access": null,
     "description": "Util",
     "lineNumber": 10,
@@ -5056,14 +5233,14 @@
     ]
   },
   {
-    "__docId__": 228,
+    "__docId__": 239,
     "kind": "test",
-    "name": "it66",
-    "testId": 66,
-    "memberof": "src/lib/util.test.js~describe65",
+    "name": "it76",
+    "testId": 76,
+    "memberof": "src/lib/util.test.js~describe75",
     "testDepth": 1,
     "static": true,
-    "longname": "src/lib/util.test.js~describe65.it66",
+    "longname": "src/lib/util.test.js~describe75.it76",
     "access": null,
     "description": "createWorkDir",
     "lineNumber": 12,
@@ -5072,14 +5249,14 @@
     ]
   },
   {
-    "__docId__": 229,
+    "__docId__": 240,
     "kind": "test",
-    "name": "it67",
-    "testId": 67,
-    "memberof": "src/lib/util.test.js~describe65",
+    "name": "it77",
+    "testId": 77,
+    "memberof": "src/lib/util.test.js~describe75",
     "testDepth": 1,
     "static": true,
-    "longname": "src/lib/util.test.js~describe65.it67",
+    "longname": "src/lib/util.test.js~describe75.it77",
     "access": null,
     "description": "filterImagesBySizes",
     "lineNumber": 20,
@@ -5088,14 +5265,14 @@
     ]
   },
   {
-    "__docId__": 230,
+    "__docId__": 241,
     "kind": "test",
-    "name": "it68",
-    "testId": 68,
-    "memberof": "src/lib/util.test.js~describe65",
+    "name": "it78",
+    "testId": 78,
+    "memberof": "src/lib/util.test.js~describe75",
     "testDepth": 1,
     "static": true,
-    "longname": "src/lib/util.test.js~describe65.it68",
+    "longname": "src/lib/util.test.js~describe75.it78",
     "access": null,
     "description": "flattenValues",
     "lineNumber": 39,
