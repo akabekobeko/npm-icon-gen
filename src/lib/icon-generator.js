@@ -69,7 +69,7 @@ export default class IconGenerator {
       logger.log('  src: ' + pngDirPath)
       logger.log('  dir: ' + destDirPath)
 
-      const images = IconGenerator._getRequiredImageSizes(options.modes, options.sizes)
+      const images = IconGenerator._getRequiredImageSizes(options)
         .map((size) => {
           return Path.join(pngDirPath, size + '.png')
         })
@@ -100,19 +100,19 @@ export default class IconGenerator {
     })
   }
 
-  static _getRequiredImageSizes (modes, sizes) {
-    if (!(sizes)) {
-      return PngGenerator.getRequiredImageSizes(modes)
+  static _getRequiredImageSizes (options) {
+    if (!(options.sizes)) {
+      return PngGenerator.getRequiredImageSizes(options)
     }
 
     let imageSizes = []
-    modes.forEach((mode) => {
-      if (sizes[mode]) {
-        imageSizes = imageSizes.concat(sizes[mode])
+    options.modes.forEach((mode) => {
+      if (options.sizes[mode]) {
+        imageSizes = imageSizes.concat(options.sizes[mode])
       }
     })
 
-    return 0 < imageSizes.length ? imageSizes : PngGenerator.getRequiredImageSizes(modes)
+    return 0 < imageSizes.length ? imageSizes : PngGenerator.getRequiredImageSizes(options)
   }
 
   /**
