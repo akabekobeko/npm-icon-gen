@@ -71,41 +71,41 @@ describe(&apos;IconGenerator&apos;, () =&gt; {
   describe(&apos;_getRequiredImageSizes&apos;, () =&gt; {
     it(&apos;ico, icns, favicon&apos;, () =&gt; {
       const modes = [&apos;ico&apos;, &apos;icns&apos;, &apos;favicon&apos;]
-      let actual = IconGenerator._getRequiredImageSizes(modes)
-      let expected = PNGGenerator.getRequiredImageSizes(modes)
+      let actual = IconGenerator._getRequiredImageSizes({modes: modes})
+      let expected = PNGGenerator.getRequiredImageSizes({modes: modes})
       assert.deepStrictEqual(actual, expected)
     })
 
     it(&apos;ico&apos;, () =&gt; {
       const modes = [&apos;ico&apos;]
-      const actual = IconGenerator._getRequiredImageSizes(modes)
-      const expected = PNGGenerator.getRequiredImageSizes(modes)
+      const actual = IconGenerator._getRequiredImageSizes({modes: modes})
+      const expected = PNGGenerator.getRequiredImageSizes({modes: modes})
       assert.deepStrictEqual(actual, expected)
     })
 
     it(&apos;icns&apos;, () =&gt; {
       const modes = [&apos;icns&apos;]
-      const actual = IconGenerator._getRequiredImageSizes(modes)
-      const expected = PNGGenerator.getRequiredImageSizes(modes)
+      const actual = IconGenerator._getRequiredImageSizes({modes: modes})
+      const expected = PNGGenerator.getRequiredImageSizes({modes: modes})
       assert.deepStrictEqual(actual, expected)
     })
 
     it(&apos;favicon&apos;, () =&gt; {
       const modes = [&apos;favicon&apos;]
-      const actual = IconGenerator._getRequiredImageSizes(modes)
-      const expected = PNGGenerator.getRequiredImageSizes(modes)
+      const actual = IconGenerator._getRequiredImageSizes({modes: modes})
+      const expected = PNGGenerator.getRequiredImageSizes({modes: modes})
       assert.deepStrictEqual(actual, expected)
     })
 
     it(&apos;ico: sizes&apos;, () =&gt; {
       const sizes  = [16, 32]
-      const actual = IconGenerator._getRequiredImageSizes([&apos;ico&apos;], {ico: sizes})
+      const actual = IconGenerator._getRequiredImageSizes({modes: [&apos;ico&apos;], sizes: {ico: sizes}})
       assert.deepStrictEqual(actual, sizes)
     })
 
     it(&apos;icns: sizes&apos;, () =&gt; {
       const sizes  = [64, 128]
-      const actual = IconGenerator._getRequiredImageSizes([&apos;icns&apos;], {icns: sizes})
+      const actual = IconGenerator._getRequiredImageSizes({modes: [&apos;icns&apos;], sizes: {icns: sizes}})
       assert.deepStrictEqual(actual, sizes)
     })
   })
