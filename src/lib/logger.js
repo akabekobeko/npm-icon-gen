@@ -7,7 +7,7 @@ export default class Logger {
    *
    * @param {Boolean} available "true" to display the report, default is "false".
    */
-  constructor (available) {
+  constructor(available) {
     this._available = available
   }
 
@@ -16,7 +16,7 @@ export default class Logger {
    *
    * @param {Array.<Object>} args Message arguments.
    */
-  log (...args) {
+  log(...args) {
     if (this._available) {
       console.log(...args)
     }
@@ -27,7 +27,7 @@ export default class Logger {
    *
    * @param {Array.<Object>} args Message arguments.
    */
-  error (...args) {
+  error(...args) {
     if (this._available) {
       console.error(...args)
     }

@@ -2,43 +2,46 @@ import assert from 'assert'
 import Fs from 'fs'
 import Path from 'path'
 import Logger from './logger.js'
-import ICOGenerator from './ico-generator.js'
+import GenerateICO, { GetRequiredICOImageSizes } from './ico-generator.js'
+import Rewire from 'rewire'
 
 /** @test {ICOGenerator} */
 describe('ICOGenerator', () => {
-  // Private constants
-  const HEADER_SIZE           = 6
-  const DIRECTORY_SIZE        = 16
-  const BITMAPINFOHEADER_SIZE = 40
-  const BI_RGB                = 0
+  const Module = Rewire('./ico-generator.js')
 
-  /** @test {ICOGenerator#generate} */
+  // Private constants
+  const HEADER_SIZE = 6
+  const DIRECTORY_SIZE = 16
+  const BITMAPINFOHEADER_SIZE = 40
+  const BI_RGB = 0
+
+  /** @test {GenerateICO} */
   it('generate', () => {
-    const targets = ICOGenerator.getRequiredImageSizes().map((size) => {
+    const targets = GetRequiredICOImageSizes().map((size) => {
       const path = Path.join('./examples/data', size + '.png')
       return { size: size, path: path, stat: Fs.statSync(path) }
     })
 
-    ICOGenerator
-      .generate(targets, './examples/data', {names: {ico: 'sample'}}, new Logger())
-      .then((result) => {
-        assert(result)
-        Fs.unlinkSync(result)
-      })
+    GenerateICO(targets, './examples/data', { names: { ico: 'sample' } }, new Logger()).then((result) => {
+      assert(result)
+      Fs.unlinkSync(result)
+    })
   })
 
-  /** @test {ICOGenerator#_createFileHeader} */
-  it('_createFileHeader', () => {
+  /** @test {createFileHeader} */
+  it('createFileHeader', () => {
+    const createFileHeader = Module.__get__('createFileHeader')
     const count = 7
-    const b = ICOGenerator._createFileHeader(count)
+    const b = createFileHeader(count)
 
     assert(b.readUInt16LE(0) === 0)
     assert(b.readUInt16LE(2) === 1)
     assert(b.readUInt16LE(4) === count)
   })
 
-  /** @test {ICOGenerator#_createDirectory} */
-  it('_createDirectory', () => {
+  /** @test {createDirectory} */
+  it('createDirectory', () => {
+    const createDirectory = Module.__get__('createDirectory')
     const png = {
       width: 16,
       height: 16,
@@ -49,7 +52,7 @@ describe('ICOGenerator', () => {
     }
 
     const offset = HEADER_SIZE + DIRECTORY_SIZE
-    const b      = ICOGenerator._createDirectory(png, offset)
+    const b = createDirectory(png, offset)
 
     assert(b.readUInt8(0) === png.width)
     assert(b.readUInt8(1) === png.height)
@@ -61,8 +64,9 @@ describe('ICOGenerator', () => {
     assert(b.readUInt32LE(12) === offset)
   })
 
-  /** @test {ICOGenerator#_createBitmapInfoHeader} */
-  it('_createBitmapInfoHeader', () => {
+  /** @test {createBitmapInfoHeader} */
+  it('createBitmapInfoHeader', () => {
+    const createBitmapInfoHeader = Module.__get__('createBitmapInfoHeader')
     const png = {
       width: 16,
       height: 16,
@@ -72,7 +76,7 @@ describe('ICOGenerator', () => {
       }
     }
 
-    const b = ICOGenerator._createBitmapInfoHeader(png, BI_RGB)
+    const b = createBitmapInfoHeader(png, BI_RGB)
     assert(b.readUInt32LE(0) === BITMAPINFOHEADER_SIZE)
     assert(b.readInt32LE(4) === png.width)
     assert(b.readInt32LE(8) === png.height * 2)
