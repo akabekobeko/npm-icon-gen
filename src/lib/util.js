@@ -9,12 +9,12 @@ export default class Util {
    *
    * @return {String} The path of the created directory, failure is null.
    */
-  static createWorkDir () {
+  static createWorkDir() {
     const dir = Path.join(OS.tmpdir(), UUID.v4())
     Fs.mkdirSync(dir)
 
     const stat = Fs.statSync(dir)
-    return (stat && stat.isDirectory() ? dir : null)
+    return stat && stat.isDirectory() ? dir : null
   }
 
   /**
@@ -22,7 +22,7 @@ export default class Util {
    *
    * @param {Array.<String>} paths File paths.
    */
-  static deleteFiles (paths) {
+  static deleteFiles(paths) {
     paths.forEach((path) => {
       try {
         const stat = Fs.statSync(path)
@@ -43,15 +43,15 @@ export default class Util {
    *
    * @return {Array.<ImageInfo>} Filtered image informations.
    */
-  static filterImagesBySizes (images, sizes) {
+  static filterImagesBySizes(images, sizes) {
     return images
       .filter((image) => {
         return sizes.some((size) => {
-          return (image.size === size)
+          return image.size === size
         })
       })
       .sort((a, b) => {
-        return (a.size - b.size)
+        return a.size - b.size
       })
   }
 
@@ -62,10 +62,10 @@ export default class Util {
    *
    * @return {Array.<String>} Flat array ([ 'A', 'B', 'C', 'D' ]).
    */
-  static flattenValues (values) {
+  static flattenValues(values) {
     const paths = []
     values.forEach((value) => {
-      if (!(value)) {
+      if (!value) {
         return
       }
 
@@ -91,7 +91,7 @@ export default class Util {
    *
    * @return {Array.<Number>} Checked sizes.
    */
-  static checkImageSizes (defaltSizes, options, type) {
+  static checkImageSizes(defaltSizes, options, type) {
     return options && options.sizes && options.sizes[type] ? options.sizes[type] : defaltSizes
   }
 }

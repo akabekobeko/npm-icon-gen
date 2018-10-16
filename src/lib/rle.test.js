@@ -1,75 +1,133 @@
 import assert from 'assert'
-import RLE from './rle.js'
+import { PackBits, PackICNS, UnpackBits } from './rle.js'
+import Rewire from 'rewire'
 
 /** @test {RLE} */
 describe('RLE', () => {
+  const Module = Rewire('./rle.js')
+
   /** @test {RLE#packBits} */
   describe('packBits', () => {
     it('Normaly', () => {
       // Sample data : https://en.wikipedia.org/wiki/PackBits
-      const src      = [0xAA, 0xAA, 0xAA, 0x80, 0x00, 0x2A, 0xAA, 0xAA, 0xAA, 0xAA, 0x80, 0x00, 0x2A, 0x22, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA]
-      const expected = [0xFE, 0xAA, 0x02, 0x80, 0x00, 0x2A, 0xFD, 0xAA, 0x03, 0x80, 0x00, 0x2A, 0x22, 0xF7, 0xAA]
-      const actual   = RLE.packBits(src)
+      const src = [
+        0xaa,
+        0xaa,
+        0xaa,
+        0x80,
+        0x00,
+        0x2a,
+        0xaa,
+        0xaa,
+        0xaa,
+        0xaa,
+        0x80,
+        0x00,
+        0x2a,
+        0x22,
+        0xaa,
+        0xaa,
+        0xaa,
+        0xaa,
+        0xaa,
+        0xaa,
+        0xaa,
+        0xaa,
+        0xaa,
+        0xaa
+      ]
+      const expected = [0xfe, 0xaa, 0x02, 0x80, 0x00, 0x2a, 0xfd, 0xaa, 0x03, 0x80, 0x00, 0x2a, 0x22, 0xf7, 0xaa]
+      const actual = PackBits(src)
       assert.deepStrictEqual(actual, expected)
     })
   })
 
-  /** @test {RLE#packICNS} */
-  describe('packICNS', () => {
+  /** @test {PackICNS} */
+  describe('PackICNS', () => {
     it('Normaly', () => {
-      const src      = [0, 0, 0, 249, 250, 128, 100, 101]
-      const actual   = RLE.packICNS(src)
+      const src = [0, 0, 0, 249, 250, 128, 100, 101]
+      const actual = PackICNS(src)
       const expected = [128, 0, 4, 249, 250, 128, 100, 101]
       assert.deepStrictEqual(actual, expected)
     })
   })
 
-  /** @test {RLE#unpackBits} */
-  describe('unpackBits', () => {
+  /** @test {UnpackBits} */
+  describe('UnpackBits', () => {
     it('Normaly', () => {
       // Sample data : https://en.wikipedia.org/wiki/PackBits
-      const src = [0xFE, 0xAA, 0x02, 0x80, 0x00, 0x2A, 0xFD, 0xAA, 0x03, 0x80, 0x00, 0x2A, 0x22, 0xF7, 0xAA]
-      const expected = [0xAA, 0xAA, 0xAA, 0x80, 0x00, 0x2A, 0xAA, 0xAA, 0xAA, 0xAA, 0x80, 0x00, 0x2A, 0x22, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA]
-      const actual   = RLE.unpackBits(src)
+      const src = [0xfe, 0xaa, 0x02, 0x80, 0x00, 0x2a, 0xfd, 0xaa, 0x03, 0x80, 0x00, 0x2a, 0x22, 0xf7, 0xaa]
+      const expected = [
+        0xaa,
+        0xaa,
+        0xaa,
+        0x80,
+        0x00,
+        0x2a,
+        0xaa,
+        0xaa,
+        0xaa,
+        0xaa,
+        0x80,
+        0x00,
+        0x2a,
+        0x22,
+        0xaa,
+        0xaa,
+        0xaa,
+        0xaa,
+        0xaa,
+        0xaa,
+        0xaa,
+        0xaa,
+        0xaa,
+        0xaa
+      ]
+      const actual = UnpackBits(src)
       assert.deepStrictEqual(actual, expected)
     })
   })
-  /** @test {RLE#_packBitsLiteralToResult} */
-  describe('_packBitsLiteralToResult', () => {
+  /** @test {packBitsLiteralToResult} */
+  describe('packBitsLiteralToResult', () => {
+    const packBitsLiteralToResult = Module.__get__('packBitsLiteralToResult')
+
     it('Normaly', () => {
-      assert.deepStrictEqual(RLE._packBitsLiteralToResult([7, 1, 5, 8]), [3, 7, 1, 5, 8])
+      assert.deepStrictEqual(packBitsLiteralToResult([7, 1, 5, 8]), [3, 7, 1, 5, 8])
     })
 
     it('Empty', () => {
-      assert.deepStrictEqual(RLE._packBitsLiteralToResult([]), [])
+      assert.deepStrictEqual(packBitsLiteralToResult([]), [])
     })
   })
 
-  /** @test {RLE#_toUInt8} */
-  describe('_toUInt8', () => {
+  /** @test {toUInt8} */
+  describe('toUInt8', () => {
+    const toUInt8 = Module.__get__('toUInt8')
+
     it('Normaly', () => {
-      assert(RLE._toUInt8(-1) === 255)
-      assert(RLE._toUInt8(71) === 71)
-      assert(RLE._toUInt8(0xAA) === 0xAA)
+      assert(toUInt8(-1) === 255)
+      assert(toUInt8(71) === 71)
+      assert(toUInt8(0xaa) === 0xaa)
     })
 
     it('Out of range', () => {
-      assert(RLE._toUInt8(-180) === 76)
-      assert(RLE._toUInt8(571) === 59)
+      assert(toUInt8(-180) === 76)
+      assert(toUInt8(571) === 59)
     })
   })
 
-  /** @test {RLE#_toInt8} */
-  describe('_toInt8', () => {
+  /** @test {toInt8} */
+  describe('toInt8', () => {
+    const toInt8 = Module.__get__('toInt8')
     it('Normaly', () => {
-      assert(RLE._toInt8(241) === -15)
-      assert(RLE._toInt8(83) === 83)
+      assert(toInt8(241) === -15)
+      assert(toInt8(83) === 83)
     })
 
     it('Out of range', () => {
-      assert(RLE._toInt8(-129) === 127)
-      assert(RLE._toInt8(195) === -61)
-      assert(RLE._toInt8(571) === 59)
+      assert(toInt8(-129) === 127)
+      assert(toInt8(195) === -61)
+      assert(toInt8(571) === 59)
     })
   })
 })
