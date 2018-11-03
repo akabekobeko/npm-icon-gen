@@ -22,37 +22,37 @@ describe('PNGGenerator', () => {
     })
 
     it('All with filter', () => {
-      let actual = GetRequiredPNGImageSizes({ sizes: { ico: [256], icns: [512] } })
+      let actual = GetRequiredPNGImageSizes({ ico: { sizes: [256] }, icns: { sizes: [512] }, favicon: {} })
       let expected = [16, 24, 32, 48, 57, 64, 72, 96, 120, 128, 144, 152, 195, 228, 256, 512]
       assert.deepStrictEqual(actual, expected)
     })
 
     it('ICO', () => {
-      let actual = GetRequiredPNGImageSizes({ modes: ['ico'] })
+      let actual = GetRequiredPNGImageSizes({ ico: {} })
       let expected = GetRequiredICOImageSizes()
       assert.deepStrictEqual(actual, expected)
     })
 
     it('ICO with filter', () => {
-      let actual = GetRequiredPNGImageSizes({ modes: ['ico'], sizes: { ico: [16, 32, 64] } })
+      let actual = GetRequiredPNGImageSizes({ ico: { sizes: [16, 32, 64] } })
       let expected = [16, 32, 64]
       assert.deepStrictEqual(actual, expected)
     })
 
     it('ICNS', () => {
-      let actual = GetRequiredPNGImageSizes({ modes: ['icns'] })
+      let actual = GetRequiredPNGImageSizes({ icns: {} })
       let expected = GetRequiredICNSImageSizes()
       assert.deepStrictEqual(actual, expected)
     })
 
     it('ICNS with filter', () => {
-      let actual = GetRequiredPNGImageSizes({ modes: ['icns'], sizes: { icns: [16, 1024] } })
+      let actual = GetRequiredPNGImageSizes({ icns: { sizes: [16, 1024] } })
       let expected = [16, 1024]
       assert.deepStrictEqual(actual, expected)
     })
 
     it('Favicon', () => {
-      let actual = GetRequiredPNGImageSizes({ modes: ['favicon'] })
+      let actual = GetRequiredPNGImageSizes({ favicon: {} })
       let expected = GetRequiredFavoriteImageSizes()
       assert.deepStrictEqual(actual, expected)
     })

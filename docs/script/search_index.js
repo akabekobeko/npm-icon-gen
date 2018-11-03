@@ -1,39 +1,69 @@
 window.esdocSearchIndex = [
   [
     "icon-gen/src/bin/cli.js~cli",
-    "class/src/bin/cli.js~CLI.html",
+    "function/index.html#static-function-CLI",
     "<span>CLI</span> <span class=\"search-result-import-path\">icon-gen/src/bin/cli.js</span>",
-    "class"
+    "function"
   ],
   [
-    "icon-gen/src/bin/cli.js~default_options",
-    "variable/index.html#static-variable-DEFAULT_OPTIONS",
-    "<span>DEFAULT_OPTIONS</span> <span class=\"search-result-import-path\">icon-gen/src/bin/cli.js</span>",
-    "variable"
+    "icon-gen/src/lib/icns-generator.js~debugunpackiconblocks",
+    "function/index.html#static-function-DebugUnpackIconBlocks",
+    "<span>DebugUnpackIconBlocks</span> <span class=\"search-result-import-path\">icon-gen/src/lib/icns-generator.js</span>",
+    "function"
   ],
   [
-    "icon-gen/src/lib/favicon-generator.js~favicongenerator",
-    "class/src/lib/favicon-generator.js~FaviconGenerator.html",
-    "<span>FaviconGenerator</span> <span class=\"search-result-import-path\">icon-gen/src/lib/favicon-generator.js</span>",
-    "class"
+    "icon-gen/src/lib/favicon-generator.js~generatefavicon",
+    "function/index.html#static-function-GenerateFavicon",
+    "<span>GenerateFavicon</span> <span class=\"search-result-import-path\">icon-gen/src/lib/favicon-generator.js</span>",
+    "function"
   ],
   [
-    "icon-gen/src/lib/icns-generator.js~icnsgenerator",
-    "class/src/lib/icns-generator.js~ICNSGenerator.html",
-    "<span>ICNSGenerator</span> <span class=\"search-result-import-path\">icon-gen/src/lib/icns-generator.js</span>",
-    "class"
+    "icon-gen/src/lib/icns-generator.js~generateicns",
+    "function/index.html#static-function-GenerateICNS",
+    "<span>GenerateICNS</span> <span class=\"search-result-import-path\">icon-gen/src/lib/icns-generator.js</span>",
+    "function"
   ],
   [
-    "icon-gen/src/lib/ico-generator.js~icogenerator",
-    "class/src/lib/ico-generator.js~ICOGenerator.html",
-    "<span>ICOGenerator</span> <span class=\"search-result-import-path\">icon-gen/src/lib/ico-generator.js</span>",
-    "class"
+    "icon-gen/src/lib/ico-generator.js~generateico",
+    "function/index.html#static-function-GenerateICO",
+    "<span>GenerateICO</span> <span class=\"search-result-import-path\">icon-gen/src/lib/ico-generator.js</span>",
+    "function"
   ],
   [
-    "icon-gen/src/lib/icon-generator.js~icongenerator",
-    "class/src/lib/icon-generator.js~IconGenerator.html",
-    "<span>IconGenerator</span> <span class=\"search-result-import-path\">icon-gen/src/lib/icon-generator.js</span>",
-    "class"
+    "icon-gen/src/lib/icon-generator.js~generateicon",
+    "function/index.html#static-function-GenerateIcon",
+    "<span>GenerateIcon</span> <span class=\"search-result-import-path\">icon-gen/src/lib/icon-generator.js</span>",
+    "function"
+  ],
+  [
+    "icon-gen/src/lib/png-generator.js~generatepng",
+    "function/index.html#static-function-GeneratePNG",
+    "<span>GeneratePNG</span> <span class=\"search-result-import-path\">icon-gen/src/lib/png-generator.js</span>",
+    "function"
+  ],
+  [
+    "icon-gen/src/lib/favicon-generator.js~getrequiredfavoriteimagesizes",
+    "function/index.html#static-function-GetRequiredFavoriteImageSizes",
+    "<span>GetRequiredFavoriteImageSizes</span> <span class=\"search-result-import-path\">icon-gen/src/lib/favicon-generator.js</span>",
+    "function"
+  ],
+  [
+    "icon-gen/src/lib/icns-generator.js~getrequiredicnsimagesizes",
+    "function/index.html#static-function-GetRequiredICNSImageSizes",
+    "<span>GetRequiredICNSImageSizes</span> <span class=\"search-result-import-path\">icon-gen/src/lib/icns-generator.js</span>",
+    "function"
+  ],
+  [
+    "icon-gen/src/lib/ico-generator.js~getrequiredicoimagesizes",
+    "function/index.html#static-function-GetRequiredICOImageSizes",
+    "<span>GetRequiredICOImageSizes</span> <span class=\"search-result-import-path\">icon-gen/src/lib/ico-generator.js</span>",
+    "function"
+  ],
+  [
+    "icon-gen/src/lib/png-generator.js~getrequiredpngimagesizes",
+    "function/index.html#static-function-GetRequiredPNGImageSizes",
+    "<span>GetRequiredPNGImageSizes</span> <span class=\"search-result-import-path\">icon-gen/src/lib/png-generator.js</span>",
+    "function"
   ],
   [
     "icon-gen/src/lib/logger.js~logger",
@@ -42,16 +72,22 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
-    "icon-gen/src/lib/png-generator.js~pnggenerator",
-    "class/src/lib/png-generator.js~PNGGenerator.html",
-    "<span>PNGGenerator</span> <span class=\"search-result-import-path\">icon-gen/src/lib/png-generator.js</span>",
-    "class"
+    "icon-gen/src/lib/rle.js~packbits",
+    "function/index.html#static-function-PackBits",
+    "<span>PackBits</span> <span class=\"search-result-import-path\">icon-gen/src/lib/rle.js</span>",
+    "function"
   ],
   [
-    "icon-gen/src/lib/rle.js~rle",
-    "class/src/lib/rle.js~RLE.html",
-    "<span>RLE</span> <span class=\"search-result-import-path\">icon-gen/src/lib/rle.js</span>",
-    "class"
+    "icon-gen/src/lib/rle.js~packicns",
+    "function/index.html#static-function-PackICNS",
+    "<span>PackICNS</span> <span class=\"search-result-import-path\">icon-gen/src/lib/rle.js</span>",
+    "function"
+  ],
+  [
+    "icon-gen/src/lib/rle.js~unpackbits",
+    "function/index.html#static-function-UnpackBits",
+    "<span>UnpackBits</span> <span class=\"search-result-import-path\">icon-gen/src/lib/rle.js</span>",
+    "function"
   ],
   [
     "icon-gen/src/lib/util.js~util",
@@ -66,285 +102,303 @@ window.esdocSearchIndex = [
     "test"
   ],
   [
-    "cli#_parsemode cli#_parsemode,cli#_parsemode",
-    "test-file/src/bin/cli.test.js.html#lineNumber87",
-    "CLI _parseMode",
-    "test"
-  ],
-  [
-    "",
-    "test-file/src/bin/cli.test.js.html#lineNumber88",
-    "CLI _parseMode Default",
-    "test"
-  ],
-  [
-    "",
-    "test-file/src/bin/cli.test.js.html#lineNumber108",
-    "CLI _parseMode favicon",
-    "test"
-  ],
-  [
-    "",
-    "test-file/src/bin/cli.test.js.html#lineNumber103",
-    "CLI _parseMode icns",
-    "test"
-  ],
-  [
-    "",
-    "test-file/src/bin/cli.test.js.html#lineNumber98",
-    "CLI _parseMode ico",
-    "test"
-  ],
-  [
-    "",
-    "test-file/src/bin/cli.test.js.html#lineNumber93",
-    "CLI _parseMode ico, icns, favicon",
-    "test"
-  ],
-  [
-    "cli#_parsenames cli#_parsenames,cli#_parsenames",
-    "test-file/src/bin/cli.test.js.html#lineNumber115",
-    "CLI _parseNames",
-    "test"
-  ],
-  [
-    "",
-    "test-file/src/bin/cli.test.js.html#lineNumber131",
-    "CLI _parseNames Invalid value",
-    "test"
-  ],
-  [
-    "",
-    "test-file/src/bin/cli.test.js.html#lineNumber126",
-    "CLI _parseNames icns",
-    "test"
-  ],
-  [
-    "",
-    "test-file/src/bin/cli.test.js.html#lineNumber121",
-    "CLI _parseNames ico",
-    "test"
-  ],
-  [
-    "",
-    "test-file/src/bin/cli.test.js.html#lineNumber116",
-    "CLI _parseNames ico & icns",
-    "test"
-  ],
-  [
-    "cli#_parsesizes cli#_parsesizes,cli#_parsesizes",
-    "test-file/src/bin/cli.test.js.html#lineNumber138",
-    "CLI _parseSizes",
-    "test"
-  ],
-  [
-    "",
-    "test-file/src/bin/cli.test.js.html#lineNumber154",
-    "CLI _parseSizes Invalid value",
-    "test"
-  ],
-  [
-    "",
-    "test-file/src/bin/cli.test.js.html#lineNumber149",
-    "CLI _parseSizes icns",
-    "test"
-  ],
-  [
-    "",
-    "test-file/src/bin/cli.test.js.html#lineNumber144",
-    "CLI _parseSizes ico",
-    "test"
-  ],
-  [
-    "",
-    "test-file/src/bin/cli.test.js.html#lineNumber139",
-    "CLI _parseSizes ico & icns",
-    "test"
-  ],
-  [
-    "clil#parse clil#parse,clil#parse",
-    "test-file/src/bin/cli.test.js.html#lineNumber8",
+    "parse parse,parse",
+    "test-file/src/bin/cli.test.js.html#lineNumber10",
     "CLI parse",
     "test"
   ],
   [
     "",
-    "test-file/src/bin/cli.test.js.html#lineNumber14",
-    "CLI parse parse: -h --help",
+    "test-file/src/bin/cli.test.js.html#lineNumber131",
+    "CLI parse --favicon",
     "test"
   ],
   [
     "",
-    "test-file/src/bin/cli.test.js.html#lineNumber65",
-    "CLI parse parse: -i PNGDIR -o DESTDIR -t png -r",
+    "test-file/src/bin/cli.test.js.html#lineNumber132",
+    "CLI parse --favicon Full options",
+    "test"
+  ],
+  [
+    "",
+    "test-file/src/bin/cli.test.js.html#lineNumber160",
+    "CLI parse --favicon Without options",
+    "test"
+  ],
+  [
+    "",
+    "test-file/src/bin/cli.test.js.html#lineNumber139",
+    "CLI parse --favicon ico",
+    "test"
+  ],
+  [
+    "",
+    "test-file/src/bin/cli.test.js.html#lineNumber146",
+    "CLI parse --favicon name",
+    "test"
+  ],
+  [
+    "",
+    "test-file/src/bin/cli.test.js.html#lineNumber153",
+    "CLI parse --favicon sizes",
+    "test"
+  ],
+  [
+    "",
+    "test-file/src/bin/cli.test.js.html#lineNumber100",
+    "CLI parse --icns",
+    "test"
+  ],
+  [
+    "",
+    "test-file/src/bin/cli.test.js.html#lineNumber101",
+    "CLI parse --icns Full options",
+    "test"
+  ],
+  [
+    "",
+    "test-file/src/bin/cli.test.js.html#lineNumber122",
+    "CLI parse --icns Without options",
+    "test"
+  ],
+  [
+    "",
+    "test-file/src/bin/cli.test.js.html#lineNumber108",
+    "CLI parse --icns name",
+    "test"
+  ],
+  [
+    "",
+    "test-file/src/bin/cli.test.js.html#lineNumber115",
+    "CLI parse --icns sizes",
+    "test"
+  ],
+  [
+    "",
+    "test-file/src/bin/cli.test.js.html#lineNumber69",
+    "CLI parse --ico",
+    "test"
+  ],
+  [
+    "",
+    "test-file/src/bin/cli.test.js.html#lineNumber70",
+    "CLI parse --ico Full options",
+    "test"
+  ],
+  [
+    "",
+    "test-file/src/bin/cli.test.js.html#lineNumber91",
+    "CLI parse --ico Without options",
+    "test"
+  ],
+  [
+    "",
+    "test-file/src/bin/cli.test.js.html#lineNumber77",
+    "CLI parse --ico name",
+    "test"
+  ],
+  [
+    "",
+    "test-file/src/bin/cli.test.js.html#lineNumber84",
+    "CLI parse --ico sizes",
     "test"
   ],
   [
     "",
     "test-file/src/bin/cli.test.js.html#lineNumber47",
-    "CLI parse parse: -i SVGFILE -o DESTDIR",
+    "CLI parse -i PNGDIR -o DESTDIR -r",
     "test"
   ],
   [
     "",
-    "test-file/src/bin/cli.test.js.html#lineNumber30",
-    "CLI parse parse: -m --modes",
+    "test-file/src/bin/cli.test.js.html#lineNumber34",
+    "CLI parse -i SVGFILE -o DESTDIR",
     "test"
   ],
   [
     "",
-    "test-file/src/bin/cli.test.js.html#lineNumber22",
-    "CLI parse parse: -v --version",
+    "test-file/src/bin/cli.test.js.html#lineNumber26",
+    "CLI parse -v --version",
     "test"
   ],
   [
     "",
-    "test-file/src/bin/cli.test.js.html#lineNumber9",
-    "CLI parse parse: Empty arguments",
+    "test-file/src/bin/cli.test.js.html#lineNumber60",
+    "CLI parse Default images",
     "test"
   ],
   [
-    "favicongenerator src/lib/favicon-generator.js~favicongenerator,favicongenerator",
-    "test-file/src/lib/favicon-generator.test.js.html#lineNumber9",
+    "",
+    "test-file/src/bin/cli.test.js.html#lineNumber13",
+    "CLI parse Empty arguments",
+    "test"
+  ],
+  [
+    "",
+    "test-file/src/bin/cli.test.js.html#lineNumber18",
+    "CLI parse parse: -h --help",
+    "test"
+  ],
+  [
+    "",
+    "test-file/src/bin/cli.test.js.html#lineNumber170",
+    "CLI parseArgOption",
+    "test"
+  ],
+  [
+    "",
+    "test-file/src/bin/cli.test.js.html#lineNumber173",
+    "CLI parseArgOption key=value",
+    "test"
+  ],
+  [
+    "",
+    "test-file/src/bin/cli.test.js.html#lineNumber179",
+    "CLI parseArgOption value",
+    "test"
+  ],
+  [
+    "favicongenerator favicongenerator,favicongenerator",
+    "test-file/src/lib/favicon-generator.test.js.html#lineNumber10",
     "FaviconGenerator",
     "test"
   ],
   [
-    "favicongenerator#_generateico favicongenerator#_generateico,favicongenerator#_generateico",
-    "test-file/src/lib/favicon-generator.test.js.html#lineNumber26",
-    "FaviconGenerator _generateICO",
+    "getrequiredfavoriteimagesizes src/lib/favicon-generator.js~getrequiredfavoriteimagesizes,getrequiredfavoriteimagesizes",
+    "test-file/src/lib/favicon-generator.test.js.html#lineNumber14",
+    "FaviconGenerator GetRequiredFavoriteImageSizes",
     "test"
   ],
   [
-    "favicongenerator#_generatepng favicongenerator#_generatepng,favicongenerator#_generatepng",
-    "test-file/src/lib/favicon-generator.test.js.html#lineNumber41",
-    "FaviconGenerator _generatePNG",
+    "generateico generateico,generateico",
+    "test-file/src/lib/favicon-generator.test.js.html#lineNumber27",
+    "FaviconGenerator generateICO",
     "test"
   ],
   [
-    "favicongenerator#generate favicongenerator#generate,favicongenerator#generate",
-    "test-file/src/lib/favicon-generator.test.js.html#lineNumber11",
-    "FaviconGenerator generate",
+    "generatepng generatepng,generatepng",
+    "test-file/src/lib/favicon-generator.test.js.html#lineNumber42",
+    "FaviconGenerator generatePNG",
     "test"
   ],
   [
-    "icnsgenerator src/lib/icns-generator.js~icnsgenerator,icnsgenerator",
-    "test-file/src/lib/icns-generator.test.js.html#lineNumber8",
+    "icnsgenerator icnsgenerator,icnsgenerator",
+    "test-file/src/lib/icns-generator.test.js.html#lineNumber9",
     "ICNSGenerator",
     "test"
   ],
   [
-    "icnsgenerator#_createfileheader icnsgenerator#_createfileheader,icnsgenerator#_createfileheader",
-    "test-file/src/lib/icns-generator.test.js.html#lineNumber25",
-    "ICNSGenerator _createFileHeader",
+    "createfileheader createfileheader,createfileheader",
+    "test-file/src/lib/icns-generator.test.js.html#lineNumber26",
+    "ICNSGenerator createFileHeader",
     "test"
   ],
   [
-    "icnsgenerator#_createiconheader icnsgenerator#_createiconheader,icnsgenerator#_createiconheader",
-    "test-file/src/lib/icns-generator.test.js.html#lineNumber39",
-    "ICNSGenerator _createIconHeader",
+    "createiconheader createiconheader,createiconheader",
+    "test-file/src/lib/icns-generator.test.js.html#lineNumber41",
+    "ICNSGenerator createIconHeader",
     "test"
   ],
   [
-    "icnsgenerator#generate icnsgenerator#generate,icnsgenerator#generate",
-    "test-file/src/lib/icns-generator.test.js.html#lineNumber10",
+    "generateicns src/lib/icns-generator.js~generateicns,generateicns",
+    "test-file/src/lib/icns-generator.test.js.html#lineNumber13",
     "ICNSGenerator generate",
     "test"
   ],
   [
-    "icogenerator src/lib/ico-generator.js~icogenerator,icogenerator",
-    "test-file/src/lib/ico-generator.test.js.html#lineNumber8",
+    "icogenerator icogenerator,icogenerator",
+    "test-file/src/lib/ico-generator.test.js.html#lineNumber9",
     "ICOGenerator",
     "test"
   ],
   [
-    "icogenerator#_createbitmapinfoheader icogenerator#_createbitmapinfoheader,icogenerator#_createbitmapinfoheader",
-    "test-file/src/lib/ico-generator.test.js.html#lineNumber65",
-    "ICOGenerator _createBitmapInfoHeader",
+    "createbitmapinfoheader createbitmapinfoheader,createbitmapinfoheader",
+    "test-file/src/lib/ico-generator.test.js.html#lineNumber68",
+    "ICOGenerator createBitmapInfoHeader",
     "test"
   ],
   [
-    "icogenerator#_createdirectory icogenerator#_createdirectory,icogenerator#_createdirectory",
-    "test-file/src/lib/ico-generator.test.js.html#lineNumber41",
-    "ICOGenerator _createDirectory",
+    "createdirectory createdirectory,createdirectory",
+    "test-file/src/lib/ico-generator.test.js.html#lineNumber43",
+    "ICOGenerator createDirectory",
     "test"
   ],
   [
-    "icogenerator#_createfileheader icogenerator#_createfileheader,icogenerator#_createfileheader",
-    "test-file/src/lib/ico-generator.test.js.html#lineNumber31",
-    "ICOGenerator _createFileHeader",
+    "createfileheader createfileheader,createfileheader",
+    "test-file/src/lib/ico-generator.test.js.html#lineNumber32",
+    "ICOGenerator createFileHeader",
     "test"
   ],
   [
-    "icogenerator#generate icogenerator#generate,icogenerator#generate",
-    "test-file/src/lib/ico-generator.test.js.html#lineNumber16",
+    "generateico src/lib/ico-generator.js~generateico,generateico",
+    "test-file/src/lib/ico-generator.test.js.html#lineNumber19",
     "ICOGenerator generate",
     "test"
   ],
   [
-    "icongenerator src/lib/icon-generator.js~icongenerator,icongenerator",
-    "test-file/src/lib/icon-generator.test.js.html#lineNumber8",
+    "icongenerator icongenerator,icongenerator",
+    "test-file/src/lib/icon-generator.test.js.html#lineNumber7",
     "IconGenerator",
     "test"
   ],
   [
-    "",
-    "test-file/src/lib/icon-generator.test.js.html#lineNumber18",
-    "IconGenerator _getRequiredImageSizes",
+    "generateiconfrompng generateiconfrompng,generateiconfrompng",
+    "test-file/src/lib/icon-generator.test.js.html#lineNumber11",
+    "IconGenerator generateIconFromPNG",
     "test"
   ],
   [
-    "",
-    "test-file/src/lib/icon-generator.test.js.html#lineNumber40",
-    "IconGenerator _getRequiredImageSizes favicon",
-    "test"
-  ],
-  [
-    "",
-    "test-file/src/lib/icon-generator.test.js.html#lineNumber33",
-    "IconGenerator _getRequiredImageSizes icns",
-    "test"
-  ],
-  [
-    "",
-    "test-file/src/lib/icon-generator.test.js.html#lineNumber53",
-    "IconGenerator _getRequiredImageSizes icns: sizes",
-    "test"
-  ],
-  [
-    "",
-    "test-file/src/lib/icon-generator.test.js.html#lineNumber26",
-    "IconGenerator _getRequiredImageSizes ico",
-    "test"
-  ],
-  [
-    "",
-    "test-file/src/lib/icon-generator.test.js.html#lineNumber19",
-    "IconGenerator _getRequiredImageSizes ico, icns, favicon",
-    "test"
-  ],
-  [
-    "",
-    "test-file/src/lib/icon-generator.test.js.html#lineNumber47",
-    "IconGenerator _getRequiredImageSizes ico: sizes",
-    "test"
-  ],
-  [
-    "icongenerator#frompng icongenerator#frompng,icongenerator#frompng",
-    "test-file/src/lib/icon-generator.test.js.html#lineNumber10",
-    "IconGenerator fromPNG",
-    "test"
-  ],
-  [
-    "pnggenerator src/lib/png-generator.js~pnggenerator,pnggenerator",
+    "pnggenerator pnggenerator,pnggenerator",
     "test-file/src/lib/png-generator.test.js.html#lineNumber13",
     "PNGGenerator",
     "test"
   ],
   [
-    "pnggenerator#_generetepng pnggenerator#_generetepng,pnggenerator#_generetepng",
-    "test-file/src/lib/png-generator.test.js.html#lineNumber62",
-    "PNGGenerator _generetePNG",
+    "getrequiredpngimagesizes src/lib/png-generator.js~getrequiredpngimagesizes,getrequiredpngimagesizes",
+    "test-file/src/lib/png-generator.test.js.html#lineNumber17",
+    "PNGGenerator GetRequiredPNGImageSizes",
+    "test"
+  ],
+  [
+    "",
+    "test-file/src/lib/png-generator.test.js.html#lineNumber18",
+    "PNGGenerator GetRequiredPNGImageSizes All",
+    "test"
+  ],
+  [
+    "",
+    "test-file/src/lib/png-generator.test.js.html#lineNumber24",
+    "PNGGenerator GetRequiredPNGImageSizes All with filter",
+    "test"
+  ],
+  [
+    "",
+    "test-file/src/lib/png-generator.test.js.html#lineNumber54",
+    "PNGGenerator GetRequiredPNGImageSizes Favicon",
+    "test"
+  ],
+  [
+    "",
+    "test-file/src/lib/png-generator.test.js.html#lineNumber42",
+    "PNGGenerator GetRequiredPNGImageSizes ICNS",
+    "test"
+  ],
+  [
+    "",
+    "test-file/src/lib/png-generator.test.js.html#lineNumber48",
+    "PNGGenerator GetRequiredPNGImageSizes ICNS with filter",
+    "test"
+  ],
+  [
+    "",
+    "test-file/src/lib/png-generator.test.js.html#lineNumber30",
+    "PNGGenerator GetRequiredPNGImageSizes ICO",
+    "test"
+  ],
+  [
+    "",
+    "test-file/src/lib/png-generator.test.js.html#lineNumber36",
+    "PNGGenerator GetRequiredPNGImageSizes ICO with filter",
     "test"
   ],
   [
@@ -366,147 +420,105 @@ window.esdocSearchIndex = [
     "test"
   ],
   [
-    "pnggenerator#getrequiredimagesizes pnggenerator#getrequiredimagesizes,pnggenerator#getrequiredimagesizes",
-    "test-file/src/lib/png-generator.test.js.html#lineNumber17",
-    "PNGGenerator getRequiredImageSizes",
+    "generatepng generatepng,generatepng",
+    "test-file/src/lib/png-generator.test.js.html#lineNumber62",
+    "PNGGenerator generetePNG",
     "test"
   ],
   [
-    "",
-    "test-file/src/lib/png-generator.test.js.html#lineNumber18",
-    "PNGGenerator getRequiredImageSizes All",
-    "test"
-  ],
-  [
-    "",
-    "test-file/src/lib/png-generator.test.js.html#lineNumber24",
-    "PNGGenerator getRequiredImageSizes All with filter",
-    "test"
-  ],
-  [
-    "",
-    "test-file/src/lib/png-generator.test.js.html#lineNumber54",
-    "PNGGenerator getRequiredImageSizes Favicon",
-    "test"
-  ],
-  [
-    "",
-    "test-file/src/lib/png-generator.test.js.html#lineNumber42",
-    "PNGGenerator getRequiredImageSizes ICNS",
-    "test"
-  ],
-  [
-    "",
-    "test-file/src/lib/png-generator.test.js.html#lineNumber48",
-    "PNGGenerator getRequiredImageSizes ICNS with filter",
-    "test"
-  ],
-  [
-    "",
-    "test-file/src/lib/png-generator.test.js.html#lineNumber30",
-    "PNGGenerator getRequiredImageSizes ICO",
-    "test"
-  ],
-  [
-    "",
-    "test-file/src/lib/png-generator.test.js.html#lineNumber36",
-    "PNGGenerator getRequiredImageSizes ICO with filter",
-    "test"
-  ],
-  [
-    "rle src/lib/rle.js~rle,rle",
-    "test-file/src/lib/rle.test.js.html#lineNumber5",
+    "rle rle,rle",
+    "test-file/src/lib/rle.test.js.html#lineNumber6",
     "RLE",
     "test"
   ],
   [
-    "rle#_packbitsliteraltoresult rle#_packbitsliteraltoresult,rle#_packbitsliteraltoresult",
-    "test-file/src/lib/rle.test.js.html#lineNumber38",
-    "RLE _packBitsLiteralToResult",
+    "packicns src/lib/rle.js~packicns,packicns",
+    "test-file/src/lib/rle.test.js.html#lineNumber46",
+    "RLE PackICNS",
     "test"
   ],
   [
     "",
-    "test-file/src/lib/rle.test.js.html#lineNumber43",
-    "RLE _packBitsLiteralToResult Empty",
+    "test-file/src/lib/rle.test.js.html#lineNumber47",
+    "RLE PackICNS Normaly",
     "test"
   ],
   [
-    "",
-    "test-file/src/lib/rle.test.js.html#lineNumber39",
-    "RLE _packBitsLiteralToResult Normaly",
-    "test"
-  ],
-  [
-    "rle#_toint8 rle#_toint8,rle#_toint8",
-    "test-file/src/lib/rle.test.js.html#lineNumber63",
-    "RLE _toInt8",
-    "test"
-  ],
-  [
-    "",
-    "test-file/src/lib/rle.test.js.html#lineNumber64",
-    "RLE _toInt8 Normaly",
-    "test"
-  ],
-  [
-    "",
-    "test-file/src/lib/rle.test.js.html#lineNumber69",
-    "RLE _toInt8 Out of range",
-    "test"
-  ],
-  [
-    "rle#_touint8 rle#_touint8,rle#_touint8",
-    "test-file/src/lib/rle.test.js.html#lineNumber49",
-    "RLE _toUInt8",
-    "test"
-  ],
-  [
-    "",
-    "test-file/src/lib/rle.test.js.html#lineNumber50",
-    "RLE _toUInt8 Normaly",
-    "test"
-  ],
-  [
-    "",
+    "unpackbits src/lib/rle.js~unpackbits,unpackbits",
     "test-file/src/lib/rle.test.js.html#lineNumber56",
-    "RLE _toUInt8 Out of range",
+    "RLE UnpackBits",
+    "test"
+  ],
+  [
+    "",
+    "test-file/src/lib/rle.test.js.html#lineNumber57",
+    "RLE UnpackBits Normaly",
     "test"
   ],
   [
     "rle#packbits rle#packbits,rle#packbits",
-    "test-file/src/lib/rle.test.js.html#lineNumber7",
+    "test-file/src/lib/rle.test.js.html#lineNumber10",
     "RLE packBits",
     "test"
   ],
   [
     "",
-    "test-file/src/lib/rle.test.js.html#lineNumber8",
+    "test-file/src/lib/rle.test.js.html#lineNumber11",
     "RLE packBits Normaly",
     "test"
   ],
   [
-    "rle#packicns rle#packicns,rle#packicns",
-    "test-file/src/lib/rle.test.js.html#lineNumber18",
-    "RLE packICNS",
+    "packbitsliteraltoresult packbitsliteraltoresult,packbitsliteraltoresult",
+    "test-file/src/lib/rle.test.js.html#lineNumber91",
+    "RLE packBitsLiteralToResult",
     "test"
   ],
   [
     "",
-    "test-file/src/lib/rle.test.js.html#lineNumber19",
-    "RLE packICNS Normaly",
-    "test"
-  ],
-  [
-    "rle#unpackbits rle#unpackbits,rle#unpackbits",
-    "test-file/src/lib/rle.test.js.html#lineNumber28",
-    "RLE unpackBits",
+    "test-file/src/lib/rle.test.js.html#lineNumber98",
+    "RLE packBitsLiteralToResult Empty",
     "test"
   ],
   [
     "",
-    "test-file/src/lib/rle.test.js.html#lineNumber29",
-    "RLE unpackBits Normaly",
+    "test-file/src/lib/rle.test.js.html#lineNumber94",
+    "RLE packBitsLiteralToResult Normaly",
+    "test"
+  ],
+  [
+    "toint8 toint8,toint8",
+    "test-file/src/lib/rle.test.js.html#lineNumber120",
+    "RLE toInt8",
+    "test"
+  ],
+  [
+    "",
+    "test-file/src/lib/rle.test.js.html#lineNumber122",
+    "RLE toInt8 Normaly",
+    "test"
+  ],
+  [
+    "",
+    "test-file/src/lib/rle.test.js.html#lineNumber127",
+    "RLE toInt8 Out of range",
+    "test"
+  ],
+  [
+    "touint8 touint8,touint8",
+    "test-file/src/lib/rle.test.js.html#lineNumber104",
+    "RLE toUInt8",
+    "test"
+  ],
+  [
+    "",
+    "test-file/src/lib/rle.test.js.html#lineNumber107",
+    "RLE toUInt8 Normaly",
+    "test"
+  ],
+  [
+    "",
+    "test-file/src/lib/rle.test.js.html#lineNumber113",
+    "RLE toUInt8 Out of range",
     "test"
   ],
   [
@@ -822,48 +834,6 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
-    "src/bin/cli.js~cli._parse",
-    "class/src/bin/cli.js~CLI.html#static-method-_parse",
-    "src/bin/cli.js~CLI._parse",
-    "method"
-  ],
-  [
-    "src/bin/cli.js~cli._parsemode",
-    "class/src/bin/cli.js~CLI.html#static-method-_parseMode",
-    "src/bin/cli.js~CLI._parseMode",
-    "method"
-  ],
-  [
-    "src/bin/cli.js~cli._parsenames",
-    "class/src/bin/cli.js~CLI.html#static-method-_parseNames",
-    "src/bin/cli.js~CLI._parseNames",
-    "method"
-  ],
-  [
-    "src/bin/cli.js~cli._parsesizes",
-    "class/src/bin/cli.js~CLI.html#static-method-_parseSizes",
-    "src/bin/cli.js~CLI._parseSizes",
-    "method"
-  ],
-  [
-    "src/bin/cli.js~cli.parse",
-    "class/src/bin/cli.js~CLI.html#static-method-parse",
-    "src/bin/cli.js~CLI.parse",
-    "method"
-  ],
-  [
-    "src/bin/cli.js~cli.showhelp",
-    "class/src/bin/cli.js~CLI.html#static-method-showHelp",
-    "src/bin/cli.js~CLI.showHelp",
-    "method"
-  ],
-  [
-    "src/bin/cli.js~cli.showversion",
-    "class/src/bin/cli.js~CLI.html#static-method-showVersion",
-    "src/bin/cli.js~CLI.showVersion",
-    "method"
-  ],
-  [
     "src/bin/cli.test.js",
     "test-file/src/bin/cli.test.js.html",
     "src/bin/cli.test.js",
@@ -882,42 +852,6 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
-    "src/lib/favicon-generator.js~favicongenerator._copyimage",
-    "class/src/lib/favicon-generator.js~FaviconGenerator.html#static-method-_copyImage",
-    "src/lib/favicon-generator.js~FaviconGenerator._copyImage",
-    "method"
-  ],
-  [
-    "src/lib/favicon-generator.js~favicongenerator._filenamefromsize",
-    "class/src/lib/favicon-generator.js~FaviconGenerator.html#static-method-_fileNameFromSize",
-    "src/lib/favicon-generator.js~FaviconGenerator._fileNameFromSize",
-    "method"
-  ],
-  [
-    "src/lib/favicon-generator.js~favicongenerator._generateico",
-    "class/src/lib/favicon-generator.js~FaviconGenerator.html#static-method-_generateICO",
-    "src/lib/favicon-generator.js~FaviconGenerator._generateICO",
-    "method"
-  ],
-  [
-    "src/lib/favicon-generator.js~favicongenerator._generatepng",
-    "class/src/lib/favicon-generator.js~FaviconGenerator.html#static-method-_generatePNG",
-    "src/lib/favicon-generator.js~FaviconGenerator._generatePNG",
-    "method"
-  ],
-  [
-    "src/lib/favicon-generator.js~favicongenerator.generate",
-    "class/src/lib/favicon-generator.js~FaviconGenerator.html#static-method-generate",
-    "src/lib/favicon-generator.js~FaviconGenerator.generate",
-    "method"
-  ],
-  [
-    "src/lib/favicon-generator.js~favicongenerator.getrequiredimagesizes",
-    "class/src/lib/favicon-generator.js~FaviconGenerator.html#static-method-getRequiredImageSizes",
-    "src/lib/favicon-generator.js~FaviconGenerator.getRequiredImageSizes",
-    "method"
-  ],
-  [
     "src/lib/favicon-generator.test.js",
     "test-file/src/lib/favicon-generator.test.js.html",
     "src/lib/favicon-generator.test.js",
@@ -928,66 +862,6 @@ window.esdocSearchIndex = [
     "file/src/lib/icns-generator.js.html",
     "src/lib/icns-generator.js",
     "file"
-  ],
-  [
-    "src/lib/icns-generator.js~icnsgenerator._createfileheader",
-    "class/src/lib/icns-generator.js~ICNSGenerator.html#static-method-_createFileHeader",
-    "src/lib/icns-generator.js~ICNSGenerator._createFileHeader",
-    "method"
-  ],
-  [
-    "src/lib/icns-generator.js~icnsgenerator._createicon",
-    "class/src/lib/icns-generator.js~ICNSGenerator.html#static-method-_createIcon",
-    "src/lib/icns-generator.js~ICNSGenerator._createIcon",
-    "method"
-  ],
-  [
-    "src/lib/icns-generator.js~icnsgenerator._createiconblock",
-    "class/src/lib/icns-generator.js~ICNSGenerator.html#static-method-_createIconBlock",
-    "src/lib/icns-generator.js~ICNSGenerator._createIconBlock",
-    "method"
-  ],
-  [
-    "src/lib/icns-generator.js~icnsgenerator._createiconblockpackbits",
-    "class/src/lib/icns-generator.js~ICNSGenerator.html#static-method-_createIconBlockPackBits",
-    "src/lib/icns-generator.js~ICNSGenerator._createIconBlockPackBits",
-    "method"
-  ],
-  [
-    "src/lib/icns-generator.js~icnsgenerator._createiconblockpackbitsbodies",
-    "class/src/lib/icns-generator.js~ICNSGenerator.html#static-method-_createIconBlockPackBitsBodies",
-    "src/lib/icns-generator.js~ICNSGenerator._createIconBlockPackBitsBodies",
-    "method"
-  ],
-  [
-    "src/lib/icns-generator.js~icnsgenerator._createiconheader",
-    "class/src/lib/icns-generator.js~ICNSGenerator.html#static-method-_createIconHeader",
-    "src/lib/icns-generator.js~ICNSGenerator._createIconHeader",
-    "method"
-  ],
-  [
-    "src/lib/icns-generator.js~icnsgenerator._debugunpackiconblocks",
-    "class/src/lib/icns-generator.js~ICNSGenerator.html#static-method-_debugUnpackIconBlocks",
-    "src/lib/icns-generator.js~ICNSGenerator._debugUnpackIconBlocks",
-    "method"
-  ],
-  [
-    "src/lib/icns-generator.js~icnsgenerator._imagefromiconsize",
-    "class/src/lib/icns-generator.js~ICNSGenerator.html#static-method-_imageFromIconSize",
-    "src/lib/icns-generator.js~ICNSGenerator._imageFromIconSize",
-    "method"
-  ],
-  [
-    "src/lib/icns-generator.js~icnsgenerator.generate",
-    "class/src/lib/icns-generator.js~ICNSGenerator.html#static-method-generate",
-    "src/lib/icns-generator.js~ICNSGenerator.generate",
-    "method"
-  ],
-  [
-    "src/lib/icns-generator.js~icnsgenerator.getrequiredimagesizes",
-    "class/src/lib/icns-generator.js~ICNSGenerator.html#static-method-getRequiredImageSizes",
-    "src/lib/icns-generator.js~ICNSGenerator.getRequiredImageSizes",
-    "method"
   ],
   [
     "src/lib/icns-generator.test.js",
@@ -1002,42 +876,6 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
-    "src/lib/ico-generator.js~icogenerator._convertpngtodib",
-    "class/src/lib/ico-generator.js~ICOGenerator.html#static-method-_convertPNGtoDIB",
-    "src/lib/ico-generator.js~ICOGenerator._convertPNGtoDIB",
-    "method"
-  ],
-  [
-    "src/lib/ico-generator.js~icogenerator._createbitmapinfoheader",
-    "class/src/lib/ico-generator.js~ICOGenerator.html#static-method-_createBitmapInfoHeader",
-    "src/lib/ico-generator.js~ICOGenerator._createBitmapInfoHeader",
-    "method"
-  ],
-  [
-    "src/lib/ico-generator.js~icogenerator._createdirectory",
-    "class/src/lib/ico-generator.js~ICOGenerator.html#static-method-_createDirectory",
-    "src/lib/ico-generator.js~ICOGenerator._createDirectory",
-    "method"
-  ],
-  [
-    "src/lib/ico-generator.js~icogenerator._createfileheader",
-    "class/src/lib/ico-generator.js~ICOGenerator.html#static-method-_createFileHeader",
-    "src/lib/ico-generator.js~ICOGenerator._createFileHeader",
-    "method"
-  ],
-  [
-    "src/lib/ico-generator.js~icogenerator.generate",
-    "class/src/lib/ico-generator.js~ICOGenerator.html#static-method-generate",
-    "src/lib/ico-generator.js~ICOGenerator.generate",
-    "method"
-  ],
-  [
-    "src/lib/ico-generator.js~icogenerator.getrequiredimagesizes",
-    "class/src/lib/ico-generator.js~ICOGenerator.html#static-method-getRequiredImageSizes",
-    "src/lib/ico-generator.js~ICOGenerator.getRequiredImageSizes",
-    "method"
-  ],
-  [
     "src/lib/ico-generator.test.js",
     "test-file/src/lib/ico-generator.test.js.html",
     "src/lib/ico-generator.test.js",
@@ -1048,36 +886,6 @@ window.esdocSearchIndex = [
     "file/src/lib/icon-generator.js.html",
     "src/lib/icon-generator.js",
     "file"
-  ],
-  [
-    "src/lib/icon-generator.js~icongenerator._generate",
-    "class/src/lib/icon-generator.js~IconGenerator.html#static-method-_generate",
-    "src/lib/icon-generator.js~IconGenerator._generate",
-    "method"
-  ],
-  [
-    "src/lib/icon-generator.js~icongenerator._getrequiredimagesizes",
-    "class/src/lib/icon-generator.js~IconGenerator.html#static-method-_getRequiredImageSizes",
-    "src/lib/icon-generator.js~IconGenerator._getRequiredImageSizes",
-    "method"
-  ],
-  [
-    "src/lib/icon-generator.js~icongenerator._getsizes",
-    "class/src/lib/icon-generator.js~IconGenerator.html#static-method-_getSizes",
-    "src/lib/icon-generator.js~IconGenerator._getSizes",
-    "method"
-  ],
-  [
-    "src/lib/icon-generator.js~icongenerator.frompng",
-    "class/src/lib/icon-generator.js~IconGenerator.html#static-method-fromPNG",
-    "src/lib/icon-generator.js~IconGenerator.fromPNG",
-    "method"
-  ],
-  [
-    "src/lib/icon-generator.js~icongenerator.fromsvg",
-    "class/src/lib/icon-generator.js~IconGenerator.html#static-method-fromSVG",
-    "src/lib/icon-generator.js~IconGenerator.fromSVG",
-    "method"
   ],
   [
     "src/lib/icon-generator.test.js",
@@ -1128,24 +936,6 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
-    "src/lib/png-generator.js~pnggenerator._generatepng",
-    "class/src/lib/png-generator.js~PNGGenerator.html#static-method-_generatePNG",
-    "src/lib/png-generator.js~PNGGenerator._generatePNG",
-    "method"
-  ],
-  [
-    "src/lib/png-generator.js~pnggenerator.generate",
-    "class/src/lib/png-generator.js~PNGGenerator.html#static-method-generate",
-    "src/lib/png-generator.js~PNGGenerator.generate",
-    "method"
-  ],
-  [
-    "src/lib/png-generator.js~pnggenerator.getrequiredimagesizes",
-    "class/src/lib/png-generator.js~PNGGenerator.html#static-method-getRequiredImageSizes",
-    "src/lib/png-generator.js~PNGGenerator.getRequiredImageSizes",
-    "method"
-  ],
-  [
     "src/lib/png-generator.test.js",
     "test-file/src/lib/png-generator.test.js.html",
     "src/lib/png-generator.test.js",
@@ -1158,48 +948,6 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
-    "src/lib/rle.js~rle._arraycopy",
-    "class/src/lib/rle.js~RLE.html#static-method-_arrayCopy",
-    "src/lib/rle.js~RLE._arrayCopy",
-    "method"
-  ],
-  [
-    "src/lib/rle.js~rle._packbitsliteraltoresult",
-    "class/src/lib/rle.js~RLE.html#static-method-_packBitsLiteralToResult",
-    "src/lib/rle.js~RLE._packBitsLiteralToResult",
-    "method"
-  ],
-  [
-    "src/lib/rle.js~rle._toint8",
-    "class/src/lib/rle.js~RLE.html#static-method-_toInt8",
-    "src/lib/rle.js~RLE._toInt8",
-    "method"
-  ],
-  [
-    "src/lib/rle.js~rle._touint8",
-    "class/src/lib/rle.js~RLE.html#static-method-_toUInt8",
-    "src/lib/rle.js~RLE._toUInt8",
-    "method"
-  ],
-  [
-    "src/lib/rle.js~rle.packbits",
-    "class/src/lib/rle.js~RLE.html#static-method-packBits",
-    "src/lib/rle.js~RLE.packBits",
-    "method"
-  ],
-  [
-    "src/lib/rle.js~rle.packicns",
-    "class/src/lib/rle.js~RLE.html#static-method-packICNS",
-    "src/lib/rle.js~RLE.packICNS",
-    "method"
-  ],
-  [
-    "src/lib/rle.js~rle.unpackbits",
-    "class/src/lib/rle.js~RLE.html#static-method-unpackBits",
-    "src/lib/rle.js~RLE.unpackBits",
-    "method"
-  ],
-  [
     "src/lib/rle.test.js",
     "test-file/src/lib/rle.test.js.html",
     "src/lib/rle.test.js",
@@ -1210,12 +958,6 @@ window.esdocSearchIndex = [
     "file/src/lib/util.js.html",
     "src/lib/util.js",
     "file"
-  ],
-  [
-    "src/lib/util.js~util.checkimagesizes",
-    "class/src/lib/util.js~Util.html#static-method-checkImageSizes",
-    "src/lib/util.js~Util.checkImageSizes",
-    "method"
   ],
   [
     "src/lib/util.js~util.createworkdir",
@@ -1258,12 +1000,6 @@ window.esdocSearchIndex = [
     "https://nodejs.org/api/buffer.html",
     "src/typedef.js~Buffer",
     "external"
-  ],
-  [
-    "src/typedef.js~clioptions",
-    "typedef/index.html#static-typedef-CLIOptions",
-    "src/typedef.js~CLIOptions",
-    "typedef"
   ],
   [
     "src/typedef.js~icnsiconinfo",

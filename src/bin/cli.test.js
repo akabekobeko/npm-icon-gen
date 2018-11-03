@@ -6,155 +6,180 @@ import Rewire from 'rewire'
 describe('CLI', () => {
   const Module = Rewire('./cli.js')
 
-  /** @test {parseArgv} */
-  describe('parseArgv', () => {
-    const parseArgv = Module.__get__('parseArgv')
+  /** @test {parse} */
+  describe('parse', () => {
+    const parse = Module.__get__('parse')
 
-    it('parse: Empty arguments', () => {
-      const options = parseArgv([])
+    it('Empty arguments', () => {
+      const options = parse([])
       assert(options.help)
     })
 
     it('parse: -h --help', () => {
-      let options = parseArgv(['-h'])
+      let options = parse(['-h'])
       assert(options.help)
 
-      options = parseArgv(['--help'])
+      options = parse(['--help'])
       assert(options.help)
     })
 
-    it('parse: -v --version', () => {
-      let options = parseArgv(['-v'])
+    it('-v --version', () => {
+      let options = parse(['-v'])
       assert(options.version)
 
-      options = parseArgv(['--version'])
+      options = parse(['--version'])
       assert(options.version)
     })
 
-    it('parse: -m --modes', () => {
-      let options = parseArgv(['-m', 'XXX'])
-      assert(options.modes.length === 3)
-
-      options = parseArgv(['--modes', 'XXX'])
-      assert(options.modes.length === 3)
-
-      options = parseArgv(['-m', 'ico'])
-      assert(options.modes.length === 1)
-
-      options = parseArgv(['-m', 'ico,icns,favicon'])
-      assert(options.modes.length === 3)
-
-      options = parseArgv(['-m', 'ico,XXX,icns'])
-      assert(options.modes.length === 2)
-    })
-
-    it('parse: -i SVGFILE -o DESTDIR', () => {
+    it('-i SVGFILE -o DESTDIR', () => {
       const argv = ['-i', './test/data/sample.svg', '-o', './test']
-      const options = parseArgv(argv)
+      const options = parse(argv)
 
-      const actualInputPath = Path.resolve(argv[1])
-      assert(options.input === actualInputPath)
+      let expected = Path.resolve(argv[1])
+      assert(options.input === expected)
 
-      const actualOutputPath = Path.resolve(argv[3])
-      assert(options.output === actualOutputPath)
+      expected = Path.resolve(argv[3])
+      assert(options.output === expected)
 
-      assert(options.type === 'svg')
-      assert(!options.report)
+      assert(options.report === undefined)
     })
 
-    it('parse: -i PNGDIR -o DESTDIR -t png -r', () => {
-      const argv = ['-i', './test/data', '-o', './test', '-t', 'png', '-r']
+    it('-i PNGDIR -o DESTDIR -r', () => {
+      const argv = ['-i', './test/data', '-o', './test', '-r']
+      const options = parse(argv)
 
-      const options = parseArgv(argv)
+      let expected = Path.resolve(argv[1])
+      assert(options.input === expected)
 
-      const actualInputPath = Path.resolve(argv[1])
-      assert(options.input === actualInputPath)
+      expected = Path.resolve(argv[3])
+      assert(options.output === expected)
 
-      const actualOutputPath = Path.resolve(argv[3])
-      assert(options.output === actualOutputPath)
+      assert(options.report === true)
+    })
 
-      assert(options.type === 'png')
-      assert(options.report)
+    it('Default images', () => {
+      const argv = ['-i', './test/data', '-o', './test']
+      const options = parse(argv)
+
+      assert(options.ico !== undefined)
+      assert(options.icns !== undefined)
+      assert(options.favicon !== undefined)
+    })
+
+    describe('--ico', () => {
+      it('Full options', () => {
+        const argv = ['-i', './test/data', '-o', './test', '--ico', 'name=foo', 'sizes=16,32']
+        const options = parse(argv)
+        const expected = { name: 'foo', sizes: [16, 32] }
+        assert.deepStrictEqual(options.ico, expected)
+      })
+
+      it('name', () => {
+        const argv = ['-i', './test/data', '-o', './test', '--ico', 'name=foo']
+        const options = parse(argv)
+        const expected = { name: 'foo' }
+        assert.deepStrictEqual(options.ico, expected)
+      })
+
+      it('sizes', () => {
+        const argv = ['-i', './test/data', '-o', './test', '--ico', 'sizes=16,32']
+        const options = parse(argv)
+        const expected = { sizes: [16, 32] }
+        assert.deepStrictEqual(options.ico, expected)
+      })
+
+      it('Without options', () => {
+        const argv = ['-i', './test/data', '-o', './test', '--ico']
+        const options = parse(argv)
+        assert(options.ico !== undefined)
+        assert(options.icns === undefined)
+        assert(options.favicon === undefined)
+      })
+    })
+
+    describe('--icns', () => {
+      it('Full options', () => {
+        const argv = ['-i', './test/data', '-o', './test', '--icns', 'name=foo', 'sizes=16,32']
+        const options = parse(argv)
+        const expected = { name: 'foo', sizes: [16, 32] }
+        assert.deepStrictEqual(options.icns, expected)
+      })
+
+      it('name', () => {
+        const argv = ['-i', './test/data', '-o', './test', '--icns', 'name=foo']
+        const options = parse(argv)
+        const expected = { name: 'foo' }
+        assert.deepStrictEqual(options.icns, expected)
+      })
+
+      it('sizes', () => {
+        const argv = ['-i', './test/data', '-o', './test', '--icns', 'sizes=16,32']
+        const options = parse(argv)
+        const expected = { sizes: [16, 32] }
+        assert.deepStrictEqual(options.icns, expected)
+      })
+
+      it('Without options', () => {
+        const argv = ['-i', './test/data', '-o', './test', '--icns']
+        const options = parse(argv)
+        assert(options.ico === undefined)
+        assert(options.icns !== undefined)
+        assert(options.favicon === undefined)
+      })
+    })
+
+    describe('--favicon', () => {
+      it('Full options', () => {
+        const argv = ['-i', './test/data', '-o', './test', '--favicon', 'ico=24,48', 'name=icon-', 'sizes=16,32']
+        const options = parse(argv)
+        const expected = { ico: [24, 48], name: 'icon-', sizes: [16, 32] }
+        assert.deepStrictEqual(options.favicon, expected)
+      })
+
+      it('ico', () => {
+        const argv = ['-i', './test/data', '-o', './test', '--favicon', 'ico=24,48']
+        const options = parse(argv)
+        const expected = { ico: [24, 48] }
+        assert.deepStrictEqual(options.favicon, expected)
+      })
+
+      it('name', () => {
+        const argv = ['-i', './test/data', '-o', './test', '--favicon', 'name=icon-']
+        const options = parse(argv)
+        const expected = { name: 'icon-' }
+        assert.deepStrictEqual(options.favicon, expected)
+      })
+
+      it('sizes', () => {
+        const argv = ['-i', './test/data', '-o', './test', '--favicon', 'sizes=16,32']
+        const options = parse(argv)
+        const expected = { sizes: [16, 32] }
+        assert.deepStrictEqual(options.favicon, expected)
+      })
+
+      it('Without options', () => {
+        const argv = ['-i', './test/data', '-o', './test', '--favicon']
+        const options = parse(argv)
+        assert(options.ico === undefined)
+        assert(options.icns === undefined)
+        assert(options.favicon !== undefined)
+      })
     })
   })
 
-  /** @test {parseMode} */
-  describe('parseMode', () => {
-    const parseMode = Module.__get__('parseMode')
+  describe('parseArgOption', () => {
+    const parseArgOption = Module.__get__('parseArgOption')
 
-    it('Default', () => {
-      const modes = parseMode()
-      assert.deepStrictEqual(modes, ['ico', 'icns', 'favicon'])
+    it('key=value', () => {
+      const actual = parseArgOption('name=foo')
+      const expected = { name: 'name', value: 'foo' }
+      assert.deepStrictEqual(actual, expected)
     })
 
-    it('ico, icns, favicon', () => {
-      const modes = parseMode('ico,icns,favicon')
-      assert(modes.length === 3)
-    })
-
-    it('ico', () => {
-      const modes = parseMode('ico')
-      assert(modes[0] === 'ico')
-    })
-
-    it('icns', () => {
-      const modes = parseMode('icns')
-      assert(modes[0] === 'icns')
-    })
-
-    it('favicon', () => {
-      const modes = parseMode('favicon')
-      assert(modes[0] === 'favicon')
-    })
-  })
-
-  /** @test {parseNames} */
-  describe('parseNames', () => {
-    const parseNames = Module.__get__('parseNames')
-
-    it('ico & icns', () => {
-      const names = parseNames('ico=foo,icns=bar')
-      assert.deepStrictEqual({ ico: 'foo', icns: 'bar' }, names)
-    })
-
-    it('ico', () => {
-      const names = parseNames('ico=foo')
-      assert.deepStrictEqual({ ico: 'foo' }, names)
-    })
-
-    it('icns', () => {
-      const names = parseNames('icns=bar')
-      assert.deepStrictEqual({ icns: 'bar' }, names)
-    })
-
-    it('Invalid value', () => {
-      const names = parseNames()
-      assert.deepStrictEqual({}, names)
-    })
-  })
-
-  /** @test {parseSizes} */
-  describe('parseSizes', () => {
-    const parseSizes = Module.__get__('parseSizes')
-
-    it('ico & icns', () => {
-      const sizes = parseSizes('ico=[16,24,32],icns=[16,24,64]')
-      assert.deepStrictEqual({ ico: [16, 24, 32], icns: [16, 24, 64] }, sizes)
-    })
-
-    it('ico', () => {
-      const sizes = parseSizes('ico=[16,24,32]')
-      assert.deepStrictEqual({ ico: [16, 24, 32] }, sizes)
-    })
-
-    it('icns', () => {
-      const sizes = parseSizes('icns=[16,24,64]')
-      assert.deepStrictEqual({ icns: [16, 24, 64] }, sizes)
-    })
-
-    it('Invalid value', () => {
-      const sizes = parseSizes()
-      assert.deepStrictEqual({}, sizes)
+    it('value', () => {
+      const actual = parseArgOption('value')
+      const expected = 'value'
+      assert(actual === expected)
     })
   })
 })

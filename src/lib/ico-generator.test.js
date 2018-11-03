@@ -22,7 +22,7 @@ describe('ICOGenerator', () => {
       return { size: size, path: path, stat: Fs.statSync(path) }
     })
 
-    GenerateICO(targets, './examples/data', { names: { ico: 'sample' } }, new Logger()).then((result) => {
+    GenerateICO(targets, './examples/data', {}, new Logger()).then((result) => {
       assert(result)
       Fs.unlinkSync(result)
     })

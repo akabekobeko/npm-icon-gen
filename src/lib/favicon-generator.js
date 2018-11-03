@@ -4,19 +4,19 @@ import Util from './util.js'
 import GenerateICO from './ico-generator.js'
 
 /**
- * Sizes required for the FAVICON PNG files.
+ * Sizes required for the PNG files.
  * @type {Number[]}
  */
 const REQUIRED_PNG_IMAGE_SIZES = [32, 57, 72, 96, 120, 128, 144, 152, 195, 228]
 
 /**
- * Sizes required for the FAVICON ICO file.
+ * Sizes required for ICO file.
  * @type {Number[]}
  */
 const REQUIRED_ICO_IMAGE_SIZES = [16, 24, 32, 48, 64]
 
 /**
- * Sizes required for the FAVICON files.
+ * Sizes required for Favicon files.
  * @type {Number[]}
  */
 const REQUIRED_IMAGE_SIZES = REQUIRED_PNG_IMAGE_SIZES.concat(REQUIRED_ICO_IMAGE_SIZES)
@@ -24,69 +24,32 @@ const REQUIRED_IMAGE_SIZES = REQUIRED_PNG_IMAGE_SIZES.concat(REQUIRED_ICO_IMAGE_
   .sort((a, b) => a - b)
 
 /**
- * File name of the FAVICON file.
+ * File name of Favicon file.
  * @type {String}
  */
 const ICO_FILE_NAME = 'favicon'
 
 /**
- * Collection of the file name and size of the icon.
- * @type {Object[]}
- * @see https://github.com/audreyr/favicon-cheat-sheet
+ * Prefix of PNG file names.
+ * @type {String}
  */
-const PNG_FILE_INFOS = [
-  { name: 'favicon-32.png', size: 32 }, // Certain old but not too old Chrome versions mishandle ico
-  { name: 'favicon-57.png', size: 57 }, // Standard iOS home screen (iPod Touch, iPhone first generation to 3G)
-  { name: 'favicon-72.png', size: 72 }, // iPad home screen icon
-  { name: 'favicon-96.png', size: 96 }, // GoogleTV icon
-  { name: 'favicon-120.png', size: 120 }, // iPhone retina touch icon (Change for iOS 7: up = require(114x114)
-  { name: 'favicon-128.png', size: 128 }, // Chrome Web Store icon
-  { name: 'favicon-144.png', size: 144 }, // IE10 Metro tile for pinned site
-  { name: 'favicon-152.png', size: 152 }, // iPad retina touch icon (Change for iOS 7: up = require(144x144)
-  { name: 'favicon-195.png', size: 195 }, // Opera Speed Dial icon
-  { name: 'favicon-228.png', size: 228 } // Opera Coast icon
-]
-
-/**
- * Get the file names corresponding to image size.
- * @param {Number} size Size of an image.
- * @return {String} If successful name, otherwise null.
- */
-const fileNameFromSize = (size) => {
-  let name = null
-  PNG_FILE_INFOS.some((png) => {
-    if (png.size === size) {
-      name = png.name
-      return true
-    }
-
-    return false
-  })
-
-  return name
-}
+const PNG_FILE_NAME_PREFIX = 'favicon-'
 
 /**
  * Copy to image.
  * @param {ImageInfo} image Image information.
  * @param {String} dir Output destination The path of directory.
+ * @param {String} prefix Prefix of an output PNG files. Start with the alphabet, can use `-` and `_`. This option is for PNG. The name of the ICO file is always `favicon.ico`.
  * @param {Logger} logger Logger.
  * @return {Promise} Task to copy an image.
  */
-const copyImage = (image, dir, logger) => {
+const copyImage = (image, dir, prefix, logger) => {
   return new Promise((resolve, reject) => {
-    const fileName = fileNameFromSize(image.size)
-    if (!fileName) {
-      // Unknown target is ignored
-      resolve('')
-      return
-    }
-
     const reader = Fs.createReadStream(image.path).on('error', (err) => {
       reject(err)
     })
 
-    const dest = Path.join(dir, fileName)
+    const dest = Path.join(dir, `${prefix}${image.size}.png`)
     const writer = Fs.createWriteStream(dest)
       .on('error', (err) => {
         reject(err)
@@ -104,16 +67,18 @@ const copyImage = (image, dir, logger) => {
  * Generate the FAVICON PNG file from the PNG images.
  * @param {ImageInfo[]} images File information for the PNG files generation.
  * @param {String} dir Output destination the path of directory.
+ * @param {String} prefix Prefix of an output PNG files. Start with the alphabet, can use `-` and `_`. This option is for PNG. The name of the ICO file is always `favicon.ico`.
+ * @param {Number[]} sizes Size structure of PNG files to output.
  * @param {Logger} logger Logger.
  * @return {Promise} Promise object.
  */
-const generatePNG = (images, dir, logger) => {
+const generatePNG = (images, dir, prefix, sizes, logger) => {
   return new Promise((resolve, reject) => {
     logger.log('Favicon:')
 
     // PNG
-    const tasks = Util.filterImagesBySizes(images, REQUIRED_PNG_IMAGE_SIZES).map((image) => {
-      return copyImage(image, dir, logger)
+    const tasks = Util.filterImagesBySizes(images, sizes).map((image) => {
+      return copyImage(image, dir, prefix, logger)
     })
 
     Promise.all(tasks)
@@ -130,12 +95,37 @@ const generatePNG = (images, dir, logger) => {
  * Generate the FAVICON file from the PNG images.
  * @param {ImageInfo[]} images File information for the PNG files generation.
  * @param {String} dir Output destination the path of directory.
+ * @param {Number[]} sizes Structure of an image sizes for ICO.
  * @param {Logger} logger Logger.
  * @return {Promise} Promise object.
  */
-const generateICO = (images, dir, logger) => {
-  const options = { names: { ico: ICO_FILE_NAME } }
-  return GenerateICO(Util.filterImagesBySizes(images, REQUIRED_ICO_IMAGE_SIZES), dir, options, logger)
+const generateICO = (images, dir, sizes, logger) => {
+  const options = { name: ICO_FILE_NAME, sizes: sizes }
+  return GenerateICO(Util.filterImagesBySizes(images, sizes), dir, options, logger)
+}
+
+/**
+ * Check an option properties.
+ * @param {Object} options Options.
+ * @param {String} options.name Prefix of an output PNG files. Start with the alphabet, can use `-` and `_`. This option is for PNG. The name of the ICO file is always `favicon.ico`.
+ * @param {Number[]} options.sizes Size structure of PNG files to output.
+ * @param {Number[]} options.ico Structure of an image sizes for ICO.
+ * @returns {Object} Checked options.
+ */
+const checkOptions = (options) => {
+  if (options) {
+    return {
+      name: typeof options.name === 'string' ? options.name : PNG_FILE_NAME_PREFIX,
+      sizes: Array.isArray(options.sizes) ? options.sizes : REQUIRED_PNG_IMAGE_SIZES,
+      ico: Array.isArray(options.ico) ? options.ico : REQUIRED_ICO_IMAGE_SIZES
+    }
+  } else {
+    return {
+      name: PNG_FILE_NAME_PREFIX,
+      sizes: REQUIRED_PNG_IMAGE_SIZES,
+      ico: REQUIRED_ICO_IMAGE_SIZES
+    }
+  }
 }
 
 /**
@@ -150,18 +140,23 @@ export const GetRequiredFavoriteImageSizes = () => {
  * Generate a FAVICON image files (ICO and PNG) from the PNG images.
  * @param {ImageInfo[]} images File information for the PNG files generation.
  * @param {String} dir Output destination the path of directory.
+ * @param {Object} options Options.
+ * @param {String} options.name Prefix of an output PNG files. Start with the alphabet, can use `-` and `_`. This option is for PNG. The name of the ICO file is always `favicon.ico`.
+ * @param {Number[]} options.sizes Size structure of PNG files to output.
+ * @param {Number[]} options.ico Structure of an image sizes for ICO.
  * @param {Logger} logger Logger.
  * @return {Promise} Promise object.
  */
-const GenerateFavicon = (images, dir, logger) => {
+const GenerateFavicon = (images, dir, options, logger) => {
+  const opt = checkOptions(options)
   const results = []
   return Promise.resolve()
     .then(() => {
-      return generateICO(images, dir, logger)
+      return generateICO(images, dir, opt.ico, logger)
     })
     .then((icoFile) => {
       results.push(icoFile)
-      return generatePNG(images, dir, logger)
+      return generatePNG(images, dir, opt.name, opt.sizes, logger)
     })
     .then((pngFiles) => {
       return results.concat(pngFiles)

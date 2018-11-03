@@ -1,12 +1,12 @@
 {
   "name": "icon-gen",
   "description": "Generate an icon files from the SVG or PNG files",
-  "version": "1.2.3",
+  "version": "2.0.0",
   "author": "akabeko (http://akabeko.me/)",
   "license": "MIT",
   "homepage": "https://github.com/akabekobeko/npm-icon-gen#readme",
   "engines": {
-    "node": ">= 6"
+    "node": ">= 8"
   },
   "main": "dist/lib/index.js",
   "bin": "dist/bin/index.js",
@@ -26,41 +26,8 @@
   "bugs": {
     "url": "https://github.com/akabekobeko/npm-icon-gen/issues"
   },
-  "esdoc": {
-    "source": "./src",
-    "destination": "./docs",
-    "plugins": [
-      {
-        "name": "esdoc-standard-plugin",
-        "option": {
-          "test": {
-            "source": "./src"
-          }
-        }
-      }
-    ]
-  },
-  "babel": {
-    "presets": [
-      [
-        "env",
-        {
-          "targets": {
-            "node": 6
-          }
-        }
-      ]
-    ],
-    "env": {
-      "development": {
-        "presets": [
-          "power-assert"
-        ]
-      }
-    }
-  },
   "scripts": {
-    "test": "mocha --timeout 50000 --require babel-register src/**/*.test.js",
+    "test": "mocha --timeout 50000 --require @babel/register src/**/*.test.js",
     "start": "npm run watch",
     "esdoc": "esdoc",
     "eslint": "eslint ./src",
@@ -76,22 +43,23 @@
     "uuid": "^3.3.2"
   },
   "devDependencies": {
-    "babel-cli": "^6.26.0",
-    "babel-preset-env": "^1.7.0",
-    "babel-preset-power-assert": "^2.0.0",
-    "babel-register": "^6.26.0",
+    "@babel/cli": "^7.1.2",
+    "@babel/core": "^7.1.2",
+    "@babel/preset-env": "^7.1.0",
+    "@babel/register": "^7.0.0",
+    "babel-preset-power-assert": "^3.0.0",
     "esdoc": "^1.1.0",
     "esdoc-standard-plugin": "^1.0.0",
-    "eslint": "^5.3.0",
+    "eslint": "^5.8.0",
     "eslint-config-prettier": "^3.1.0",
-    "eslint-config-standard": "^11.0.0",
+    "eslint-config-standard": "^12.0.0",
     "eslint-plugin-import": "^2.14.0",
-    "eslint-plugin-node": "^7.0.1",
+    "eslint-plugin-node": "^8.0.0",
     "eslint-plugin-prettier": "^3.0.0",
-    "eslint-plugin-promise": "^3.8.0",
-    "eslint-plugin-standard": "^3.1.0",
+    "eslint-plugin-promise": "^4.0.1",
+    "eslint-plugin-standard": "^4.0.0",
     "mocha": "^5.2.0",
-    "power-assert": "^1.6.0",
+    "power-assert": "^1.6.1",
     "prettier": "^1.14.3",
     "rewire": "^4.0.1"
   }

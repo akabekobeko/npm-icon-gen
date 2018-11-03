@@ -69,25 +69,21 @@ const generatePNG = (svg, size, dir, logger) => {
  */
 export const GetRequiredPNGImageSizes = (options = {}) => {
   let sizes = []
-  if (options.modes && 0 < options.modes.length) {
-    options.modes.forEach((mode) => {
-      switch (mode) {
-        case 'icns':
-          sizes = sizes.concat(filterSizes(GetRequiredICNSImageSizes(), options.sizes && options.sizes.icns))
-          break
+  if (options.icns) {
+    sizes = sizes.concat(filterSizes(GetRequiredICNSImageSizes(), options.icns.sizes))
+  }
 
-        case 'ico':
-          sizes = sizes.concat(filterSizes(GetRequiredICOImageSizes(), options.sizes && options.sizes.ico))
-          break
+  if (options.ico) {
+    sizes = sizes.concat(filterSizes(GetRequiredICOImageSizes(), options.ico.sizes))
+  }
 
-        case 'favicon':
-          sizes = sizes.concat(GetRequiredFavoriteImageSizes())
-          break
-
-        default:
-          break
-      }
-    })
+  if (options.favicon) {
+    if (options.favicon.sizes) {
+      // Favicon's PNG generates the specified size as it is
+      sizes = sizes.concat(options.favicon.sizes)
+    } else {
+      sizes = sizes.concat(GetRequiredFavoriteImageSizes())
+    }
   }
 
   // 'all' mode

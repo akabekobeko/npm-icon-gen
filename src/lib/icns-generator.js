@@ -25,6 +25,12 @@ const HEADER_SIZE = 8
 const FILE_HEADER_ID = 'icns'
 
 /**
+ * Default file name.
+ * @type {String}
+ */
+const DEFAULT_FILE_NAME = 'app'
+
+/**
  * ICNS file extension.
  * @type {String}
  */
@@ -227,6 +233,27 @@ const createIcon = (images, dest) => {
 }
 
 /**
+ * Check an option properties.
+ * @param {Object} options Output destination the path of directory.
+ * @param {String} options.name Name of an output file.
+ * @param {Number[]} options.sizes Structure of an image sizes.
+ * @returns {Object} Checked options.
+ */
+const checkOptions = (options) => {
+  if (options) {
+    return {
+      name: typeof options.name === 'string' && options.name !== '' ? options.name : DEFAULT_FILE_NAME,
+      sizes: Array.isArray(options.sizes) ? options.sizes : REQUIRED_IMAGE_SIZES
+    }
+  } else {
+    return {
+      name: DEFAULT_FILE_NAME,
+      sizes: REQUIRED_IMAGE_SIZES
+    }
+  }
+}
+
+/**
  * Unpack an icon block files from ICNS file (For debug).
  * @param {String} src Path of the ICNS file.
  * @param {String} dest Path of directory to output icon block files.
@@ -277,8 +304,9 @@ const GenerateICNS = (images, dir, options, logger) => {
   return new Promise((resolve, reject) => {
     logger.log('ICNS:')
 
-    const dest = Path.join(dir, options.names.icns + FILE_EXTENSION)
-    const targets = Util.filterImagesBySizes(images, Util.checkImageSizes(REQUIRED_IMAGE_SIZES, options, 'icns'))
+    const opt = checkOptions(options)
+    const dest = Path.join(dir, opt.name + FILE_EXTENSION)
+    const targets = Util.filterImagesBySizes(images, opt.sizes)
 
     if (createIcon(targets, dest)) {
       logger.log('  Create: ' + dest)

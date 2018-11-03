@@ -16,7 +16,7 @@ describe('ICNSGenerator', () => {
       return { size: size, path: path }
     })
 
-    return GenerateICNS(images, './examples/data', { names: { icns: 'sample' } }, new Logger()).then((result) => {
+    return GenerateICNS(images, './examples/data', {}, new Logger()).then((result) => {
       assert(result)
       Fs.unlinkSync(result)
     })
