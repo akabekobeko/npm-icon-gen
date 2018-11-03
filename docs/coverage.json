@@ -1,44 +1,35 @@
 {
-  "coverage": "92.04%",
-  "expectCount": 88,
-  "actualCount": 81,
+  "coverage": "94.87%",
+  "expectCount": 78,
+  "actualCount": 74,
   "files": {
     "src/bin/cli.js": {
-      "expectCount": 13,
-      "actualCount": 9,
+      "expectCount": 9,
+      "actualCount": 7,
       "undocumentLines": [
-        23,
-        32,
-        43,
-        96
+        61,
+        120
       ]
     },
-    "src/bin/index.js": {
-      "expectCount": 2,
-      "actualCount": 2,
-      "undocumentLines": []
-    },
     "src/lib/favicon-generator.js": {
-      "expectCount": 12,
-      "actualCount": 12,
+      "expectCount": 11,
+      "actualCount": 11,
       "undocumentLines": []
     },
     "src/lib/icns-generator.js": {
-      "expectCount": 16,
-      "actualCount": 16,
+      "expectCount": 17,
+      "actualCount": 17,
       "undocumentLines": []
     },
     "src/lib/ico-generator.js": {
-      "expectCount": 13,
-      "actualCount": 13,
+      "expectCount": 14,
+      "actualCount": 14,
       "undocumentLines": []
     },
     "src/lib/icon-generator.js": {
-      "expectCount": 6,
-      "actualCount": 5,
-      "undocumentLines": [
-        103
-      ]
+      "expectCount": 4,
+      "actualCount": 4,
+      "undocumentLines": []
     },
     "src/lib/index.js": {
       "expectCount": 1,
@@ -53,18 +44,18 @@
       ]
     },
     "src/lib/png-generator.js": {
-      "expectCount": 5,
-      "actualCount": 5,
+      "expectCount": 4,
+      "actualCount": 4,
       "undocumentLines": []
     },
     "src/lib/rle.js": {
-      "expectCount": 9,
-      "actualCount": 9,
+      "expectCount": 8,
+      "actualCount": 8,
       "undocumentLines": []
     },
     "src/lib/util.js": {
-      "expectCount": 6,
-      "actualCount": 5,
+      "expectCount": 5,
+      "actualCount": 4,
       "undocumentLines": [
         6
       ]
