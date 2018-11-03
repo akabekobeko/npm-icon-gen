@@ -49,15 +49,3 @@
  *
  * @see https://en.wikipedia.org/wiki/ICO_%28file_format%29
  */
-
-/**
- * Commad line options.
- *
- * @typedef {Object} CLIOptions
- * @property {Boolean} help    Mode to display the help text.
- * @property {Boolean} version Mode to display the version number.
- * @property {String}  input   Path of the SVG file or PNG file directory.
- * @property {String}  output  Path of the output directory.
- * @property {String}  type    Type of input file. 'svg' is the SVG file, 'png' is the PNG directory. Default is 'svg'.
- * @property {Boolean} report  Display the process reports. Default is disable.
- */

@@ -10,7 +10,12 @@ import { PNG } from 'pngjs-nozlib'
 const REQUIRED_IMAGE_SIZES = [16, 24, 32, 48, 64, 128, 256]
 
 /**
- * ICNO file extension.
+ * Default name of ICO file.
+ */
+const DEFAULT_FILE_NAME = 'app'
+
+/**
+ * File extension of ICO file.
  * @type {String}
  */
 const FILE_EXTENSION = '.ico'
@@ -146,6 +151,27 @@ const createFileHeader = (count) => {
 }
 
 /**
+ * Check an option properties.
+ * @param {Object} options Output destination the path of directory.
+ * @param {String} options.name Name of an output file.
+ * @param {Number[]} options.sizes Structure of an image sizes.
+ * @returns {Object} Checked options.
+ */
+const checkOptions = (options) => {
+  if (options) {
+    return {
+      name: typeof options.name === 'string' && options.name !== '' ? options.name : DEFAULT_FILE_NAME,
+      sizes: Array.isArray(options.sizes) ? options.sizes : REQUIRED_IMAGE_SIZES
+    }
+  } else {
+    return {
+      name: DEFAULT_FILE_NAME,
+      sizes: REQUIRED_IMAGE_SIZES
+    }
+  }
+}
+
+/**
  * Get the size of the required PNG.
  * @return {Number[]} Sizes.
  */
@@ -158,6 +184,8 @@ export const GetRequiredICOImageSizes = () => {
  * @param {ImageInfo[]} images File informations..
  * @param {String} dir Output destination the path of directory.
  * @param {Object} options Options.
+ * @param {String} options.name Name of an output file.
+ * @param {Number} options.sizes Structure of an image sizes.
  * @param {Logger} logger Logger.
  * @return {Promise} Promise object.
  */
@@ -165,8 +193,9 @@ const GenerateICO = (images, dir, options, logger) => {
   return new Promise((resolve) => {
     logger.log('ICO:')
 
-    const dest = Path.join(dir, options.names.ico + FILE_EXTENSION)
-    const targets = Util.filterImagesBySizes(images, Util.checkImageSizes(REQUIRED_IMAGE_SIZES, options, 'ico'))
+    const opt = checkOptions(options)
+    const dest = Path.join(dir, opt.name + FILE_EXTENSION)
+    const targets = Util.filterImagesBySizes(images, opt.sizes)
     const stream = Fs.createWriteStream(dest)
     stream.write(createFileHeader(targets.length), 'binary')
 

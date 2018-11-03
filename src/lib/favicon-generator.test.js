@@ -10,14 +10,14 @@ import Rewire from 'rewire'
 describe('FaviconGenerator', () => {
   const Module = Rewire('./favicon-generator.js')
 
-  /** @test {getRequiredFavoriteImageSizes} */
-  it('getRequiredFavoriteImageSizes', () => {
+  /** @test {GetRequiredFavoriteImageSizes} */
+  it('GetRequiredFavoriteImageSizes', () => {
     const images = GetRequiredFavoriteImageSizes().map((size) => {
       const path = Path.join('./examples/data', size + '.png')
       return { size: size, path: path }
     })
 
-    return GenerateFavicon(images, './examples/data', new Logger()).then((results) => {
+    return GenerateFavicon(images, './examples/data', {}, new Logger()).then((results) => {
       assert(results.length === 11)
       Util.deleteFiles(results)
     })
@@ -25,13 +25,14 @@ describe('FaviconGenerator', () => {
 
   /** @test {generateICO} */
   it('generateICO', () => {
+    const sizes = Module.__get__('REQUIRED_ICO_IMAGE_SIZES')
     const generateICO = Module.__get__('generateICO')
-    const images = [16, 24, 32, 48, 64].map((size) => {
+    const images = sizes.map((size) => {
       const path = Path.join('./examples/data', size + '.png')
       return { size: size, path: path }
     })
 
-    return generateICO(images, './examples/data', new Logger()).then((result) => {
+    return generateICO(images, './examples/data', sizes, new Logger()).then((result) => {
       assert(Path.basename(result) === 'favicon.ico')
       Fs.unlinkSync(result)
     })
@@ -45,7 +46,8 @@ describe('FaviconGenerator', () => {
       return { size: size, path: path }
     })
 
-    return generatePNG(images, './examples/data', new Logger()).then((results) => {
+    const sizes = Module.__get__('REQUIRED_PNG_IMAGE_SIZES')
+    return generatePNG(images, './examples/data', 'favicon-', sizes, new Logger()).then((results) => {
       assert(results.length === 10)
       Util.deleteFiles(results)
     })

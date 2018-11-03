@@ -7,21 +7,7 @@ import GenerateICO from './ico-generator.js'
 import GenerateICNS from './icns-generator.js'
 import GenerateFavicon from './favicon-generator.js'
 import Util from './util.js'
-
-const getRequiredImageSizes = (options) => {
-  if (!options.sizes) {
-    return GetRequiredPNGImageSizes(options)
-  }
-
-  let imageSizes = []
-  options.modes.forEach((mode) => {
-    if (options.sizes[mode]) {
-      imageSizes = imageSizes.concat(options.sizes[mode])
-    }
-  })
-
-  return 0 < imageSizes.length ? imageSizes : GetRequiredPNGImageSizes(options)
-}
+import Logger from './logger.js'
 
 /**
  * Generate an icon = require(the image file infromations.
@@ -42,24 +28,17 @@ const generateIcon = (images, dest, options, logger, cb) => {
 
   // Select output mode
   const tasks = []
-  options.modes.forEach((mode) => {
-    switch (mode) {
-      case 'icns':
-        tasks.push(GenerateICNS(images, dir, options, logger))
-        break
+  if (options.icns) {
+    tasks.push(GenerateICNS(images, dir, options.icns, logger))
+  }
 
-      case 'ico':
-        tasks.push(GenerateICO(images, dir, options, logger))
-        break
+  if (options.ico) {
+    tasks.push(GenerateICO(images, dir, options.ico, logger))
+  }
 
-      case 'favicon':
-        tasks.push(GenerateFavicon(images, dir, logger))
-        break
-
-      default:
-        break
-    }
-  })
+  if (options.favicon) {
+    tasks.push(GenerateFavicon(images, dir, options.favicon, logger))
+  }
 
   Promise.all(tasks)
     .then((results) => {
@@ -86,7 +65,7 @@ const generateIconFromPNG = (src, dir, options, logger) => {
     logger.log('  src: ' + pngDirPath)
     logger.log('  dir: ' + destDirPath)
 
-    const images = getRequiredImageSizes(options)
+    const images = GetRequiredPNGImageSizes(options)
       .map((size) => {
         return Path.join(pngDirPath, size + '.png')
       })
@@ -161,41 +140,22 @@ const generateIconFromSVG = (src, dir, options, logger) => {
 }
 
 /**
- * Get the size of the required PNG.
- * @param {CLIOption} options Command line options.
- * @return {Number[]} Sizes.
- */
-export const GetRequiredIconImageSizes = (options) => {
-  if (!options.sizes) {
-    return GetRequiredPNGImageSizes(options)
-  }
-
-  let imageSizes = []
-  options.modes.forEach((mode) => {
-    if (options.sizes[mode]) {
-      imageSizes = imageSizes.concat(options.sizes[mode])
-    }
-  })
-
-  return 0 < imageSizes.length ? imageSizes : GetRequiredPNGImageSizes(options)
-}
-
-/**
  * Generate an icon from SVG or PNG file.
- * @param {String} type Mode of generation, `svg` or `png`.
  * @param {String} src Path of the SVG file.
- * @param {String} dir Path of the output files directory.
- * @param {CLIOption} options Options from command line.
- * @param {Logger} logger  Logger.
+ * @param {String} dest Path of the output files directory.
+ * @param {Object} options Options.
  * @return {Promise} Promise object.
  */
-const GenerateIcon = (type, src, dir, options, logger) => {
-  switch (type) {
-    case 'png':
-      return generateIconFromPNG(src, dir, options, logger)
+const GenerateIcon = (src, dest, options) => {
+  if (!Fs.existsSync(src)) {
+    return Promise.reject(new Error('Input file or directory is not found.'))
+  }
 
-    default:
-      return generateIconFromSVG(src, dir, options, logger)
+  const logger = new Logger(options && options.report)
+  if (Fs.statSync(src).isDirectory()) {
+    return generateIconFromPNG(src, dest, options, logger)
+  } else {
+    return generateIconFromSVG(src, dest, options, logger)
   }
 }
 

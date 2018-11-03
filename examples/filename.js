@@ -1,9 +1,14 @@
 const icongen = require('icon-gen')
 
 const options = {
-  names: {
-    ico: 'foo',
-    icns: 'bar'
+  ico: {
+    name: 'foo'
+  },
+  icns: {
+    name: 'bar'
+  },
+  favicon: {
+    name: 'icon-'
   },
   report: true
 }
