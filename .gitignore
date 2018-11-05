@@ -35,5 +35,7 @@ node_modules
 
 dist/
 docs/ast/
-icons/
+examples/icons/*.icns
+examples/icons/*.ico
+examples/icons/*.png
 package-lock.json
