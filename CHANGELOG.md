@@ -1,5 +1,18 @@
 # ChangeLog
 
+## v2.0.0
+
+Please be sure to read the `README` because there are many changes.
+
+### Breaking Changes
+
+* Drop Node 6 [#101](https://github.com/akabekobeko/npm-icon-gen/issues/101)
+* Change CLI/Node options [#98](https://github.com/akabekobeko/npm-icon-gen/issues/98)
+
+## Fetures
+
+* Support size specification of PNG (in Favicon) [#97](https://github.com/akabekobeko/npm-icon-gen/issues/97)
+
 ## v1.2.3
 
 ### Bug Fixes
