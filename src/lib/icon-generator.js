@@ -140,22 +140,52 @@ const generateIconFromSVG = (src, dir, options, logger) => {
 }
 
 /**
+ * Check an option properties.
+ * @param {Object} options Output destination the path of directory.
+ * @returns {Object} Checked options.
+ */
+const checkOptions = (options) => {
+  let opt = options
+  if (opt) {
+    if (!opt.ico && !opt.icns && !opt.favicon) {
+      opt.icns = {}
+      opt.ico = {}
+      opt.favicon = {}
+    }
+  } else {
+    opt = {
+      icns: {},
+      ico: {},
+      favicon: {}
+    }
+  }
+
+  return opt
+}
+
+/**
  * Generate an icon from SVG or PNG file.
  * @param {String} src Path of the SVG file.
  * @param {String} dest Path of the output files directory.
  * @param {Object} options Options.
  * @return {Promise} Promise object.
  */
-const GenerateIcon = (src, dest, options) => {
+const GenerateIcon = (src, dest, options = {}) => {
   if (!Fs.existsSync(src)) {
     return Promise.reject(new Error('Input file or directory is not found.'))
   }
 
+  if (!Fs.existsSync(dest)) {
+    return Promise.reject(new Error('Output directory is not found.'))
+  }
+
   const logger = new Logger(options && options.report)
+  const opt = checkOptions(options)
+
   if (Fs.statSync(src).isDirectory()) {
-    return generateIconFromPNG(src, dest, options, logger)
+    return generateIconFromPNG(src, dest, opt, logger)
   } else {
-    return generateIconFromSVG(src, dest, options, logger)
+    return generateIconFromSVG(src, dest, opt, logger)
   }
 }
 
