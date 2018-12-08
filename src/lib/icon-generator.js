@@ -10,7 +10,7 @@ import Util from './util.js'
 import Logger from './logger.js'
 
 /**
- * Generate an icon = require(the image file infromations.
+ * Generate an icon = require(the image file informations.
  * @param {ImageInfo[]} images Image file informations.
  * @param {String} dest Destination directory path.
  * @param {Object} options Options.
@@ -61,7 +61,7 @@ const generateIconFromPNG = (src, dir, options, logger) => {
   return new Promise((resolve, reject) => {
     const pngDirPath = Path.resolve(src)
     const destDirPath = Path.resolve(dir)
-    logger.log('Icon generetor from PNG:')
+    logger.log('Icon generator from PNG:')
     logger.log('  src: ' + pngDirPath)
     logger.log('  dir: ' + destDirPath)
 

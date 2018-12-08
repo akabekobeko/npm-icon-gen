@@ -422,7 +422,7 @@ window.esdocSearchIndex = [
   [
     "generatepng generatepng,generatepng",
     "test-file/src/lib/png-generator.test.js.html#lineNumber62",
-    "PNGGenerator generetePNG",
+    "PNGGenerator generatePNG",
     "test"
   ],
   [
