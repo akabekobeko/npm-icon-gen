@@ -59,7 +59,7 @@ describe('PNGGenerator', () => {
   })
 
   /** @test {generatePNG} */
-  it('generetePNG', () => {
+  it('generatePNG', () => {
     const generatePNG = Module.__get__('generatePNG')
     const svg = Fs.readFileSync('./examples/data/sample.svg')
     assert(svg)

@@ -7,7 +7,7 @@
  */
 
 /**
- * Image file infromations.
+ * Image file informations.
  *
  * @typedef {Object} ImageInfo
  * @property {Number} size Image size (width/height).
