@@ -1,12 +1,12 @@
 {
   "name": "icon-gen",
   "description": "Generate an icon files from the SVG or PNG files",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "author": "akabeko (http://akabeko.me/)",
   "license": "MIT",
   "homepage": "https://github.com/akabekobeko/npm-icon-gen#readme",
   "engines": {
-    "node": ">= 8"
+    "node": ">= 10"
   },
   "main": "dist/lib/index.js",
   "bin": "dist/bin/index.js",
@@ -27,40 +27,31 @@
     "url": "https://github.com/akabekobeko/npm-icon-gen/issues"
   },
   "scripts": {
-    "test": "mocha --timeout 50000 --require @babel/register src/**/*.test.js",
+    "test": "jest",
     "start": "npm run watch",
-    "esdoc": "esdoc",
-    "eslint": "eslint ./src",
-    "build": "babel src --out-dir dist --ignore *.test.js,typedef.js",
-    "watch": "babel src --out-dir dist --ignore *.test.js,typedef.js --watch",
+    "tsc": "tsc --noEmit",
+    "build": "tsc",
+    "watch": "tsc -w",
     "prepare": "npm run build"
   },
   "dependencies": {
-    "del": "^3.0.0",
+    "commander": "^2.20.0",
+    "del": "^5.0.0",
     "mkdirp": "^0.5.1",
-    "pngjs-nozlib": "^1.0.0",
+    "pngjs": "^3.4.0",
     "svg2png": "4.1.1",
     "uuid": "^3.3.2"
   },
   "devDependencies": {
-    "@babel/cli": "^7.1.2",
-    "@babel/core": "^7.1.2",
-    "@babel/preset-env": "^7.1.0",
-    "@babel/register": "^7.0.0",
-    "babel-preset-power-assert": "^3.0.0",
-    "esdoc": "^1.1.0",
-    "esdoc-standard-plugin": "^1.0.0",
-    "eslint": "^5.8.0",
-    "eslint-config-prettier": "^3.1.0",
-    "eslint-config-standard": "^12.0.0",
-    "eslint-plugin-import": "^2.14.0",
-    "eslint-plugin-node": "^8.0.0",
-    "eslint-plugin-prettier": "^3.0.0",
-    "eslint-plugin-promise": "^4.0.1",
-    "eslint-plugin-standard": "^4.0.0",
-    "mocha": "^5.2.0",
-    "power-assert": "^1.6.1",
-    "prettier": "^1.14.3",
-    "rewire": "^4.0.1"
+    "@types/cross-spawn": "^6.0.0",
+    "@types/jest": "^24.0.15",
+    "@types/mkdirp": "^0.5.2",
+    "@types/node": "^12.0.12",
+    "@types/pngjs": "^3.3.2",
+    "@types/svg2png": "^4.1.0",
+    "@types/uuid": "^3.4.5",
+    "jest": "^24.8.0",
+    "ts-jest": "^24.0.2",
+    "typescript": "^3.5.2"
   }
 }

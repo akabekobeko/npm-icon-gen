@@ -33,9 +33,13 @@ node_modules
 # Optional REPL history
 .node_repl_history
 
+# Project
 dist/
-docs/ast/
+.*
 examples/icons/*.icns
 examples/icons/*.ico
 examples/icons/*.png
 package-lock.json
+!.gitignore
+!.prettierrc
+!.travis.yml
