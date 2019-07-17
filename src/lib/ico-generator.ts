@@ -1,7 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 import { PNG } from 'pngjs'
-import { filterImagesBySizes } from './util'
+import { filterImagesBySizes } from './get-required-image-sizes'
 import { ImageInfo } from './png-generator'
 import Logger from './logger'
 

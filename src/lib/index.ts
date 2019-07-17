@@ -1,12 +1,13 @@
 import fs from 'fs'
 import path from 'path'
-import Del from 'del'
+import del from 'del'
+import os from 'os'
+import uuid from 'uuid'
 import mkdirP from 'mkdirp'
 import generatePNG, { ImageInfo } from './png-generator'
 import generateICO from './ico-generator'
 import generateICNS from './icns-generator'
 import generateFavicon from './favicon-generator'
-import { createWorkDir } from './util'
 import Logger from './logger'
 import getRequiredPNGImageSizes from './get-required-image-sizes'
 
@@ -38,16 +39,17 @@ export type ICONOptions = {
     icoSizes?: number[]
   }
 
+  /** `true` to display the processing status of the tool to `stdout`. */
   report: boolean
 }
 
 /**
- * Generate an icon = require(the image file informations.
+ * Generate an icon files.
  * @param images Image file informations.
  * @param dest Destination directory path.
  * @param options Options.
  * @param logger Logger.
- * @return Path of output files.
+ * @return Path of generated files.
  */
 const generate = async (
   images: ImageInfo[],
@@ -146,8 +148,9 @@ const generateIconFromSVG = async (
   logger.log('  src: ' + svgFilePath)
   logger.log('  dir: ' + destDirPath)
 
-  const workDir = createWorkDir()
-  if (!workDir) {
+  const workDir = path.join(os.tmpdir(), uuid.v4())
+  fs.mkdirSync(workDir)
+  if (!fs.existsSync(workDir)) {
     throw new Error('Failed to create the working directory.')
   }
 
@@ -159,10 +162,10 @@ const generateIconFromSVG = async (
       logger
     )
     const results = await generate(images, destDirPath, options, logger)
-    Del.sync([workDir], { force: true })
+    del.sync([workDir], { force: true })
     return results
   } catch (err) {
-    Del.sync([workDir], { force: true })
+    del.sync([workDir], { force: true })
     throw err
   }
 }

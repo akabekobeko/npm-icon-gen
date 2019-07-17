@@ -1,6 +1,6 @@
 import assert from 'assert'
 import path from 'path'
-import { deleteFiles } from './util'
+import fs from 'fs'
 import Logger from './logger'
 import generateFavicon, {
   REQUIRED_IMAGE_SIZES,
@@ -8,7 +8,24 @@ import generateFavicon, {
   generatePNG
 } from './favicon-generator'
 
-describe('FaviconGenerator', () => {
+/**
+ * Delete a files.
+ * @param paths File paths.
+ */
+const deleteFiles = (paths: string[]) => {
+  paths.forEach((path) => {
+    try {
+      const stat = fs.statSync(path)
+      if (stat && stat.isFile()) {
+        fs.unlinkSync(path)
+      }
+    } catch (err) {
+      console.error(err)
+    }
+  })
+}
+
+describe('Favicon', () => {
   it('generateFavicon', () => {
     const images = REQUIRED_IMAGE_SIZES.map((size) => {
       const filePath = path.join('./examples/data', size + '.png')

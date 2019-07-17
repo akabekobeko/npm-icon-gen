@@ -4,8 +4,8 @@ import path from 'path'
 import Logger from './logger'
 import generateICO, { REQUIRED_IMAGE_SIZES } from './ico-generator'
 
-describe('ICOGenerator', () => {
-  it('generate', () => {
+describe('ICO', () => {
+  it('generateICO', () => {
     const targets = REQUIRED_IMAGE_SIZES.map((size) => {
       const filePath = path.join('./examples/data', size + '.png')
       return { size, filePath }

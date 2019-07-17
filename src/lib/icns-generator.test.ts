@@ -4,7 +4,7 @@ import path from 'path'
 import Logger from './logger'
 import generateICNS, { REQUIRED_IMAGE_SIZES } from './icns-generator'
 
-describe('ICNSGenerator', () => {
+describe('ICNS', () => {
   it('generateICNS', () => {
     const images = REQUIRED_IMAGE_SIZES.map((size) => {
       const filePath = path.join('./examples/data', size + '.png')

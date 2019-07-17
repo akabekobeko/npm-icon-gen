@@ -1,6 +1,6 @@
 import fs from 'fs'
 import path from 'path'
-import { filterImagesBySizes } from './util'
+import { filterImagesBySizes } from './get-required-image-sizes'
 import generateICO from './ico-generator'
 import { ImageInfo } from './png-generator'
 import Logger from './logger'

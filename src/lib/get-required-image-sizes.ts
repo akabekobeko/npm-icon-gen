@@ -2,6 +2,7 @@ import { REQUIRED_IMAGE_SIZES as REQUIRED_FAV_SIZES } from './favicon-generator'
 import { REQUIRED_IMAGE_SIZES as REQUIRED_ICNS_SIZES } from './icns-generator'
 import { REQUIRED_IMAGE_SIZES as REQUIRED_ICO_SIZES } from './ico-generator'
 import { ICONOptions } from './index.js'
+import { ImageInfo } from './png-generator'
 
 /**
  * Filter the sizes.
@@ -26,6 +27,24 @@ export const filterSizes = (
 
     return false
   })
+}
+
+/**
+ * Filter by size to the specified image informations.
+ * @param images Image file informations.
+ * @param sizes  Required sizes.
+ * @return Filtered image informations.
+ */
+export const filterImagesBySizes = (images: ImageInfo[], sizes: number[]) => {
+  return images
+    .filter((image) => {
+      return sizes.some((size) => {
+        return image.size === size
+      })
+    })
+    .sort((a, b) => {
+      return a.size - b.size
+    })
 }
 
 /**

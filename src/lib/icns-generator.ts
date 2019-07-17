@@ -1,7 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 import util from 'util'
-import { filterImagesBySizes } from './util'
+import { filterImagesBySizes } from './get-required-image-sizes'
 import { PNG } from 'pngjs'
 import { packICNS } from './rle'
 import { ImageInfo } from './png-generator'
