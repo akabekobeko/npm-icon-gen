@@ -2,7 +2,7 @@ import assert from 'assert'
 import fs from 'fs'
 import path from 'path'
 import Logger from './logger'
-import generateICO, { REQUIRED_IMAGE_SIZES } from './ico-generator'
+import generateICO, { REQUIRED_IMAGE_SIZES } from './ico'
 
 describe('ICO', () => {
   it('generateICO', () => {

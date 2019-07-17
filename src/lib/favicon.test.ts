@@ -6,7 +6,7 @@ import generateFavicon, {
   REQUIRED_IMAGE_SIZES,
   REQUIRED_PNG_SIZES,
   generatePNG
-} from './favicon-generator'
+} from './favicon'
 
 /**
  * Delete a files.

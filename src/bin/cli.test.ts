@@ -1,7 +1,7 @@
 import assert from 'assert'
 import { parseArgv } from './cli'
 
-describe('cli', () => {
+describe('CLI', () => {
   describe('parseArgv', () => {
     describe('input', () => {
       it('--input', () => {

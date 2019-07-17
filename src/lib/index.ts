@@ -4,12 +4,12 @@ import del from 'del'
 import os from 'os'
 import uuid from 'uuid'
 import mkdirP from 'mkdirp'
-import generatePNG, { ImageInfo } from './png-generator'
-import generateICO from './ico-generator'
-import generateICNS from './icns-generator'
-import generateFavicon from './favicon-generator'
+import generatePNG, { ImageInfo } from './png'
+import generateICO from './ico'
+import generateICNS from './icns'
+import generateFavicon from './favicon'
 import Logger from './logger'
-import getRequiredPNGImageSizes from './get-required-image-sizes'
+import getRequiredPNGImageSizes from './image-size'
 
 /** Options of icon generation. */
 export type ICONOptions = {

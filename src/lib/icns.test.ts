@@ -2,7 +2,7 @@ import assert from 'assert'
 import fs from 'fs'
 import path from 'path'
 import Logger from './logger'
-import generateICNS, { REQUIRED_IMAGE_SIZES } from './icns-generator'
+import generateICNS, { REQUIRED_IMAGE_SIZES } from './icns'
 
 describe('ICNS', () => {
   it('generateICNS', () => {

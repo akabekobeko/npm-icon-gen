@@ -5,7 +5,7 @@ import path from 'path'
 import fs from 'fs'
 import del from 'del'
 import Logger from './logger'
-import generatePNG from './png-generator'
+import generatePNG from './png'
 
 describe('PNG', () => {
   describe('generatePNG', () => {

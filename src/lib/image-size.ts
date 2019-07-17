@@ -1,8 +1,8 @@
-import { REQUIRED_IMAGE_SIZES as REQUIRED_FAV_SIZES } from './favicon-generator'
-import { REQUIRED_IMAGE_SIZES as REQUIRED_ICNS_SIZES } from './icns-generator'
-import { REQUIRED_IMAGE_SIZES as REQUIRED_ICO_SIZES } from './ico-generator'
+import { REQUIRED_IMAGE_SIZES as REQUIRED_FAV_SIZES } from './favicon'
+import { REQUIRED_IMAGE_SIZES as REQUIRED_ICNS_SIZES } from './icns'
+import { REQUIRED_IMAGE_SIZES as REQUIRED_ICO_SIZES } from './ico'
 import { ICONOptions } from './index.js'
-import { ImageInfo } from './png-generator'
+import { ImageInfo } from './png'
 
 /**
  * Filter the sizes.

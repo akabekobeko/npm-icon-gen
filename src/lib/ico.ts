@@ -1,8 +1,8 @@
 import fs from 'fs'
 import path from 'path'
 import { PNG } from 'pngjs'
-import { filterImagesBySizes } from './get-required-image-sizes'
-import { ImageInfo } from './png-generator'
+import { filterImagesBySizes } from './image-size'
+import { ImageInfo } from './png'
 import Logger from './logger'
 
 /** Options of `generateICO`. */
