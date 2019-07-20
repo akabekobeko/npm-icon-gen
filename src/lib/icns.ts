@@ -1,10 +1,9 @@
 import fs from 'fs'
 import path from 'path'
 import util from 'util'
-import { filterImagesBySizes } from './image-size'
 import { PNG } from 'pngjs'
 import { packICNS } from './rle'
-import { ImageInfo } from './png'
+import { ImageInfo, filterImagesBySizes } from './png'
 import Logger from './logger'
 
 const readFileAsync = util.promisify(fs.readFile)

@@ -13,6 +13,24 @@ export type ImageInfo = {
 }
 
 /**
+ * Filter by size to the specified image informations.
+ * @param images Image file informations.
+ * @param sizes  Required sizes.
+ * @return Filtered image informations.
+ */
+export const filterImagesBySizes = (images: ImageInfo[], sizes: number[]) => {
+  return images
+    .filter((image) => {
+      return sizes.some((size) => {
+        return image.size === size
+      })
+    })
+    .sort((a, b) => {
+      return a.size - b.size
+    })
+}
+
+/**
  * Generate the PNG file.
  * @param svg SVG data that has been parse by svg2png.
  * @param size The size (width/height) of the image.
@@ -46,7 +64,7 @@ const generate = async (
  * @param sizes Required PNG image size.
  * @param logger Logger.
  */
-const generatePNG = async (
+export const generatePNG = async (
   src: string,
   dir: string,
   sizes: number[],

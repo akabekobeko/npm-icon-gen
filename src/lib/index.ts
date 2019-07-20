@@ -5,11 +5,10 @@ import os from 'os'
 import uuid from 'uuid'
 import mkdirP from 'mkdirp'
 import generatePNG, { ImageInfo } from './png'
-import generateICO from './ico'
-import generateICNS from './icns'
-import generateFavicon from './favicon'
+import generateICO, { REQUIRED_IMAGE_SIZES as ICO_SIZES } from './ico'
+import generateICNS, { REQUIRED_IMAGE_SIZES as ICNS_SIZES } from './icns'
+import generateFavicon, { REQUIRED_IMAGE_SIZES as FAV_SIZES } from './favicon'
 import Logger from './logger'
-import getRequiredPNGImageSizes from './image-size'
 
 /** Options of icon generation. */
 export type ICONOptions = {
@@ -41,6 +40,63 @@ export type ICONOptions = {
 
   /** `true` to display the processing status of the tool to `stdout`. */
   report: boolean
+}
+
+/**
+ * Filter the sizes.
+ * @param sizes Original sizes.
+ * @param filterSizes Filter sizes.
+ * @return ilterd sizes.
+ */
+const filterSizes = (sizes: number[] = [], filterSizes: number[] = []) => {
+  if (filterSizes.length === 0) {
+    return sizes
+  }
+
+  return sizes.filter((size) => {
+    for (let filterSize of filterSizes) {
+      if (size === filterSize) {
+        return true
+      }
+    }
+
+    return false
+  })
+}
+
+/**
+ * Gets the size of the images needed to create an icon.
+ * @param options Options from command line.
+ * @return The sizes of the image.
+ */
+const getRequiredPNGImageSizes = (options: ICONOptions) => {
+  let sizes: number[] = []
+  if (options.icns) {
+    sizes = sizes.concat(filterSizes(ICNS_SIZES, options.icns.sizes))
+  }
+
+  if (options.ico) {
+    sizes = sizes.concat(filterSizes(ICO_SIZES, options.ico.sizes))
+  }
+
+  if (options.favicon) {
+    if (options.favicon.pngSizes) {
+      // Favicon's PNG generates the specified size as it is
+      sizes = sizes.concat(options.favicon.pngSizes)
+    } else {
+      sizes = sizes.concat(FAV_SIZES)
+    }
+  }
+
+  // 'all' mode
+  if (sizes.length === 0) {
+    sizes = FAV_SIZES.concat(ICNS_SIZES).concat(ICO_SIZES)
+  }
+
+  // Always ensure the ascending order
+  return sizes
+    .filter((value, index, array) => array.indexOf(value) === index)
+    .sort((a, b) => a - b)
 }
 
 /**
