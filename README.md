@@ -8,12 +8,6 @@
 
 Generate an icon files from the **SVG** or **PNG** files.
 
-## Node.js requirements
-
-This module depends on [svg2png](https://github.com/domenic/svg2png). Therefore we need **Node v6 or later**. The following is a quotation from `README` of **svg2png**.
-
-> svg2png uses the latest in ES2015 features, and as such requires a recent version of Node.js. Only the 6.x series onward is supported.
-
 ## Support formats
 
 Supported the output format of the icon are following.
