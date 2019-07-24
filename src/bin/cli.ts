@@ -132,12 +132,12 @@ export const parseArgv = (argv: string[]): CLIOptions => {
   program.on('--help', () => {
     console.log(`
 Examples:
-$ icon-gen -i sample.svg -o ./dist -r
-$ icon-gen -i ./images -o ./dist -r
-$ icon-gen -i sample.svg -o ./dist --ico --icns
-$ icon-gen -i sample.svg -o ./dist --ico --ico-name sample --ico-sizes 16,32
-$ icon-gen -i sample.svg -o ./dist --icns --icns-name sample --icns-sizes 16,32
-$ icon-gen -i sample.svg -o ./dist --favicon --favicon-name=favicon-  --favicon-png-sizes 16,32,128 --favicon-ico-sizes 16,32
+  $ icon-gen -i sample.svg -o ./dist -r
+  $ icon-gen -i ./images -o ./dist -r
+  $ icon-gen -i sample.svg -o ./dist --ico --icns
+  $ icon-gen -i sample.svg -o ./dist --ico --ico-name sample --ico-sizes 16,32
+  $ icon-gen -i sample.svg -o ./dist --icns --icns-name sample --icns-sizes 16,32
+  $ icon-gen -i sample.svg -o ./dist --favicon --favicon-name=favicon- --favicon-png-sizes 16,32,128 --favicon-ico-sizes 16,32
 
 See also:
   https://github.com/akabekobeko/npm-icon-gen`)

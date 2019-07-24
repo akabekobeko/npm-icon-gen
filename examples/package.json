@@ -2,14 +2,19 @@
   "name": "icon-gen-examples",
   "description": "Examples for the icon-gen.",
   "private": true,
-  "version": "2.0.0",
+  "version": "1.0.0",
   "author": "akabeko (http://akabeko.me/)",
   "license": "MIT",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "js:svg": "node from-svg.js",
+    "js:png": "node from-png.js",
+    "ts:svg": "ts-node from-svg.ts",
+    "ts:png": "ts-node from-png.ts"
   },
   "dependencies": {
-    "icon-gen": "^2.0.0"
+    "icon-gen": "^2.1.0",
+    "ts-node": "^8.3.0",
+    "typescript": "^3.5.2"
   }
 }

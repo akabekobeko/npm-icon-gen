@@ -8,16 +8,20 @@ $ npm install
 
 ## Usage
 
-Default:
+`js` is JavaScript. `ts` is TypeScript on `ts-node`.
+
+Generate from SVG.
 
 ```
-$ node index.js
+$ npm run js:svg
+$ npm run ts:svg
 ```
 
-Change an output file names for ICO/ICNS:
+Generate from PNG.
 
 ```
-$ node filename.js
+$ npm run js:png
+$ npm run ts:png
 ```
 
 ## License
