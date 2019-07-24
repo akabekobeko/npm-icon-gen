@@ -225,13 +225,11 @@ const createIcon = async (
   images: ImageInfo[],
   dest: string
 ): Promise<boolean> => {
-  // Write a temporary file size
-  let fileSize = HEADER_SIZE
-  let stream = fs.createWriteStream(dest)
-  stream.write(createFileHeader(fileSize), 'binary')
+  let fileSize = 0
+  let body = Buffer.alloc(0)
 
-  for (let i = 0, max = ICON_INFOS.length; i < max; ++i) {
-    const info = ICON_INFOS[i]
+  // Write images on memory buffer
+  for (const info of ICON_INFOS) {
     const image = imageFromIconSize(info.size, images)
     if (!image) {
       // Depending on the command line option, there may be no corresponding size
@@ -239,19 +237,18 @@ const createIcon = async (
     }
 
     const block = await createIconBlock(info, image.filePath)
-    stream.write(block, 'binary')
+    body = Buffer.concat([body, block], body.length + block.length)
     fileSize += block.length
   }
-
-  stream.end()
 
   if (fileSize === 0) {
     return false
   }
 
-  // Update an actual file size
-  stream = fs.createWriteStream(dest)
-  stream.write(createFileHeader(fileSize), 'binary')
+  // Write file header and body
+  const stream = fs.createWriteStream(dest)
+  stream.write(createFileHeader(fileSize + HEADER_SIZE), 'binary')
+  stream.write(body, 'binary')
   stream.end()
 
   return true
