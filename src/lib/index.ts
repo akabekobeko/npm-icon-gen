@@ -131,7 +131,9 @@ const generate = async (
 
   if (options.favicon) {
     const files = await generateFavicon(images, dir, logger, options.favicon)
-    Array.apply(results, files)
+    for (const file of files) {
+      results.push(file)
+    }
   }
 
   return results
@@ -246,6 +248,13 @@ const generateIcon = async (
     throw new Error('Output directory is not found.')
   }
 
+  // Output all by default if no icon is specified
+  if (!(options.ico || options.icns || options.favicon)) {
+    options.ico = {}
+    options.icns = {}
+    options.favicon = {}
+  }
+
   const logger = new Logger(options.report)
   if (fs.statSync(src).isDirectory()) {
     return generateIconFromPNG(src, dest, options, logger)
@@ -255,3 +264,4 @@ const generateIcon = async (
 }
 
 export default generateIcon
+module.exports = generateIcon
