@@ -115,8 +115,8 @@ const options = {
   },
   favicon: {
     name: 'favicon-',
-    sizes:  [32, 57, 72, 96, 120, 128, 144, 152, 195, 228],
-    ico: [16, 24, 32, 48, 64]
+    pngSizes: [32, 57, 72, 96, 120, 128, 144, 152, 195, 228],
+    icoSizes: [16, 24, 32, 48, 64]
   }
 };
 ```
@@ -160,44 +160,44 @@ _`favicon`_
 |Name|Type|Default|Description|
 |---|---|---|---|
 |name|`String`|`favicon-`|Prefix of an output PNG files. Start with the alphabet, can use `-` and `_`. This option is for PNG. The name of the ICO file is always `favicon.ico`.|
-|sizes|`Number[]`|`[Defaults...]`|Size structure of PNG files to output.|
-|ico|`Number[]`|`[Defaults...]`|Structure of an image sizes for ICO.|
-
-
+|pngSizes|`Number[]`|`[Defaults...]`|Size structure of PNG files to output.|
+|icoSizes|`Number[]`|`[Defaults...]`|Structure of an image sizes for ICO.|
 
 ## CLI
 
 ```
-Usage: icon-gen [OPTIONS]
+Usage:  icon-gen [options]
 
 Generate an icon from the SVG or PNG file.
-If '--ico', '--icns', '--favicon' is not specified, everything is output in the standard setting.
+If "--ico", "--icns", "--favicon" is not specified, everything is output in the standard setting.
 
 Options:
--h, --help    Display this text.
--v, --version Display the version number.
--i, --input   Path of the SVG file or PNG file directory.
--o, --output  Path of the output directory.
--r, --report  Display the process reports.
-              Default is disable.
---ico         Output ICO file with the specified 'name' and 'sizes'.
-              ex. --ico name=foo sizes=16,32,128
---icns        Output ICO file with the specified 'name' and 'sizes'.
-              ex. --icns name=bar sizes=32,1024
---favicon     Output Favicon files with the specified 'ico', 'name' and 'sizes'.
-              'ico' is the size of the ICO file.
-              'name' is the prefix of the PNG file. Start with the alphabet, can use '-' and '_'.
-              'sizes' is the size of the PNG file.
-              ex. '--favicon ico=16,32 name=favicon- sizes=16,32,128'
+  -i, --input <Path>           Path of the SVG file or PNG file directory.
+  -o, --output <Path>          Path of the output directory.
+  -r, --report                 Display the process reports, default is disable.
+  --ico                        Output ICO file with default settings, option is "--ico-*".
+  --ico-name <Name>            ICO file name to output.
+  --ico-sizes [Sizes]          PNG size list to structure ICO file
+  --icns                       Output ICNS file with default settings, option is "--icns-*".
+  --icns-name <Name>           ICO file name to output.
+  --icns-sizes [Sizes]         PNG size list to structure ICNS file
+  --favicon                    Output Favicon files with default settings, option is "--favicon-*".
+  --favicon-name <Name>        prefix of the PNG file. Start with the alphabet, can use "-" and "_"
+  --favicon-png-sizes [Sizes]  Sizes of the Favicon PNG files
+  --favicon-ico-sizes [Sizes]  PNG size list to structure Favicon ICO file
+  -v, --version                output the version number
+  -h, --help                   output usage information
 
 Examples:
-$ icon-gen -i sample.svg -o ./dist -r
-$ icon-gen -i ./images -o ./dist -r
-$ icon-gen -i sample.svg -o ./dist --ico --icns
-$ icon-gen -i sample.svg -o ./dist --ico --favicon ico=16,32 name=favicon- sizes=16,32,128
+  $ icon-gen -i sample.svg -o ./dist -r
+  $ icon-gen -i ./images -o ./dist -r
+  $ icon-gen -i sample.svg -o ./dist --ico --icns
+  $ icon-gen -i sample.svg -o ./dist --ico --ico-name sample --ico-sizes 16,32
+  $ icon-gen -i sample.svg -o ./dist --icns --icns-name sample --icns-sizes 16,32
+  $ icon-gen -i sample.svg -o ./dist --favicon --favicon-name=favicon-  --favicon-png-sizes 16,32,128 --favicon-ico-sizes 16,32
 
 See also:
-https://github.com/akabekobeko/npm-icon-gen
+  https://github.com/akabekobeko/npm-icon-gen
 ```
 
 # ChangeLog
