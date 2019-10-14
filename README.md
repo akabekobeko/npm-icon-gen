@@ -3,8 +3,6 @@
 [![Support Node of LTS](https://img.shields.io/badge/node-LTS-brightgreen.svg)](https://nodejs.org/)
 [![npm version](https://badge.fury.io/js/icon-gen.svg)](https://badge.fury.io/js/icon-gen)
 [![Build Status](https://travis-ci.org/akabekobeko/npm-icon-gen.svg?branch=master)](https://travis-ci.org/akabekobeko/npm-icon-gen)
-[![Document](https://img.shields.io/badge/document-ESDoc-brightgreen.svg)](https://akabekobeko.github.io/npm-icon-gen/)
-[![Standard - JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](http://standardjs.com/)
 
 Generate an icon files from the **SVG** or **PNG** files.
 
@@ -12,11 +10,11 @@ Generate an icon files from the **SVG** or **PNG** files.
 
 Supported the output format of the icon are following.
 
-|Platform|Icon|
-|--:|---|
-|Windows|`app.ico` or specified name.|
-|macOS|`app.icns` or specified name.|
-|Favicon|`favicon.ico` and `favicon-XX.png`.|
+| Platform | Icon                                |
+| -------: | ----------------------------------- |
+|  Windows | `app.ico` or specified name.        |
+|    macOS | `app.icns` or specified name.       |
+|  Favicon | `favicon.ico` and `favicon-XX.png`. |
 
 ## Installation
 
@@ -35,15 +33,15 @@ SVG files are rendering to PNG file in **svg2png**. Rendering files is output to
 Rendering of svg2png is run by [phantomjs](https://www.npmjs.com/package/phantomjs). Please use the PNG directory If the rendering quality there is a problem.
 
 ```js
-const icongen = require('icon-gen');
+const icongen = require('icon-gen')
 
 icongen('./sample.svg', './icons', { report: true })
-.then((results) => {
-  console.log(results)
-})
-.catch((err) => {
-  console.error(err)
-});
+  .then((results) => {
+    console.log(results)
+  })
+  .catch((err) => {
+    console.error(err)
+  })
 ```
 
 ### PNG
@@ -64,27 +62,27 @@ icongen('./images', './icons', , { report: true })
 
 Required PNG files is below. Favicon outputs both the ICO and PNG files (see: [audreyr/favicon-cheat-sheet](https://github.com/audreyr/favicon-cheat-sheet)).
 
-|Name    |Size     |ICO     |ICNS    |Fav ICO |Fav PNG |
-|-------:|--------:|:------:|:------:|:------:|:------:|
-|  16.png|    16x16|&#10004;|&#10004;|&#10004;|        |
-|  24.png|    24x24|&#10004;|        |&#10004;|        |
-|  32.png|    32x32|&#10004;|&#10004;|&#10004;|&#10004;|
-|  48.png|    48x48|&#10004;|        |&#10004;|        |
-|  57.png|    57x57|        |        |        |&#10004;|
-|  64.png|    64x64|&#10004;|&#10004;|&#10004;|        |
-|  72.png|    72x72|        |        |        |&#10004;|
-|  96.png|    96x96|        |        |        |&#10004;|
-| 120.png|  120x120|        |        |        |&#10004;|
-| 128.png|  128x128|&#10004;|&#10004;|        |&#10004;|
-| 144.png|  144x144|        |        |        |&#10004;|
-| 152.png|  152x152|        |        |        |&#10004;|
-| 195.png|  195x195|        |        |        |&#10004;|
-| 228.png|  228x228|        |        |        |&#10004;|
-| 256.png|  256x256|&#10004;|&#10004;|        |        |
-| 512.png|  512x512|        |&#10004;|        |        |
-|1024.png|1024x1024|        |&#10004;|        |        |
+|     Name |      Size |   ICO    |   ICNS   | Fav ICO  | Fav PNG  |
+| -------: | --------: | :------: | :------: | :------: | :------: |
+|   16.png |     16x16 | &#10004; | &#10004; | &#10004; |          |
+|   24.png |     24x24 | &#10004; |          | &#10004; |          |
+|   32.png |     32x32 | &#10004; | &#10004; | &#10004; | &#10004; |
+|   48.png |     48x48 | &#10004; |          | &#10004; |          |
+|   57.png |     57x57 |          |          |          | &#10004; |
+|   64.png |     64x64 | &#10004; | &#10004; | &#10004; |          |
+|   72.png |     72x72 |          |          |          | &#10004; |
+|   96.png |     96x96 |          |          |          | &#10004; |
+|  120.png |   120x120 |          |          |          | &#10004; |
+|  128.png |   128x128 | &#10004; | &#10004; |          | &#10004; |
+|  144.png |   144x144 |          |          |          | &#10004; |
+|  152.png |   152x152 |          |          |          | &#10004; |
+|  195.png |   195x195 |          |          |          | &#10004; |
+|  228.png |   228x228 |          |          |          | &#10004; |
+|  256.png |   256x256 | &#10004; | &#10004; |          |          |
+|  512.png |   512x512 |          | &#10004; |          |          |
+| 1024.png | 1024x1024 |          | &#10004; |          |          |
 
-To make it a special size configuration, please specify with `ico`,` icns` and `favicon` options.
+To make it a special size configuration, please specify with `ico`,`icns` and `favicon` options.
 
 ## Node API
 
@@ -94,11 +92,11 @@ To make it a special size configuration, please specify with `ico`,` icns` and `
 
 `icongen(src, dest[, options])`
 
-|Name|Type|Description|
-|---|---|---|
-|src |`String`|Path of the **SVG file** or **PNG files directory** that becomes the source.|
-|dest |`String`|Destination directory path.|
-|options|`Object`|see: _Options_.|
+| Name    | Type     | Description                                                                  |
+| ------- | -------- | ---------------------------------------------------------------------------- |
+| src     | `String` | Path of the **SVG file** or **PNG files directory** that becomes the source. |
+| dest    | `String` | Destination directory path.                                                  |
+| options | `Object` | see: _Options_.                                                              |
 
 _Options:_
 
@@ -111,17 +109,17 @@ const options = {
   },
   icns: {
     name: 'app',
-    sizes:  [16, 32, 64, 128, 256, 512, 1024]
+    sizes: [16, 32, 64, 128, 256, 512, 1024]
   },
   favicon: {
     name: 'favicon-',
     pngSizes: [32, 57, 72, 96, 120, 128, 144, 152, 195, 228],
     icoSizes: [16, 24, 32, 48, 64]
   }
-};
+}
 ```
 
-If all image options (`ico`,` icns`, `favicon`) are omitted, all images are output with their default settings.
+If all image options (`ico`,`icns`, `favicon`) are omitted, all images are output with their default settings.
 
 ```js
 // Output an all images with default settings
@@ -141,27 +139,27 @@ const options = {
 }
 ```
 
-|Name|Type|Description|
-|---|---|---|
-|report|`Boolean` |Display the process reports. Default is `false`, disable a report.|
-|ico|`Object`|Output setting of ICO file.|
-|icns|`Object`|Output setting of ICNS file.|
-|favicon|`Object`|Output setting of Favicon file (PNG and ICO).|
+| Name    | Type      | Description                                                        |
+| ------- | --------- | ------------------------------------------------------------------ |
+| report  | `Boolean` | Display the process reports. Default is `false`, disable a report. |
+| ico     | `Object`  | Output setting of ICO file.                                        |
+| icns    | `Object`  | Output setting of ICNS file.                                       |
+| favicon | `Object`  | Output setting of Favicon file (PNG and ICO).                      |
 
 _`ico`, `icns`_
 
-|Name|Type|Default|Description|
-|---|---|---|---|
-|name|`String`|`app`|Name of an output file.|
-|sizes|`Number[]`|`[Defaults...]`|Structure of an image sizes.|
+| Name  | Type       | Default         | Description                  |
+| ----- | ---------- | --------------- | ---------------------------- |
+| name  | `String`   | `app`           | Name of an output file.      |
+| sizes | `Number[]` | `[Defaults...]` | Structure of an image sizes. |
 
 _`favicon`_
 
-|Name|Type|Default|Description|
-|---|---|---|---|
-|name|`String`|`favicon-`|Prefix of an output PNG files. Start with the alphabet, can use `-` and `_`. This option is for PNG. The name of the ICO file is always `favicon.ico`.|
-|pngSizes|`Number[]`|`[Defaults...]`|Size structure of PNG files to output.|
-|icoSizes|`Number[]`|`[Defaults...]`|Structure of an image sizes for ICO.|
+| Name     | Type       | Default         | Description                                                                                                                                            |
+| -------- | ---------- | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| name     | `String`   | `favicon-`      | Prefix of an output PNG files. Start with the alphabet, can use `-` and `_`. This option is for PNG. The name of the ICO file is always `favicon.ico`. |
+| pngSizes | `Number[]` | `[Defaults...]` | Size structure of PNG files to output.                                                                                                                 |
+| icoSizes | `Number[]` | `[Defaults...]` | Structure of an image sizes for ICO.                                                                                                                   |
 
 ## CLI
 
@@ -202,8 +200,8 @@ See also:
 
 # ChangeLog
 
-* [CHANGELOG](CHANGELOG.md)
+- [CHANGELOG](CHANGELOG.md)
 
 # License
 
-* [MIT](LICENSE.txt)
+- [MIT](LICENSE.txt)
