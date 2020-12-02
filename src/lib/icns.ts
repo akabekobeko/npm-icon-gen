@@ -262,8 +262,6 @@ const createIcon = async (
     // https://stackoverflow.com/questions/46752428/do-i-need-await-fs-createwritestream-in-pipe-method-in-node
     stream.on('finish', () => resolve(true));
   })
-
-  return true
 }
 
 /**
