@@ -219,15 +219,28 @@ const generateICO = async (
   }
 
   const dest = path.join(dir, opt.name + FILE_EXTENSION)
-  const stream = fs.createWriteStream(dest)
-  stream.write(createFileHeader(pngs.length), 'binary')
 
-  writeDirectories(pngs, stream)
-  writePNGs(pngs, stream)
-  stream.end()
+  // Write file header and body
+  return new Promise((resolve, reject) => {
+    const stream = fs.createWriteStream(dest)
+    // https://stackoverflow.com/questions/12906694/fs-createwritestream-does-not-immediately-create-file
+    stream.on('ready', () => {
+      try {
+        stream.write(createFileHeader(pngs.length), 'binary')
+        writeDirectories(pngs, stream)
+        writePNGs(pngs, stream)
+        stream.end()
+      } catch (err) {
+        reject(new Error('Failed to write ICO binary'))
+      }
+    })
 
-  logger.log('  Create: ' + dest)
-  return dest
+    // https://stackoverflow.com/questions/46752428/do-i-need-await-fs-createwritestream-in-pipe-method-in-node
+    stream.on('finish', () => {
+      logger.log('  Create: ' + dest)
+      resolve(dest)
+    })
+  })
 }
 
 export default generateICO
