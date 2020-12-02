@@ -246,10 +246,22 @@ const createIcon = async (
   }
 
   // Write file header and body
-  const stream = fs.createWriteStream(dest)
-  stream.write(createFileHeader(fileSize + HEADER_SIZE), 'binary')
-  stream.write(body, 'binary')
-  stream.end()
+  return new Promise((resolve, reject) => {
+    const stream = fs.createWriteStream(dest)
+    // https://stackoverflow.com/questions/12906694/fs-createwritestream-does-not-immediately-create-file
+    stream.on('ready', () => {
+      try {
+        stream.write(createFileHeader(fileSize + HEADER_SIZE), 'binary')
+        stream.write(body, 'binary')
+        stream.end()
+      } catch (err) {
+        resolve(false)
+      }
+    })
+
+    // https://stackoverflow.com/questions/46752428/do-i-need-await-fs-createwritestream-in-pipe-method-in-node
+    stream.on('finish', () => resolve(true));
+  })
 
   return true
 }
