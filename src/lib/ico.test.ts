@@ -13,6 +13,8 @@ describe('ICO', () => {
 
     generateICO(targets, './examples/data', new Logger(), {}).then((result) => {
       assert(result)
+      // output file size must be at least larger than input file size
+      assert(fs.statSync(result).size > fs.statSync(targets[targets.length - 1].filePath).size);
       fs.unlinkSync(result)
     })
   })
