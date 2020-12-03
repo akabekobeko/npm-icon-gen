@@ -16,6 +16,8 @@ describe('ICNS', () => {
       sizes: []
     }).then((filePath) => {
       assert(filePath)
+      // output file size must be at least larger than input file size
+      assert(fs.statSync(filePath).size > fs.statSync(images[images.length - 1].filePath).size);
       fs.unlinkSync(filePath)
     })
   })
