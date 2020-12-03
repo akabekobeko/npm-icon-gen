@@ -237,37 +237,35 @@ const createFileBody = async (images: ImageInfo[]): Promise<Buffer> => {
 }
 
 /**
- * Create a file header and icon blocks.
+ * Create an ICNS file.
  * @param images Information of the image files.
- * @param dest The path of the output destination file.
- * @return `true` if it succeeds.
+ * @param filePath The path of the output destination file.
+ * @return Asynchronous task.
  */
-const createIcon = async (
+const createIconFile = async (
   images: ImageInfo[],
-  dest: string
-): Promise<boolean> => {
+  filePath: string
+): Promise<void> => {
   // Write images on memory buffer
   const body = await createFileBody(images)
   if (body.length === 0) {
-    return false
+    throw new Error('Failed to create the body of the file. The size is `0`.')
   }
 
   // Write file header and body
   return new Promise((resolve, reject) => {
-    const stream = fs.createWriteStream(dest)
+    const stream = fs.createWriteStream(filePath)
     // https://stackoverflow.com/questions/12906694/fs-createwritestream-does-not-immediately-create-file
     stream.on('ready', () => {
-      try {
-        stream.write(createFileHeader(body.length + HEADER_SIZE), 'binary')
-        stream.write(body, 'binary')
-        stream.end()
-      } catch (err) {
-        resolve(false)
-      }
+      stream.write(createFileHeader(body.length + HEADER_SIZE), 'binary')
+      stream.write(body, 'binary')
+      stream.end()
     })
 
+    stream.on('error', (err) => reject(err))
+
     // https://stackoverflow.com/questions/46752428/do-i-need-await-fs-createwritestream-in-pipe-method-in-node
-    stream.on('finish', () => resolve(true))
+    stream.on('finish', () => resolve())
   })
 }
 
@@ -322,10 +320,12 @@ const generateICNS = async (
   }
 
   const dest = path.join(dir, opt.name + FILE_EXTENSION)
-  const targets = filterImagesBySizes(images, opt.sizes)
-  if (!(await createIcon(targets, dest))) {
+  try {
+    const targets = filterImagesBySizes(images, opt.sizes)
+    await createIconFile(targets, dest)
+  } catch (err) {
     fs.unlinkSync(dest)
-    throw new Error('Failed to read/write image.')
+    throw err
   }
 
   logger.log('  Create: ' + dest)
