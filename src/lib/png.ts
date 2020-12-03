@@ -4,7 +4,7 @@ import util from 'util'
 import svg2png from 'svg2png'
 import Logger from './logger'
 
-/** Image file informations. */
+/** Image file information. */
 export type ImageInfo = {
   /** Image size (width/height). */
   size: number
@@ -13,10 +13,10 @@ export type ImageInfo = {
 }
 
 /**
- * Filter by size to the specified image informations.
- * @param images Image file informations.
+ * Filter by size to the specified image information.
+ * @param images Image file information.
  * @param sizes  Required sizes.
- * @return Filtered image informations.
+ * @return Filtered image information.
  */
 export const filterImagesBySizes = (images: ImageInfo[], sizes: number[]) => {
   return images
@@ -49,7 +49,7 @@ const generate = async (
 
   const buffer = svg2png.sync(svg, { width: size, height: size })
   if (!buffer) {
-    throw new Error('Faild to write the image, ' + size + 'x' + size)
+    throw new Error('Failed to write the image, ' + size + 'x' + size)
   }
 
   const writeFileAsync = util.promisify(fs.writeFile)

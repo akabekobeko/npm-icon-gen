@@ -1,6 +1,6 @@
 import assert from 'assert'
 import os from 'os'
-import uuid from 'uuid'
+import { v4 as uuidv4 } from 'uuid'
 import path from 'path'
 import fs from 'fs'
 import del from 'del'
@@ -13,7 +13,7 @@ import { REQUIRED_IMAGE_SIZES as ICO_SIZES } from './ico'
 describe('PNG', () => {
   describe('generatePNG', () => {
     it('Generate', () => {
-      const dir = path.join(os.tmpdir(), uuid.v4())
+      const dir = path.join(os.tmpdir(), uuidv4())
       fs.mkdirSync(dir)
 
       return generatePNG('./examples/data/sample.svg', dir, [16], new Logger())
