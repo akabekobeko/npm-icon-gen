@@ -86,8 +86,8 @@ const ICON_INFOS: IconInfo[] = [
 
 /**
  * Select the support image from the icon size.
- * @param size Sizo of icon.
- * @param images File informations..
+ * @param size Size of icon.
+ * @param images File information.
  * @return If successful image information, otherwise null.
  */
 const imageFromIconSize = (
@@ -216,19 +216,12 @@ const createIconBlock = async (
 }
 
 /**
- * Creat a file header and icon blocks.
+ * Create the ICNS file body on memory buffer.
  * @param images Information of the image files.
- * @param dest The path of the output destination file.
- * @return `true` if it succeeds.
+ * @returns Body of ICNS file.
  */
-const createIcon = async (
-  images: ImageInfo[],
-  dest: string
-): Promise<boolean> => {
-  let fileSize = 0
+const createFileBody = async (images: ImageInfo[]): Promise<Buffer> => {
   let body = Buffer.alloc(0)
-
-  // Write images on memory buffer
   for (const info of ICON_INFOS) {
     const image = imageFromIconSize(info.size, images)
     if (!image) {
@@ -238,10 +231,24 @@ const createIcon = async (
 
     const block = await createIconBlock(info, image.filePath)
     body = Buffer.concat([body, block], body.length + block.length)
-    fileSize += block.length
   }
 
-  if (fileSize === 0) {
+  return body
+}
+
+/**
+ * Create a file header and icon blocks.
+ * @param images Information of the image files.
+ * @param dest The path of the output destination file.
+ * @return `true` if it succeeds.
+ */
+const createIcon = async (
+  images: ImageInfo[],
+  dest: string
+): Promise<boolean> => {
+  // Write images on memory buffer
+  const body = await createFileBody(images)
+  if (body.length === 0) {
     return false
   }
 
@@ -251,7 +258,7 @@ const createIcon = async (
     // https://stackoverflow.com/questions/12906694/fs-createwritestream-does-not-immediately-create-file
     stream.on('ready', () => {
       try {
-        stream.write(createFileHeader(fileSize + HEADER_SIZE), 'binary')
+        stream.write(createFileHeader(body.length + HEADER_SIZE), 'binary')
         stream.write(body, 'binary')
         stream.end()
       } catch (err) {
@@ -318,7 +325,7 @@ const generateICNS = async (
   const targets = filterImagesBySizes(images, opt.sizes)
   if (!(await createIcon(targets, dest))) {
     fs.unlinkSync(dest)
-    throw new Error('Faild to read/write image.')
+    throw new Error('Failed to read/write image.')
   }
 
   logger.log('  Create: ' + dest)
