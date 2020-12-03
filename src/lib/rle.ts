@@ -5,8 +5,8 @@ const MAX_LITERAL_LENGTH = 127
  * Copies the array to the target array at the specified position and size.
  * @param src Byte array of copy source.
  * @param srcBegin  Copying start position of source.
- * @param dest Bayte array of copy destination.
- * @param destBegin Writing start position of destinnation.
+ * @param dest Byte array of copy destination.
+ * @param destBegin Writing start position of destination.
  * @param size Size of copy bytes.
  */
 const arrayCopy = (
@@ -50,7 +50,7 @@ const toInt8 = (value: number) => {
 }
 
 /**
- * Convert PackBits literals to resuls.
+ * Convert PackBits literals to results.
  * @param literals PackBits literals.
  * @return Converted literals.
  */
@@ -62,7 +62,7 @@ export const packBitsLiteralToResult = (literals: number[]) => {
 
 /**
  * Decompress PackBits compressed binary.
- * This method port Geeks with Blogs's code (Apache License v2.0) to Node.
+ * This method port Geeks with Blogs code (Apache License v2.0) to Node.
  * @param src Source binary.
  * @return Decompressed binary.
  * @see https://en.wikipedia.org/wiki/PackBits
@@ -173,7 +173,7 @@ export const packICNS = (src: number[]) => {
 
 /**
  * Compress binary with PackBits.
- * This method port Geeks with Blogs's code (Apache License v2.0) to Node.
+ * This method port Geeks with Blogs code (Apache License v2.0) to Node.
  * @param src Source binary.
  * @return Compressed binary.
  * @see https://en.wikipedia.org/wiki/PackBits
