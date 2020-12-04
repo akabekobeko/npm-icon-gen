@@ -80,10 +80,10 @@ const convertPNGtoDIB = (
 }
 
 /**
- * Create the BITMAPINFOHEADER.
+ * Create the `BITMAPINFOHEADER`.
  * @param png PNG image.
  * @param compression Compression mode
- * @return BITMAPINFOHEADER data.
+ * @return `BITMAPINFOHEADER` data.
  * @see https://msdn.microsoft.com/ja-jp/library/windows/desktop/dd183376%28v=vs.85%29.aspx
  */
 const createBitmapInfoHeader = (png: PNG, compression: number) => {
@@ -189,8 +189,38 @@ const writePNGs = (pngs: PNG[], stream: fs.WriteStream) => {
 }
 
 /**
+ * Create an ICO file.
+ * @param pngs Information of PNG images.
+ * @param filePath The path of the output destination file.
+ * @return Asynchronous task.
+ */
+const createIconFile = (pngs: PNG[], filePath: string): Promise<void> => {
+  return new Promise((resolve, reject) => {
+    if (pngs.length === 0) {
+      return reject(
+        new Error('There was no PNG file matching the specified size.')
+      )
+    }
+
+    const stream = fs.createWriteStream(filePath)
+    // https://stackoverflow.com/questions/12906694/fs-createwritestream-does-not-immediately-create-file
+    stream.on('ready', () => {
+      stream.write(createFileHeader(pngs.length), 'binary')
+      writeDirectories(pngs, stream)
+      writePNGs(pngs, stream)
+      stream.end()
+    })
+
+    stream.on('error', (err) => reject(err))
+
+    // https://stackoverflow.com/questions/46752428/do-i-need-await-fs-createwritestream-in-pipe-method-in-node
+    stream.on('finish', () => resolve())
+  })
+}
+
+/**
  * Generate the ICO file from a PNG images.
- * @param images File informations..
+ * @param images File information.
  * @param dir Output destination the path of directory.
  * @param logger Logger.
  * @param options Options.
@@ -213,34 +243,17 @@ const generateICO = async (
         : REQUIRED_IMAGE_SIZES
   }
 
-  const pngs = readPNGs(images, opt.sizes)
-  if (pngs.length === 0) {
-    throw new Error('There was no PNG file matching the specified size.')
+  const dest = path.join(dir, opt.name + FILE_EXTENSION)
+  try {
+    const pngs = readPNGs(images, opt.sizes)
+    await createIconFile(pngs, dest)
+  } catch (err) {
+    fs.unlinkSync(dest)
+    throw err
   }
 
-  const dest = path.join(dir, opt.name + FILE_EXTENSION)
-
-  // Write file header and body
-  return new Promise((resolve, reject) => {
-    const stream = fs.createWriteStream(dest)
-    // https://stackoverflow.com/questions/12906694/fs-createwritestream-does-not-immediately-create-file
-    stream.on('ready', () => {
-      try {
-        stream.write(createFileHeader(pngs.length), 'binary')
-        writeDirectories(pngs, stream)
-        writePNGs(pngs, stream)
-        stream.end()
-      } catch (err) {
-        reject(new Error('Failed to write ICO binary'))
-      }
-    })
-
-    // https://stackoverflow.com/questions/46752428/do-i-need-await-fs-createwritestream-in-pipe-method-in-node
-    stream.on('finish', () => {
-      logger.log('  Create: ' + dest)
-      resolve(dest)
-    })
-  })
+  logger.log('  Create: ' + dest)
+  return dest
 }
 
 export default generateICO

@@ -36,6 +36,7 @@ node_modules
 # Project
 dist/
 .*
+*.tgz
 examples/icons/*.icns
 examples/icons/*.ico
 examples/icons/*.png

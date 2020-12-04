@@ -86,8 +86,8 @@ const ICON_INFOS: IconInfo[] = [
 
 /**
  * Select the support image from the icon size.
- * @param size Sizo of icon.
- * @param images File informations..
+ * @param size Size of icon.
+ * @param images File information.
  * @return If successful image information, otherwise null.
  */
 const imageFromIconSize = (
@@ -216,19 +216,12 @@ const createIconBlock = async (
 }
 
 /**
- * Creat a file header and icon blocks.
+ * Create the ICNS file body on memory buffer.
  * @param images Information of the image files.
- * @param dest The path of the output destination file.
- * @return `true` if it succeeds.
+ * @returns Body of ICNS file.
  */
-const createIcon = async (
-  images: ImageInfo[],
-  dest: string
-): Promise<boolean> => {
-  let fileSize = 0
+const createFileBody = async (images: ImageInfo[]): Promise<Buffer> => {
   let body = Buffer.alloc(0)
-
-  // Write images on memory buffer
   for (const info of ICON_INFOS) {
     const image = imageFromIconSize(info.size, images)
     if (!image) {
@@ -238,29 +231,41 @@ const createIcon = async (
 
     const block = await createIconBlock(info, image.filePath)
     body = Buffer.concat([body, block], body.length + block.length)
-    fileSize += block.length
   }
 
-  if (fileSize === 0) {
-    return false
+  return body
+}
+
+/**
+ * Create an ICNS file.
+ * @param images Information of the image files.
+ * @param filePath The path of the output destination file.
+ * @return Asynchronous task.
+ */
+const createIconFile = async (
+  images: ImageInfo[],
+  filePath: string
+): Promise<void> => {
+  // Write images on memory buffer
+  const body = await createFileBody(images)
+  if (body.length === 0) {
+    throw new Error('Failed to create the body of the file. The size is `0`.')
   }
 
   // Write file header and body
   return new Promise((resolve, reject) => {
-    const stream = fs.createWriteStream(dest)
+    const stream = fs.createWriteStream(filePath)
     // https://stackoverflow.com/questions/12906694/fs-createwritestream-does-not-immediately-create-file
     stream.on('ready', () => {
-      try {
-        stream.write(createFileHeader(fileSize + HEADER_SIZE), 'binary')
-        stream.write(body, 'binary')
-        stream.end()
-      } catch (err) {
-        resolve(false)
-      }
+      stream.write(createFileHeader(body.length + HEADER_SIZE), 'binary')
+      stream.write(body, 'binary')
+      stream.end()
     })
 
+    stream.on('error', (err) => reject(err))
+
     // https://stackoverflow.com/questions/46752428/do-i-need-await-fs-createwritestream-in-pipe-method-in-node
-    stream.on('finish', () => resolve(true))
+    stream.on('finish', () => resolve())
   })
 }
 
@@ -315,10 +320,12 @@ const generateICNS = async (
   }
 
   const dest = path.join(dir, opt.name + FILE_EXTENSION)
-  const targets = filterImagesBySizes(images, opt.sizes)
-  if (!(await createIcon(targets, dest))) {
+  try {
+    const targets = filterImagesBySizes(images, opt.sizes)
+    await createIconFile(targets, dest)
+  } catch (err) {
     fs.unlinkSync(dest)
-    throw new Error('Faild to read/write image.')
+    throw err
   }
 
   logger.log('  Create: ' + dest)
