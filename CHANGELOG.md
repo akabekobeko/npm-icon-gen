@@ -9,9 +9,19 @@ Please be sure to read the `README` because there are many changes.
 - Drop Node 8
 - Change CLI/Node options
 
-## Fetures
+### Features
 
-- Bundle `d.ts` file
+- To TypeScript and bundle `d.ts` file [#108](https://github.com/akabekobeko/npm-icon-gen/issues/108)
+
+### Bug Fixes
+
+- Strict stream finish for ICNS/ICO generation [#126](https://github.com/akabekobeko/npm-icon-gen/issues/126) by [quanglam2807 (Quang Lam)](https://github.com/quanglam2807)
+- Delete file execution attribute [#113](https://github.com/akabekobeko/npm-icon-gen/issues/113)
+
+### Documentation
+
+- Update README.md [#119](https://github.com/akabekobeko/npm-icon-gen/pull/119/files) by [rickysullivan (Ricky Sullivan Himself)](https://github.com/rickysullivan)
+- Remove "Node.js requirements" section from README.md [#114](https://github.com/akabekobeko/npm-icon-gen/pull/114) by [MakeNowJust (TSUYUSATO Kitsune)](https://github.com/MakeNowJust)
 
 ## v2.0.0
 
@@ -22,7 +32,7 @@ Please be sure to read the `README` because there are many changes.
 - Drop Node 6 [#101](https://github.com/akabekobeko/npm-icon-gen/issues/101)
 - Change CLI/Node options [#98](https://github.com/akabekobeko/npm-icon-gen/issues/98)
 
-## Fetures
+## Features
 
 - Support size specification of PNG (in Favicon) [#97](https://github.com/akabekobeko/npm-icon-gen/issues/97)
 
@@ -34,7 +44,7 @@ Please be sure to read the `README` because there are many changes.
 
 ## v1.2.2
 
-### Fetures
+### Features
 
 - Support Node v10.x [#90](https://github.com/akabekobeko/npm-icon-gen/issues/90)
 
@@ -44,13 +54,13 @@ Please be sure to read the `README` because there are many changes.
 
 ## v1.2.1
 
-### Fetures
+### Features
 
 - Support Node 9 [#87](https://github.com/akabekobeko/npm-icon-gen/issues/87)
 
 ## v1.2.0
 
-### Fetures
+### Features
 
 - Supports `is32` and `il32` [#71](https://github.com/akabekobeko/npm-icon-gen/issues/71)
 
@@ -62,7 +72,7 @@ Please be sure to read the `README` because there are many changes.
 
 ## v1.1.4
 
-### Fetures
+### Features
 
 - add sizes option to define witch size of png to include [#62](https://github.com/akabekobeko/npm-icon-gen/pull/62) by [beijaflor (sho otani)](https://github.com/beijaflor)
 
@@ -81,10 +91,10 @@ Please be sure to read the `README` because there are many changes.
 
 ## v1.1.0
 
-### Fetures
+### Features
 
 - Using the Babel and change structure of project [#55](https://github.com/akabekobeko/npm-icon-gen/issues/55)
-- Add ICNS Retina support [#52](https://github.com/akabekobeko/npm-icon-gen/pull/52)  by [quanglam2807 (Quang Lam)](https://github.com/quanglam2807)
+- Add ICNS Retina support [#52](https://github.com/akabekobeko/npm-icon-gen/pull/52) by [quanglam2807 (Quang Lam)](https://github.com/quanglam2807)
 - **Drop the Node v4 (Breaking change)** [#51](https://github.com/akabekobeko/npm-icon-gen/issues/51)
 
 ### Bug Fixes
@@ -94,19 +104,19 @@ Please be sure to read the `README` because there are many changes.
 
 ## 1.0.8
 
-### Fetures
+### Features
 
 - Drop transpile by Babel [#48](https://github.com/akabekobeko/npm-icon-gen/issues/48)
 
 ## v1.0.7
 
-### Fetures
+### Features
 
 - Update uuid to version 3.0.0 [#45](https://github.com/akabekobeko/npm-icon-gen/pull/45) by [marcbachmann (Marc Bachmann)](https://github.com/marcbachmann)
 
 ## 1.0.6
 
-### Fetures
+### Features
 
 - Node v7 support [#41](https://github.com/akabekobeko/npm-icon-gen/issues/41)
 
@@ -117,19 +127,19 @@ Please be sure to read the `README` because there are many changes.
 
 ## 1.0.5
 
-### Fetures
+### Features
 
 - Correct default for `options.type` [#39](https://github.com/akabekobeko/npm-icon-gen/pull/39) by [atdrago (Adam Drago)](https://github.com/atdrago)
 
 ## 1.0.4
 
-### Fetures
+### Features
 
 - Allow specifying icon file name [#38](https://github.com/akabekobeko/npm-icon-gen/issues/38)
 
 ## v1.0.3
 
-### Fetures
+### Features
 
 - ICNS size adjustments [#32](https://github.com/akabekobeko/npm-icon-gen/issues/32)
 
@@ -139,14 +149,14 @@ Please be sure to read the `README` because there are many changes.
 
 ## v1.0.2
 
-### Fetures
+### Features
 
 - Update a node modules
 - Node v6 support
 
 ## v1.0.1
 
-### Fetures
+### Features
 
 - Update a node modules
 - All of the file is output in a mode other than all [#25](https://github.com/akabekobeko/npm-icon-gen/issues/25)
