@@ -2,7 +2,7 @@ import fs from 'fs'
 import path from 'path'
 import del from 'del'
 import os from 'os'
-import uuid from 'uuid'
+import { v4 as uuidv4 } from 'uuid'
 import mkdirP from 'mkdirp'
 import generatePNG, { ImageInfo } from './png'
 import generateICO, { REQUIRED_IMAGE_SIZES as ICO_SIZES } from './ico'
@@ -46,7 +46,7 @@ export type ICONOptions = {
  * Filter the sizes.
  * @param sizes Original sizes.
  * @param filterSizes Filter sizes.
- * @return ilterd sizes.
+ * @return filtered sizes.
  */
 const filterSizes = (sizes: number[] = [], filterSizes: number[] = []) => {
   if (filterSizes.length === 0) {
@@ -81,7 +81,7 @@ const getRequiredPNGImageSizes = (options: ICONOptions) => {
 
   if (options.favicon) {
     if (options.favicon.pngSizes) {
-      // Favicon's PNG generates the specified size as it is
+      // Favicon PNG generates the specified size as it is
       sizes = sizes.concat(options.favicon.pngSizes)
     } else {
       sizes = sizes.concat(FAV_SIZES)
@@ -101,7 +101,7 @@ const getRequiredPNGImageSizes = (options: ICONOptions) => {
 
 /**
  * Generate an icon files.
- * @param images Image file informations.
+ * @param images Image file information.
  * @param dest Destination directory path.
  * @param options Options.
  * @param logger Logger.
@@ -141,7 +141,7 @@ const generate = async (
 
 /**
  * Generate an icon from PNG file.
- * @param src Path of the PNG files direcgtory.
+ * @param src Path of the PNG files directory.
  * @param dir Path of the output files directory.
  * @param options Options.
  * @param logger  Logger.
@@ -206,7 +206,7 @@ const generateIconFromSVG = async (
   logger.log('  src: ' + svgFilePath)
   logger.log('  dir: ' + destDirPath)
 
-  const workDir = path.join(os.tmpdir(), uuid.v4())
+  const workDir = path.join(os.tmpdir(), uuidv4())
   fs.mkdirSync(workDir)
   if (!fs.existsSync(workDir)) {
     throw new Error('Failed to create the working directory.')
