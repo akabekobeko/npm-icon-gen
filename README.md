@@ -2,7 +2,7 @@
 
 [![Support Node of LTS](https://img.shields.io/badge/node-LTS-brightgreen.svg)](https://nodejs.org/)
 [![npm version](https://badge.fury.io/js/icon-gen.svg)](https://badge.fury.io/js/icon-gen)
-[![Build Status](https://travis-ci.org/akabekobeko/npm-icon-gen.svg?branch=master)](https://travis-ci.org/akabekobeko/npm-icon-gen)
+![test](https://github.com/akabekobeko/npm-icon-gen/workflows/test/badge.svg)
 
 Generate an icon files from the **SVG** or **PNG** files.
 

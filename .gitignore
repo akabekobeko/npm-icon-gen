@@ -43,4 +43,4 @@ examples/icons/*.png
 package-lock.json
 !.gitignore
 !.prettierrc
-!.travis.yml
+!.github/
