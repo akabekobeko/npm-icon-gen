@@ -51,7 +51,7 @@ Generate an icon files from the directory of PNG files.
 ```js
 const icongen = require('icon-gen');
 
-icongen('./images', './icons', , { report: true })
+icongen('./images', './icons', { report: true })
 .then((results) => {
   console.log(results);
 } )
