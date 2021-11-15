@@ -1,7 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 import util from 'util'
-import svg2png from 'svg2png'
+import sharp from 'sharp'
 import Logger from './logger'
 
 /** Image file information. */
@@ -47,13 +47,11 @@ const generate = async (
   const dest = path.join(dir, size + '.png')
   logger.log('  Create: ' + dest)
 
-  const buffer = svg2png.sync(svg, { width: size, height: size })
-  if (!buffer) {
-    throw new Error('Failed to write the image, ' + size + 'x' + size)
-  }
+  await sharp(svg)
+  .png({ compressionLevel: 9 })
+  .resize(size, size)
+  .toFile(dest)
 
-  const writeFileAsync = util.promisify(fs.writeFile)
-  await writeFileAsync(dest, buffer)
   return { size: size, filePath: dest }
 }
 
