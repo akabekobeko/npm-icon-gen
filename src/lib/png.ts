@@ -49,7 +49,10 @@ const generate = async (
 
   await sharp(svg)
   .png({ compressionLevel: 9 })
-  .resize(size, size)
+  .resize(size, size, {
+    fit: 'contain',
+    background: { r: 0, g: 0, b: 0, alpha: 0 },
+  })
   .toFile(dest)
 
   return { size: size, filePath: dest }
