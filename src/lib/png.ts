@@ -1,6 +1,5 @@
 import fs from 'fs'
 import path from 'path'
-import util from 'util'
 import sharp from 'sharp'
 import Logger from './logger'
 
@@ -48,12 +47,12 @@ const generate = async (
   logger.log('  Create: ' + dest)
 
   await sharp(svg)
-  .png({ compressionLevel: 9 })
-  .resize(size, size, {
-    fit: 'contain',
-    background: { r: 0, g: 0, b: 0, alpha: 0 },
-  })
-  .toFile(dest)
+    .png({ compressionLevel: 9 })
+    .resize(size, size, {
+      fit: 'contain',
+      background: { r: 0, g: 0, b: 0, alpha: 0 }
+    })
+    .toFile(dest)
 
   return { size: size, filePath: dest }
 }
