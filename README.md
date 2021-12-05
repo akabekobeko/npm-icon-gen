@@ -28,9 +28,7 @@ SVG and PNG are automatically selected from the `input` path. If the path indica
 
 ### SVG
 
-SVG files are rendering to PNG file in **svg2png**. Rendering files is output to a temporary directory of the each OS.
-
-Rendering of svg2png is run by [phantomjs](https://www.npmjs.com/package/phantomjs). Please use the PNG directory If the rendering quality there is a problem.
+SVG files are rendering to PNG file in [sharp](https://www.npmjs.com/package/sharp). Rendering files is output to a temporary directory of the each OS.
 
 ```js
 const icongen = require('icon-gen')
@@ -44,20 +42,30 @@ icongen('./sample.svg', './icons', { report: true })
   })
 ```
 
+Stopped using [svg2png](https://www.npmjs.com/package/svg2png) because of its dependency on [phantomjs](https://www.npmjs.com/package/phantomjs), which is deprecated.
+
+The quality of PNG generated from SVG will change, so if you need the previous results, use icon-gen v2.1.0.
+
+```
+$ npm install icon-gen@2.1.0
+```
+
+In the future, I may add SVG to PNG conversion by Chromium via [puppeteer-core](https://www.npmjs.com/package/puppeteer-core) in addition to [sharp](https://www.npmjs.com/package/sharp).
+
 ### PNG
 
 Generate an icon files from the directory of PNG files.
 
 ```js
-const icongen = require('icon-gen');
+const icongen = require('icon-gen')
 
 icongen('./images', './icons', { report: true })
-.then((results) => {
-  console.log(results);
-} )
-.catch((err) => {
-  console.error(err);
-});
+  .then((results) => {
+    console.log(results)
+  })
+  .catch((err) => {
+    console.error(err)
+  })
 ```
 
 Required PNG files is below. Favicon outputs both the ICO and PNG files (see: [audreyr/favicon-cheat-sheet](https://github.com/audreyr/favicon-cheat-sheet)).
