@@ -1,5 +1,24 @@
 # ChangeLog
 
+## 3.0.0
+
+### Breaking Changes
+
+- Support Node.js v12 or later [#122](https://github.com/akabekobeko/npm-icon-gen/issues/122)
+- change to sharp [#136](https://github.com/akabekobeko/npm-icon-gen/pull/136) by [mifi (Mikael Finstad)](https://github.com/mifi)
+
+SVG files are rendering to PNG file in [sharp](https://www.npmjs.com/package/sharp). Rendering files is output to a temporary directory of the each OS.
+
+Stopped using [svg2png](https://www.npmjs.com/package/svg2png) because of its dependency on [phantomjs](https://www.npmjs.com/package/phantomjs), which is deprecated.
+
+The quality of PNG generated from SVG will change, so if you need the previous results, use icon-gen v2.1.0.
+
+```
+$ npm install icon-gen@2.1.0
+```
+
+In the future, I may add SVG to PNG conversion by Chromium via [puppeteer-core](https://www.npmjs.com/package/puppeteer-core) in addition to [sharp](https://www.npmjs.com/package/sharp).
+
 ## 2.1.0
 
 ### Breaking Changes
