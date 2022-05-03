@@ -1,5 +1,11 @@
 # ChangeLog
 
+## 3.0.1
+
+### Features
+
+- update sharp [#144](https://github.com/akabekobeko/npm-icon-gen/pull/144) by [jhicken](https://github.com/jhicken)
+
 ## 3.0.0
 
 ### Breaking Changes
