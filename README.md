@@ -44,7 +44,7 @@ icongen('./sample.svg', './icons', { report: true })
 
 Stopped using [svg2png](https://www.npmjs.com/package/svg2png) because of its dependency on [phantomjs](https://www.npmjs.com/package/phantomjs), which is deprecated.
 
-The quality of PNG generated from SVG will change, so if you need the previous results, use icon-gen v2.1.0.
+The quality of PNG generated from SVG will change, so if you need the previous results, use `icon-gen v2.1.0` (old version).
 
 ```
 $ npm install icon-gen@2.1.0
