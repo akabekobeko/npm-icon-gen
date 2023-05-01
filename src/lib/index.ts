@@ -1,6 +1,5 @@
 import fs from 'fs'
 import path from 'path'
-import del from 'del'
 import os from 'os'
 import { v4 as uuidv4 } from 'uuid'
 import mkdirP from 'mkdirp'
@@ -205,6 +204,8 @@ const generateIconFromSVG = async (
   logger.log('Icon generator from SVG:')
   logger.log('  src: ' + svgFilePath)
   logger.log('  dir: ' + destDirPath)
+
+  const del = await import('del')
 
   const workDir = path.join(os.tmpdir(), uuidv4())
   fs.mkdirSync(workDir)

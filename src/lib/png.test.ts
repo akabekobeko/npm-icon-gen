@@ -3,7 +3,6 @@ import os from 'os'
 import { v4 as uuidv4 } from 'uuid'
 import path from 'path'
 import fs from 'fs'
-import del from 'del'
 import Logger from './logger'
 import generatePNG, { filterImagesBySizes } from './png'
 import { REQUIRED_IMAGE_SIZES as FAV_SIZES } from './favicon'
@@ -12,9 +11,11 @@ import { REQUIRED_IMAGE_SIZES as ICO_SIZES } from './ico'
 
 describe('PNG', () => {
   describe('generatePNG', () => {
-    it('Generate', () => {
+    it('Generate', async () => {
       const dir = path.join(os.tmpdir(), uuidv4())
       fs.mkdirSync(dir)
+
+      const del = await import('del')
 
       return generatePNG('./examples/data/sample.svg', dir, [16], new Logger())
         .then((results) => {
