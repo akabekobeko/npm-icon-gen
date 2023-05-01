@@ -6,7 +6,10 @@
   "license": "MIT",
   "homepage": "https://github.com/akabekobeko/npm-icon-gen#readme",
   "engines": {
-    "node": ">= 12"
+    "node": ">= 18"
+  },
+  "volta": {
+    "node": "18.16.0"
   },
   "main": "dist/lib/index.js",
   "bin": {
