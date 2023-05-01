@@ -220,10 +220,10 @@ const generateIconFromSVG = async (
       logger
     )
     const results = await generate(images, destDirPath, options, logger)
-    del.sync([workDir], { force: true })
+    del.deleteSync([workDir], { force: true })
     return results
   } catch (err) {
-    del.sync([workDir], { force: true })
+    del.deleteSync([workDir], { force: true })
     throw err
   }
 }
