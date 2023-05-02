@@ -1,6 +1,5 @@
-import assert from 'assert'
-import path from 'path'
-import fs from 'fs'
+import path from 'node:path'
+import fs from 'node:fs'
 import Logger from './logger'
 import generateFavicon, {
   REQUIRED_IMAGE_SIZES,
@@ -25,38 +24,36 @@ const deleteFiles = (paths: string[]) => {
   })
 }
 
-describe('Favicon', () => {
-  it('generateFavicon', () => {
-    const images = REQUIRED_IMAGE_SIZES.map((size) => {
-      const filePath = path.join('./examples/data', size + '.png')
-      return { size, filePath }
-    })
-
-    return generateFavicon(images, './examples/data', new Logger(), {
-      name: '',
-      pngSizes: [],
-      icoSizes: []
-    }).then((results) => {
-      assert(results.length === 11)
-      deleteFiles(results)
-    })
+test('generateFavicon', () => {
+  const images = REQUIRED_IMAGE_SIZES.map((size) => {
+    const filePath = path.join('./examples/data', size + '.png')
+    return { size, filePath }
   })
 
-  it('generatePNG', () => {
-    const images = REQUIRED_PNG_SIZES.map((size) => {
-      const filePath = path.join('./examples/data', size + '.png')
-      return { size, filePath }
-    })
+  return generateFavicon(images, './examples/data', new Logger(), {
+    name: '',
+    pngSizes: [],
+    icoSizes: []
+  }).then((results) => {
+    expect(results.length).toBe(11)
+    deleteFiles(results)
+  })
+})
 
-    return generatePNG(
-      images,
-      './examples/data',
-      'favicon-',
-      REQUIRED_PNG_SIZES,
-      new Logger()
-    ).then((results) => {
-      assert(results.length === 10)
-      deleteFiles(results)
-    })
+test('generatePNG', () => {
+  const images = REQUIRED_PNG_SIZES.map((size) => {
+    const filePath = path.join('./examples/data', size + '.png')
+    return { size, filePath }
+  })
+
+  return generatePNG(
+    images,
+    './examples/data',
+    'favicon-',
+    REQUIRED_PNG_SIZES,
+    new Logger()
+  ).then((results) => {
+    expect(results.length).toBe(10)
+    deleteFiles(results)
   })
 })
