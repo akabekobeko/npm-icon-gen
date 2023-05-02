@@ -1,52 +1,46 @@
-import assert from 'assert'
-import os from 'os'
+import os from 'node:os'
+import path from 'node:path'
+import fs from 'node:fs'
 import { v4 as uuidv4 } from 'uuid'
-import path from 'path'
-import fs from 'fs'
-import del from 'del'
 import Logger from './logger'
 import generatePNG, { filterImagesBySizes } from './png'
 import { REQUIRED_IMAGE_SIZES as FAV_SIZES } from './favicon'
 import { REQUIRED_IMAGE_SIZES as ICNS_SIZES } from './icns'
 import { REQUIRED_IMAGE_SIZES as ICO_SIZES } from './ico'
 
-describe('PNG', () => {
-  describe('generatePNG', () => {
-    it('Generate', () => {
-      const dir = path.join(os.tmpdir(), uuidv4())
-      fs.mkdirSync(dir)
+test('generatePNG', () => {
+  const dir = path.join(os.tmpdir(), uuidv4())
+  fs.mkdirSync(dir)
 
-      return generatePNG('./examples/data/sample.svg', dir, [16], new Logger())
-        .then((results) => {
-          assert(results[0].size === 16)
-          del.sync([dir], { force: true })
-        })
-        .catch((err) => {
-          console.error(err)
-          del.sync([dir], { force: true })
-        })
+  return generatePNG('./examples/data/sample.svg', dir, [16], new Logger())
+    .then((results) => {
+      expect(results[0].size).toBe(16)
+      fs.rmSync(dir, { recursive: true, force: true })
     })
-  })
+    .catch((err) => {
+      console.error(err)
+      fs.rmSync(dir, { recursive: true, force: true })
+    })
+})
 
-  describe('filterImagesBySizes', () => {
-    const targets = ICO_SIZES.concat(ICNS_SIZES)
-      .concat(FAV_SIZES)
-      .filter((value, index, array) => array.indexOf(value) === index)
-      .sort((a, b) => a - b)
-      .map((size) => ({ size, filePath: '' }))
+// Test data
+const targets = ICO_SIZES.concat(ICNS_SIZES)
+  .concat(FAV_SIZES)
+  .filter((value, index, array) => array.indexOf(value) === index)
+  .sort((a, b) => a - b)
+  .map((size) => ({ size, filePath: '' }))
 
-    it('ICO', () => {
-      const sizes = filterImagesBySizes(targets, ICO_SIZES)
-      assert.strictEqual(sizes.length, ICO_SIZES.length)
-    })
+test('filterImagesBySizes: ICO', () => {
+  const sizes = filterImagesBySizes(targets, ICO_SIZES)
+  expect(sizes.length).toBe(ICO_SIZES.length)
+})
 
-    it('ICNS', () => {
-      const sizes = filterImagesBySizes(targets, ICNS_SIZES)
-      assert.strictEqual(sizes.length, ICNS_SIZES.length)
-    })
-    it('Favicon', () => {
-      const sizes = filterImagesBySizes(targets, FAV_SIZES)
-      assert.strictEqual(sizes.length, FAV_SIZES.length)
-    })
-  })
+test('filterImagesBySizes: ICNS', () => {
+  const sizes = filterImagesBySizes(targets, ICNS_SIZES)
+  expect(sizes.length).toBe(ICNS_SIZES.length)
+})
+
+test('filterImagesBySizes: Favicon', () => {
+  const sizes = filterImagesBySizes(targets, FAV_SIZES)
+  expect(sizes.length).toBe(FAV_SIZES.length)
 })
