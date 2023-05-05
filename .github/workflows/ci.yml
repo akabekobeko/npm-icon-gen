@@ -20,7 +20,8 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-      - run: yarn
-      - run: yarn test
+      - run: npm install
+      - run: npm install --platform=linux --arch=x64 sharp
+      - run: npm test
         env:
           CI: true
