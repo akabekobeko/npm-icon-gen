@@ -21,6 +21,7 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - run: npm install --ignore-scripts=false --foreground-scripts --verbose sharp
+      - run: npm install --platform=linux --arch=x64 sharp
       - run: npm test
         env:
           CI: true
