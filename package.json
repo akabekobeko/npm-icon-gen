@@ -32,7 +32,7 @@
     "url": "https://github.com/akabekobeko/npm-icon-gen/issues"
   },
   "scripts": {
-    "test": "jest",
+    "test": "vitest",
     "start": "npm run watch",
     "tsc": "tsc --noEmit",
     "build": "tsc",
@@ -49,14 +49,12 @@
   },
   "devDependencies": {
     "@types/cross-spawn": "^6.0.2",
-    "@types/jest": "^29.5.1",
     "@types/mkdirp": "^1.0.2",
     "@types/node": "^18.16.3",
     "@types/pngjs": "^6.0.1",
     "@types/sharp": "^0.30.2",
     "@types/uuid": "^8.3.4",
-    "jest": "^29.5.0",
-    "ts-jest": "^29.1.0",
-    "typescript": "^5.0.4"
+    "typescript": "^5.0.4",
+    "vitest": "^0.31.0"
   }
 }

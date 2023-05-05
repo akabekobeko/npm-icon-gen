@@ -1,3 +1,4 @@
+import { test, expect } from 'vitest'
 import path from 'node:path'
 import fs from 'node:fs'
 import Logger from './logger'
