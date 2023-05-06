@@ -1,6 +1,5 @@
 import fs from 'fs'
 import path from 'path'
-import del from 'del'
 import os from 'os'
 import { v4 as uuidv4 } from 'uuid'
 import mkdirP from 'mkdirp'
@@ -220,10 +219,10 @@ const generateIconFromSVG = async (
       logger
     )
     const results = await generate(images, destDirPath, options, logger)
-    del.sync([workDir], { force: true })
+    fs.rmSync(workDir, {force: true, recursive: true})
     return results
   } catch (err) {
-    del.sync([workDir], { force: true })
+    fs.rmSync(workDir, {force: true, recursive: true})
     throw err
   }
 }

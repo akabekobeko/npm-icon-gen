@@ -41,7 +41,6 @@
   },
   "dependencies": {
     "commander": "^8.3.0",
-    "del": "^6.0.0",
     "mkdirp": "^1.0.4",
     "pngjs": "^6.0.0",
     "sharp": "^0.30.4",
