@@ -41,14 +41,11 @@
   },
   "dependencies": {
     "commander": "^8.3.0",
-    "mkdirp": "^1.0.4",
     "pngjs": "^6.0.0",
     "sharp": "^0.30.4",
     "uuid": "^8.3.2"
   },
   "devDependencies": {
-    "@types/cross-spawn": "^6.0.2",
-    "@types/mkdirp": "^1.0.2",
     "@types/node": "^18.16.3",
     "@types/pngjs": "^6.0.1",
     "@types/sharp": "^0.30.2",

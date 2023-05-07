@@ -1,8 +1,7 @@
-import fs from 'fs'
-import path from 'path'
-import os from 'os'
+import fs from 'node:fs'
+import path from 'node:path'
+import os from 'node:os'
 import { v4 as uuidv4 } from 'uuid'
-import mkdirP from 'mkdirp'
 import generatePNG, { ImageInfo } from './png'
 import generateICO, { REQUIRED_IMAGE_SIZES as ICO_SIZES } from './ico'
 import generateICNS, { REQUIRED_IMAGE_SIZES as ICNS_SIZES } from './icns'
@@ -117,7 +116,7 @@ const generate = async (
   }
 
   const dir = path.resolve(dest)
-  mkdirP.sync(dir)
+  fs.mkdirSync(dir, {recursive: true})
 
   const results: string[] = []
   if (options.icns) {
