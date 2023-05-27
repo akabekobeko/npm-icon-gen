@@ -1,7 +1,6 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import os from 'node:os'
-import { v4 as uuidv4 } from 'uuid'
 import generatePNG, { ImageInfo } from './png'
 import generateICO, { REQUIRED_IMAGE_SIZES as ICO_SIZES } from './ico'
 import generateICNS, { REQUIRED_IMAGE_SIZES as ICNS_SIZES } from './icns'
@@ -204,11 +203,7 @@ const generateIconFromSVG = async (
   logger.log('  src: ' + svgFilePath)
   logger.log('  dir: ' + destDirPath)
 
-  const workDir = path.join(os.tmpdir(), uuidv4())
-  fs.mkdirSync(workDir)
-  if (!fs.existsSync(workDir)) {
-    throw new Error('Failed to create the working directory.')
-  }
+  const workDir = fs.mkdtempSync('icon-gen-')
 
   try {
     const images = await generatePNG(
@@ -218,11 +213,9 @@ const generateIconFromSVG = async (
       logger
     )
     const results = await generate(images, destDirPath, options, logger)
-    fs.rmSync(workDir, {force: true, recursive: true})
     return results
-  } catch (err) {
+  } finally {
     fs.rmSync(workDir, {force: true, recursive: true})
-    throw err
   }
 }
 
