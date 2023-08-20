@@ -1,5 +1,15 @@
 # ChangeLog
 
+## 4.0.0
+
+### Breaking Changes
+
+- feat: [Breaking Cgange] support Node.js v18 [#149](https://github.com/akabekobeko/npm-icon-gen/pull/149)
+
+### Chore
+
+- Removed unnecessary uuid lib [#158](https://github.com/akabekobeko/npm-icon-gen/pull/158) by [panther7](https://github.com/panther7)
+
 ## 3.0.1
 
 ### Features
