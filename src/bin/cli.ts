@@ -1,4 +1,4 @@
-import commander from 'commander'
+import { Command } from 'commander'
 import generateIcon, { ICONOptions } from '../lib/index'
 
 /** Options of command line interface. */
@@ -80,7 +80,7 @@ const parseSizes = (arg: string): number[] => {
  * @returns Parsed options.
  */
 export const parseArgv = (argv: string[]): CLIOptions => {
-  const program = new commander.Command()
+  const program = new Command()
   program
     .usage('icon-gen [options]')
     .description(
