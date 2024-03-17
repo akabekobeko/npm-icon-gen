@@ -40,15 +40,14 @@
     "prepare": "npm run build"
   },
   "dependencies": {
-    "commander": "^8.3.0",
+    "commander": "^12.0.0",
     "pngjs": "^7.0.0",
-    "sharp": "^0.32.6"
+    "sharp": "^0.33.2"
   },
   "devDependencies": {
-    "@types/node": "^20.8.7",
-    "@types/pngjs": "^6.0.3",
-    "@types/sharp": "^0.32.0",
-    "typescript": "^5.2.2",
-    "vitest": "^0.34.6"
+    "@types/node": "^20.11.28",
+    "@types/pngjs": "^6.0.4",
+    "typescript": "^5.4.2",
+    "vitest": "^1.4.0"
   }
 }
