@@ -35,26 +35,45 @@ export const filterImagesBySizes = (images: ImageInfo[], sizes: number[]) => {
  * @param size The size (width/height) of the image.
  * @param dir Path of the file output directory.
  * @param logger Logger.
+ * @param autoMargin If true, than automargin the image.
  * @return Image generation task.
  */
 const generate = async (
   svg: Buffer,
   size: number,
   dir: string,
-  logger: Logger
+  logger: Logger,
+  autoMargin = false,
 ): Promise<ImageInfo> => {
   const dest = path.join(dir, size + '.png')
   logger.log('  Create: ' + dest)
 
+  const background = { r: 0, g: 0, b: 0, alpha: 0 };
+  let margin = 0;
+  let width = size;
+  let height = size;
+  if (autoMargin) {
+    margin = Math.max(0, (size - 16) / 8 + 1);
+    width = size - (margin * 2);
+    height = size - (margin * 2);
+  }
+
   await sharp(svg)
     .png({ compressionLevel: 9 })
-    .resize(size, size, {
+    .resize(width, height, {
       fit: 'contain',
-      background: { r: 0, g: 0, b: 0, alpha: 0 }
+      background,
+    })
+    .extend({
+      top: margin,
+      bottom: margin,
+      left: margin,
+      right: margin,
+      background,
     })
     .toFile(dest)
 
-  return { size: size, filePath: dest }
+  return { size, filePath: dest }
 }
 
 /**
