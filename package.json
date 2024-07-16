@@ -1,15 +1,15 @@
 {
   "name": "icon-gen",
   "description": "Generate an icon files from the SVG or PNG files",
-  "version": "4.0.0",
+  "version": "5.0.0",
   "author": "akabeko (http://akabeko.me/)",
   "license": "MIT",
   "homepage": "https://github.com/akabekobeko/npm-icon-gen#readme",
   "engines": {
-    "node": ">= 18"
+    "node": ">= 20"
   },
   "volta": {
-    "node": "18.17.0"
+    "node": "20.15.1"
   },
   "main": "dist/lib/index.js",
   "bin": {
@@ -40,14 +40,14 @@
     "prepare": "npm run build"
   },
   "dependencies": {
-    "commander": "^12.0.0",
+    "commander": "^12.1.0",
     "pngjs": "^7.0.0",
-    "sharp": "^0.33.2"
+    "sharp": "^0.33.4"
   },
   "devDependencies": {
-    "@types/node": "^20.11.28",
-    "@types/pngjs": "^6.0.4",
-    "typescript": "^5.4.2",
-    "vitest": "^1.4.0"
+    "@types/node": "^20.14.10",
+    "@types/pngjs": "^6.0.5",
+    "typescript": "^5.5.3",
+    "vitest": "^2.0.3"
   }
 }

@@ -1,5 +1,11 @@
 # ChangeLog
 
+## 5.0.0
+
+### Breaking Changes
+
+- feat: [Breaking Change] Node.js v20 [#164](https://github.com/akabekobeko/npm-icon-gen/pull/164)
+
 ## 4.0.0
 
 ### Breaking Changes
