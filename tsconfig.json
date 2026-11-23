@@ -7,6 +7,7 @@
     "forceConsistentCasingInFileNames": true,
     "verbatimModuleSyntax": true,
     "isolatedModules": true,
+    "erasableSyntaxOnly": true,
     "types": ["node"]
   },
   "include": ["src/**/*", "vitest.config.ts"],
