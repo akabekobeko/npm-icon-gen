@@ -8,7 +8,7 @@ export const SAMPLE_DIR = "./examples/data";
 
 /**
  * Create image information of the sample PNG files.
- * @param sizes Sizes of the images.
+ * @param sizes - Sizes of the images.
  * @returns Image information.
  */
 export const sampleImages = (sizes: number[]) =>
@@ -22,14 +22,14 @@ export const createTempDir = (): string => fs.mkdtempSync(path.join(os.tmpdir(),
 
 /**
  * Remove a directory created by `createTempDir`.
- * @param dir Path of the directory.
+ * @param dir - Path of the directory.
  */
 export const removeTempDir = (dir: string): void =>
   fs.rmSync(dir, { recursive: true, force: true });
 
 /**
  * Calculate the SHA-256 hash of a binary.
- * @param data Binary.
+ * @param data - Binary.
  * @returns Hash in hexadecimal.
  */
 export const sha256 = (data: Buffer): string =>

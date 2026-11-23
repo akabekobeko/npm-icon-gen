@@ -39,10 +39,10 @@ const BPP_ALPHA = 4;
  * Convert a PNG of the byte array to the DIB (Device Independent Bitmap) format.
  * PNG in color RGBA (and more), the coordinate structure is the Top/Left to Bottom/Right.
  * DIB in color BGRA, the coordinate structure is the Bottom/Left to Top/Right.
- * @param src Target image.
- * @param width The width of the image.
- * @param height The height of the image.
- * @param bpp The bit per pixel of the image.
+ * @param src - Target image.
+ * @param width - The width of the image.
+ * @param height - The height of the image.
+ * @param bpp - The bit per pixel of the image.
  * @return Converted image
  * @see https://en.wikipedia.org/wiki/BMP_file_format
  */
@@ -75,8 +75,8 @@ const convertPNGtoDIB = (src: Buffer, width: number, height: number, bpp: number
 
 /**
  * Create the `BITMAPINFOHEADER`.
- * @param png PNG image.
- * @param compression Compression mode
+ * @param png - PNG image.
+ * @param compression - Compression mode
  * @return `BITMAPINFOHEADER` data.
  * @see https://msdn.microsoft.com/ja-jp/library/windows/desktop/dd183376%28v=vs.85%29.aspx
  */
@@ -99,8 +99,8 @@ const createBitmapInfoHeader = (png: RawImage, compression: number) => {
 
 /**
  * Create the Icon entry.
- * @param png PNG image.
- * @param offset The offset of directory data from the beginning of the ICO/CUR file
+ * @param png - PNG image.
+ * @param offset - The offset of directory data from the beginning of the ICO/CUR file
  * @return Directory data.
  *
  * @see https://msdn.microsoft.com/en-us/library/ms997538.aspx
@@ -126,7 +126,7 @@ const createDirectory = (png: RawImage, offset: number) => {
 
 /**
  * Create the ICO file header.
- * @param count Specifies number of images in the file.
+ * @param count - Specifies number of images in the file.
  * @return Header data.
  * @see https://msdn.microsoft.com/en-us/library/ms997538.aspx
  */
@@ -141,8 +141,8 @@ const createFileHeader = (count: number) => {
 
 /**
  * Read PNG data from image files.
- * @param images Information of image files.
- * @param sizes Target size of image.
+ * @param images - Information of image files.
+ * @param sizes - Target size of image.
  * @returns PNG data.
  */
 const readPNGs = (images: ImageInfo[], sizes: number[]): Promise<RawImage[]> => {
@@ -152,8 +152,8 @@ const readPNGs = (images: ImageInfo[], sizes: number[]): Promise<RawImage[]> => 
 
 /**
  * Write ICO directory information to the stream.
- * @param pngs PNG data.
- * @param stream Stream to write.
+ * @param pngs - PNG data.
+ * @param stream - Stream to write.
  */
 const writeDirectories = (pngs: RawImage[], stream: fs.WriteStream) => {
   let offset = FILE_HEADER_SIZE + ICO_DIRECTORY_SIZE * pngs.length;
@@ -166,8 +166,8 @@ const writeDirectories = (pngs: RawImage[], stream: fs.WriteStream) => {
 
 /**
  * Write PNG data to the stream.
- * @param pngs PNG data.
- * @param stream Stream to write.
+ * @param pngs - PNG data.
+ * @param stream - Stream to write.
  */
 const writePNGs = (pngs: RawImage[], stream: fs.WriteStream) => {
   for (const png of pngs) {
@@ -181,8 +181,8 @@ const writePNGs = (pngs: RawImage[], stream: fs.WriteStream) => {
 
 /**
  * Create an ICO file.
- * @param pngs Information of PNG images.
- * @param filePath The path of the output destination file.
+ * @param pngs - Information of PNG images.
+ * @param filePath - The path of the output destination file.
  * @return Asynchronous task.
  */
 const createIconFile = (pngs: RawImage[], filePath: string): Promise<void> => {
@@ -209,10 +209,10 @@ const createIconFile = (pngs: RawImage[], filePath: string): Promise<void> => {
 
 /**
  * Generate the ICO file from a PNG images.
- * @param images File information.
- * @param dir Output destination the path of directory.
- * @param logger Logger.
- * @param options Options.
+ * @param images - File information.
+ * @param dir - Output destination the path of directory.
+ * @param logger - Logger.
+ * @param options - Options.
  * @return Path of the generated ICO file.
  */
 const generateICO = async (

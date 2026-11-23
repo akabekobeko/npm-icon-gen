@@ -14,7 +14,7 @@ type CLIOptions = {
 
 /**
  * Parse the part related to icon generation from options obtained by commander.
- * @param opts Options obtained by commander.
+ * @param opts - Options obtained by commander.
  * @returns Options of the icon generation.
  */
 const parseIconOptions = (opts: OptionValues): ICONOptions => {
@@ -77,14 +77,14 @@ const readVersion = (): string => {
 
 /**
  * Parse the sizes specification.
- * @param arg Argument of command line interface.
+ * @param arg - Argument of command line interface.
  * @returns Size of PNG images.
  */
 const parseSizes = (arg: string): number[] => arg.split(",").map((n) => Number(n));
 
 /**
  * Parse the arguments of command line interface.
- * @param argv Arguments of command line interface.
+ * @param argv - Arguments of command line interface.
  * @returns Parsed options.
  */
 export const parseArgv = (argv: string[]): CLIOptions => {
@@ -146,7 +146,7 @@ See also:
 
 /**
  * Run the tool based on command line arguments.
- * @param argv Arguments of command line interface.
+ * @param argv - Arguments of command line interface.
  * @returns Path of generated files.
  */
 const exec = (argv: string[]): Promise<string[]> => {

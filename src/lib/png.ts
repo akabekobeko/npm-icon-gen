@@ -25,7 +25,7 @@ export type RawImage = {
  * Decode a PNG file to 8bit RGBA pixels.
  * Regardless of the color type (palette, grayscale, without alpha) and the bit depth of the file,
  * the result is always normalized to 4 channels of 8bit.
- * @param filePath Path of a PNG file.
+ * @param filePath - Path of a PNG file.
  * @return Decoded image.
  */
 export const readPNG = async (filePath: string): Promise<RawImage> => {
@@ -40,8 +40,8 @@ export const readPNG = async (filePath: string): Promise<RawImage> => {
 
 /**
  * Filter by size to the specified image information.
- * @param images Image file information.
- * @param sizes  Required sizes.
+ * @param images - Image file information.
+ * @param sizes - Required sizes.
  * @return Filtered image information.
  */
 export const filterImagesBySizes = (images: ImageInfo[], sizes: number[]) =>
@@ -51,10 +51,10 @@ export const filterImagesBySizes = (images: ImageInfo[], sizes: number[]) =>
 
 /**
  * Generate the PNG file.
- * @param svg SVG data that has been parse by svg2png.
- * @param size The size (width/height) of the image.
- * @param dir Path of the file output directory.
- * @param logger Logger.
+ * @param svg - SVG data that has been parse by svg2png.
+ * @param size - The size (width/height) of the image.
+ * @param dir - Path of the file output directory.
+ * @param logger - Logger.
  * @return Image generation task.
  */
 const generate = async (
@@ -79,10 +79,10 @@ const generate = async (
 
 /**
  * Generate the PNG files.
- * @param src Path of SVG file.
- * @param dir Output destination The path of directory.
- * @param sizes Required PNG image size.
- * @param logger Logger.
+ * @param src - Path of SVG file.
+ * @param dir - Output destination The path of directory.
+ * @param sizes - Required PNG image size.
+ * @param logger - Logger.
  */
 export const generatePNG = async (
   src: string,

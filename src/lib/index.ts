@@ -40,8 +40,8 @@ export type ICONOptions = {
 
 /**
  * Filter the sizes.
- * @param sizes Original sizes.
- * @param filterSizes Filter sizes.
+ * @param sizes - Original sizes.
+ * @param filterSizes - Filter sizes.
  * @return filtered sizes.
  */
 const filterSizes = (sizes: number[] = [], filterSizes: number[] = []) => {
@@ -62,7 +62,7 @@ const filterSizes = (sizes: number[] = [], filterSizes: number[] = []) => {
 
 /**
  * Gets the size of the images needed to create an icon.
- * @param options Options from command line.
+ * @param options - Options from command line.
  * @return The sizes of the image.
  */
 const getRequiredPNGImageSizes = (options: ICONOptions) => {
@@ -97,10 +97,10 @@ const getRequiredPNGImageSizes = (options: ICONOptions) => {
 
 /**
  * Generate an icon files.
- * @param images Image file information.
- * @param dest Destination directory path.
- * @param options Options.
- * @param logger Logger.
+ * @param images - Image file information.
+ * @param dest - Destination directory path.
+ * @param options - Options.
+ * @param logger - Logger.
  * @return Path of generated files.
  */
 const generate = async (
@@ -137,10 +137,10 @@ const generate = async (
 
 /**
  * Generate an icon from PNG file.
- * @param src Path of the PNG files directory.
- * @param dir Path of the output files directory.
- * @param options Options.
- * @param logger  Logger.
+ * @param src - Path of the PNG files directory.
+ * @param dir - Path of the output files directory.
+ * @param options - Options.
+ * @param logger - Logger.
  * @return Path of output files.
  */
 const generateIconFromPNG = (
@@ -182,10 +182,10 @@ const generateIconFromPNG = (
 
 /**
  * Generate an icon from SVG file.
- * @param src Path of the SVG file.
- * @param dir Path of the output files directory.
- * @param options Options from command line.
- * @param logger  Logger.
+ * @param src - Path of the SVG file.
+ * @param dir - Path of the output files directory.
+ * @param options - Options from command line.
+ * @param logger - Logger.
  * @return Path of generated files.
  */
 const generateIconFromSVG = async (
@@ -218,9 +218,9 @@ const generateIconFromSVG = async (
 
 /**
  * Generate an icon from SVG or PNG file.
- * @param src Path of the SVG file.
- * @param dest Path of the output files directory.
- * @param options Options.
+ * @param src - Path of the SVG file.
+ * @param dest - Path of the output files directory.
+ * @param options - Options.
  * @return Path of generated files.
  */
 const generateIcon = async (
