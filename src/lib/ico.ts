@@ -43,7 +43,7 @@ const BPP_ALPHA = 4;
  * @param width - The width of the image.
  * @param height - The height of the image.
  * @param bpp - The bit per pixel of the image.
- * @return Converted image
+ * @returns Converted image
  * @see https://en.wikipedia.org/wiki/BMP_file_format
  */
 const convertPNGtoDIB = (src: Buffer, width: number, height: number, bpp: number) => {
@@ -77,7 +77,7 @@ const convertPNGtoDIB = (src: Buffer, width: number, height: number, bpp: number
  * Create the `BITMAPINFOHEADER`.
  * @param png - PNG image.
  * @param compression - Compression mode
- * @return `BITMAPINFOHEADER` data.
+ * @returns `BITMAPINFOHEADER` data.
  * @see https://msdn.microsoft.com/ja-jp/library/windows/desktop/dd183376%28v=vs.85%29.aspx
  */
 const createBitmapInfoHeader = (png: RawImage, compression: number) => {
@@ -101,7 +101,7 @@ const createBitmapInfoHeader = (png: RawImage, compression: number) => {
  * Create the Icon entry.
  * @param png - PNG image.
  * @param offset - The offset of directory data from the beginning of the ICO/CUR file
- * @return Directory data.
+ * @returns Directory data.
  *
  * @see https://msdn.microsoft.com/en-us/library/ms997538.aspx
  */
@@ -127,7 +127,7 @@ const createDirectory = (png: RawImage, offset: number) => {
 /**
  * Create the ICO file header.
  * @param count - Specifies number of images in the file.
- * @return Header data.
+ * @returns Header data.
  * @see https://msdn.microsoft.com/en-us/library/ms997538.aspx
  */
 const createFileHeader = (count: number) => {
@@ -183,7 +183,7 @@ const writePNGs = (pngs: RawImage[], stream: fs.WriteStream) => {
  * Create an ICO file.
  * @param pngs - Information of PNG images.
  * @param filePath - The path of the output destination file.
- * @return Asynchronous task.
+ * @returns Asynchronous task.
  */
 const createIconFile = (pngs: RawImage[], filePath: string): Promise<void> => {
   return new Promise((resolve, reject) => {
@@ -213,7 +213,7 @@ const createIconFile = (pngs: RawImage[], filePath: string): Promise<void> => {
  * @param dir - Output destination the path of directory.
  * @param logger - Logger.
  * @param options - Options.
- * @return Path of the generated ICO file.
+ * @returns Path of the generated ICO file.
  */
 const generateICO = async (
   images: ImageInfo[],

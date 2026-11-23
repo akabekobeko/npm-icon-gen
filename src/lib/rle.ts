@@ -33,14 +33,14 @@ const arrayCopy = (
 /**
  * Convert a 8bit signed value to unsigned value.
  * @param value - 8bit signed value (-127 to 127)
- * @return Unsigned value (0 to 255).
+ * @returns Unsigned value (0 to 255).
  */
 const toUInt8 = (value: number) => value & 0xff;
 
 /**
  * Convert a 8bit unsigned value to signed value.
  * @param value - 8bit unsigned value (0 to 255).
- * @return Signed value (-127 to 127).
+ * @returns Signed value (-127 to 127).
  * @see https://github.com/inexorabletash/polyfill/blob/master/typedarray.js
  */
 const toInt8 = (value: number) => (value << 24) >> 24;
@@ -48,7 +48,7 @@ const toInt8 = (value: number) => (value << 24) >> 24;
 /**
  * Convert PackBits literals to results.
  * @param literals - PackBits literals.
- * @return Converted literals.
+ * @returns Converted literals.
  */
 export const packBitsLiteralToResult = (literals: number[]) =>
   literals.length === 0 ? [] : [toUInt8(literals.length - 1)].concat(literals);
@@ -57,7 +57,7 @@ export const packBitsLiteralToResult = (literals: number[]) =>
  * Decompress PackBits compressed binary.
  * This method port Geeks with Blogs code (Apache License v2.0) to Node.
  * @param src - Source binary.
- * @return Decompressed binary.
+ * @returns Decompressed binary.
  * @see https://en.wikipedia.org/wiki/PackBits
  * @see http://geekswithblogs.net/rakker/archive/2015/12/14/packbits-in-c.aspx
  */
@@ -90,7 +90,7 @@ export const unpackBits = (src: number[]) => {
 /**
  * Compress binary with ICNS RLE.
  * @param src - Source binary.
- * @return Compressed binary.
+ * @returns Compressed binary.
  * @see https://github.com/fiji/IO/blob/master/src/main/java/sc/fiji/io/icns/RunLengthEncoding.java
  */
 export const packICNS = (src: number[]) => {
@@ -164,7 +164,7 @@ export const packICNS = (src: number[]) => {
  * Compress binary with PackBits.
  * This method port Geeks with Blogs code (Apache License v2.0) to Node.
  * @param src - Source binary.
- * @return Compressed binary.
+ * @returns Compressed binary.
  * @see https://en.wikipedia.org/wiki/PackBits
  * @see http://geekswithblogs.net/rakker/archive/2015/12/14/packbits-in-c.aspx
  */

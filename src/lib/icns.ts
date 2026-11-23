@@ -82,7 +82,7 @@ const ICON_INFOS: IconInfo[] = [
  * Select the support image from the icon size.
  * @param size - Size of icon.
  * @param images - File information.
- * @return If successful image information, otherwise null.
+ * @returns If successful image information, otherwise null.
  */
 const imageFromIconSize = (size: number, images: ImageInfo[]): ImageInfo | null => {
   for (const image of images) {
@@ -97,7 +97,7 @@ const imageFromIconSize = (size: number, images: ImageInfo[]): ImageInfo | null 
 /**
  * Create the ICNS file header.
  * @param fileSize - File size.
- * @return Header data.
+ * @returns Header data.
  */
 const createFileHeader = (fileSize: number): Buffer => {
   const buffer = Buffer.alloc(HEADER_SIZE);
@@ -111,7 +111,7 @@ const createFileHeader = (fileSize: number): Buffer => {
  * Create the Icon header in ICNS file.
  * @param type - Type of the icon.
  * @param imageSize - Size of the image data.
- * @return Header data.
+ * @returns Header data.
  */
 const createIconHeader = (type: string, imageSize: number): Buffer => {
   const buffer = Buffer.alloc(HEADER_SIZE);
@@ -124,7 +124,7 @@ const createIconHeader = (type: string, imageSize: number): Buffer => {
 /**
  * Create a color and mask data.
  * @param filePath - Path of image (PNG) file.
- * @return Pack bit bodies.
+ * @returns Pack bit bodies.
  */
 const createIconBlockPackBitsBodies = async (filePath: string): Promise<PackBitBody> => {
   const png = await readPNG(filePath);
@@ -155,7 +155,7 @@ const createIconBlockPackBitsBodies = async (filePath: string): Promise<PackBitB
  * Create an icon block's data.
  * @param type - Type of the icon.
  * @param image - Binary of image file.
- * @return Binary of icon block.
+ * @returns Binary of icon block.
  */
 const createIconBlockData = (type: string, image: Buffer): Buffer => {
   const header = createIconHeader(type, image.length);
@@ -167,7 +167,7 @@ const createIconBlockData = (type: string, image: Buffer): Buffer => {
  * @param type - Type of the icon in color block.
  * @param mask - Type of the icon in mask block.
  * @param filePath - Path of image (PNG) file.
- * @return Binary of icon block.
+ * @returns Binary of icon block.
  */
 const createIconBlockPackBits = async (
   type: string,
@@ -185,7 +185,7 @@ const createIconBlockPackBits = async (
  * Create an icon block.
  * @param info - Icon information in ICNS.
  * @param filePath - Path of image (PNG) file.
- * @return Binary of icon block.
+ * @returns Binary of icon block.
  */
 const createIconBlock = async (info: IconInfo, filePath: string): Promise<Buffer> => {
   switch (info.type) {
@@ -223,7 +223,7 @@ const createFileBody = async (images: ImageInfo[]): Promise<Buffer> => {
  * Create an ICNS file.
  * @param images - Information of the image files.
  * @param filePath - The path of the output destination file.
- * @return Asynchronous task.
+ * @returns Asynchronous task.
  */
 const createIconFile = async (images: ImageInfo[], filePath: string): Promise<void> => {
   // Write images on memory buffer
@@ -253,7 +253,7 @@ const createIconFile = async (images: ImageInfo[], filePath: string): Promise<vo
  * Unpack an icon block files from ICNS file (For debug).
  * @param src - Path of the ICNS file.
  * @param dest - Path of directory to output icon block files.
- * @return Asynchronous task.
+ * @returns Asynchronous task.
  */
 export const debugUnpackIconBlocks = async (src: string, dest: string): Promise<void> => {
   const data = await readFileAsync(src);
@@ -277,7 +277,7 @@ export const debugUnpackIconBlocks = async (src: string, dest: string): Promise<
  * @param dir - Output destination the path of directory.
  * @param logger - Logger.
  * @param options - Options.
- * @return Path of generated ICNS file.
+ * @returns Path of generated ICNS file.
  */
 const generateICNS = async (
   images: ImageInfo[],

@@ -26,7 +26,7 @@ export type RawImage = {
  * Regardless of the color type (palette, grayscale, without alpha) and the bit depth of the file,
  * the result is always normalized to 4 channels of 8bit.
  * @param filePath - Path of a PNG file.
- * @return Decoded image.
+ * @returns Decoded image.
  */
 export const readPNG = async (filePath: string): Promise<RawImage> => {
   // sharp outputs 8bit sRGB by default, so only the alpha channel has to be added explicitly
@@ -42,7 +42,7 @@ export const readPNG = async (filePath: string): Promise<RawImage> => {
  * Filter by size to the specified image information.
  * @param images - Image file information.
  * @param sizes - Required sizes.
- * @return Filtered image information.
+ * @returns Filtered image information.
  */
 export const filterImagesBySizes = (images: ImageInfo[], sizes: number[]) =>
   images
@@ -55,7 +55,7 @@ export const filterImagesBySizes = (images: ImageInfo[], sizes: number[]) =>
  * @param size - The size (width/height) of the image.
  * @param dir - Path of the file output directory.
  * @param logger - Logger.
- * @return Image generation task.
+ * @returns Image generation task.
  */
 const generate = async (
   svg: Buffer,

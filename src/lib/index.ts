@@ -42,7 +42,7 @@ export type ICONOptions = {
  * Filter the sizes.
  * @param sizes - Original sizes.
  * @param filterSizes - Filter sizes.
- * @return filtered sizes.
+ * @returns filtered sizes.
  */
 const filterSizes = (sizes: number[] = [], filterSizes: number[] = []) => {
   if (filterSizes.length === 0) {
@@ -63,7 +63,7 @@ const filterSizes = (sizes: number[] = [], filterSizes: number[] = []) => {
 /**
  * Gets the size of the images needed to create an icon.
  * @param options - Options from command line.
- * @return The sizes of the image.
+ * @returns The sizes of the image.
  */
 const getRequiredPNGImageSizes = (options: ICONOptions) => {
   let sizes: number[] = [];
@@ -101,7 +101,7 @@ const getRequiredPNGImageSizes = (options: ICONOptions) => {
  * @param dest - Destination directory path.
  * @param options - Options.
  * @param logger - Logger.
- * @return Path of generated files.
+ * @returns Path of generated files.
  */
 const generate = async (
   images: ImageInfo[],
@@ -141,7 +141,7 @@ const generate = async (
  * @param dir - Path of the output files directory.
  * @param options - Options.
  * @param logger - Logger.
- * @return Path of output files.
+ * @returns Path of output files.
  */
 const generateIconFromPNG = (
   src: string,
@@ -186,7 +186,7 @@ const generateIconFromPNG = (
  * @param dir - Path of the output files directory.
  * @param options - Options from command line.
  * @param logger - Logger.
- * @return Path of generated files.
+ * @returns Path of generated files.
  */
 const generateIconFromSVG = async (
   src: string,
@@ -221,7 +221,7 @@ const generateIconFromSVG = async (
  * @param src - Path of the SVG file.
  * @param dest - Path of the output files directory.
  * @param options - Options.
- * @return Path of generated files.
+ * @returns Path of generated files.
  */
 const generateIcon = async (
   src: string,

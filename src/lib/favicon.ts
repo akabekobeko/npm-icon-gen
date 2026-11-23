@@ -37,7 +37,7 @@ const PNG_FILE_NAME_PREFIX = "favicon-";
  * @param dir - Output destination The path of directory.
  * @param prefix - Prefix of an output PNG files. Start with the alphabet, can use `-` and `_`. This option is for PNG. The name of the ICO file is always `favicon.ico`.
  * @param logger - Logger.
- * @return Path of generated PNG file.
+ * @returns Path of generated PNG file.
  */
 const copyImage = (
   image: ImageInfo,
@@ -71,7 +71,7 @@ const copyImage = (
  * @param prefix - Prefix of an output PNG files. Start with the alphabet, can use `-` and `_`. This option is for PNG. The name of the ICO file is always `favicon.ico`.
  * @param sizes - Size structure of PNG files to output.
  * @param logger - Logger.
- * @return Path of the generated files.
+ * @returns Path of the generated files.
  */
 export const generatePNG = async (
   images: ImageInfo[],
@@ -97,7 +97,7 @@ export const generatePNG = async (
  * @param dir - Output destination the path of directory.
  * @param logger - Logger.
  * @param options - Options.
- * @return Path of the generated files.
+ * @returns Path of the generated files.
  */
 const generateFavicon = async (
   images: ImageInfo[],
