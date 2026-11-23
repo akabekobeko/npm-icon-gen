@@ -1,9 +1,8 @@
 import fs from "node:fs";
 import path from "node:path";
 import util from "node:util";
-import { PNG } from "pngjs";
 import type Logger from "./logger.js";
-import { filterImagesBySizes, type ImageInfo } from "./png.js";
+import { filterImagesBySizes, type ImageInfo, readPNG } from "./png.js";
 import { packICNS } from "./rle.js";
 
 const readFileAsync = util.promisify(fs.readFile);
@@ -129,11 +128,11 @@ const createIconHeader = (type: string, imageSize: number): Buffer => {
 
 /**
  * Create a color and mask data.
- * @param image Binary of image file.
+ * @param filePath Path of image (PNG) file.
  * @return Pack bit bodies.
  */
-const createIconBlockPackBitsBodies = (image: Buffer): PackBitBody => {
-  const png = PNG.sync.read(image);
+const createIconBlockPackBitsBodies = async (filePath: string): Promise<PackBitBody> => {
+  const png = await readPNG(filePath);
   const results: PackBitBody = { colors: [], masks: [] };
   const r = [];
   const g = [];
@@ -172,11 +171,15 @@ const createIconBlockData = (type: string, image: Buffer): Buffer => {
  * Create an icon blocks (Color and mask) for PackBits.
  * @param type Type of the icon in color block.
  * @param mask Type of the icon in mask block.
- * @param image Binary of image file.
+ * @param filePath Path of image (PNG) file.
  * @return Binary of icon block.
  */
-const createIconBlockPackBits = (type: string, mask: string, image: Buffer): Buffer => {
-  const bodies = createIconBlockPackBitsBodies(image);
+const createIconBlockPackBits = async (
+  type: string,
+  mask: string,
+  filePath: string,
+): Promise<Buffer> => {
+  const bodies = await createIconBlockPackBitsBodies(filePath);
   const colorBlock = createIconBlockData(type, Buffer.from(bodies.colors));
   const maskBlock = createIconBlockData(mask, Buffer.from(bodies.masks));
 
@@ -190,15 +193,13 @@ const createIconBlockPackBits = (type: string, mask: string, image: Buffer): Buf
  * @return Binary of icon block.
  */
 const createIconBlock = async (info: IconInfo, filePath: string): Promise<Buffer> => {
-  const image = await readFileAsync(filePath);
-
   switch (info.type) {
     case "is32":
     case "il32":
-      return createIconBlockPackBits(info.type, info.mask || "", image);
+      return createIconBlockPackBits(info.type, info.mask || "", filePath);
 
     default:
-      return createIconBlockData(info.type, image);
+      return createIconBlockData(info.type, await readFileAsync(filePath));
   }
 };
 
@@ -301,7 +302,8 @@ const generateICNS = async (
     const targets = filterImagesBySizes(images, opt.sizes);
     await createIconFile(targets, dest);
   } catch (err) {
-    fs.unlinkSync(dest);
+    // The file may not exist yet when reading the PNG files fails
+    fs.rmSync(dest, { force: true });
     throw err;
   }
 

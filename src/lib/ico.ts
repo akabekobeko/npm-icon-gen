@@ -1,8 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
-import { PNG } from "pngjs";
 import type Logger from "./logger.js";
-import { filterImagesBySizes, type ImageInfo } from "./png.js";
+import { filterImagesBySizes, type ImageInfo, type RawImage, readPNG } from "./png.js";
 
 /** Options of `generateICO`. */
 export type ICOOptions = {
@@ -81,7 +80,7 @@ const convertPNGtoDIB = (src: Buffer, width: number, height: number, bpp: number
  * @return `BITMAPINFOHEADER` data.
  * @see https://msdn.microsoft.com/ja-jp/library/windows/desktop/dd183376%28v=vs.85%29.aspx
  */
-const createBitmapInfoHeader = (png: PNG, compression: number) => {
+const createBitmapInfoHeader = (png: RawImage, compression: number) => {
   const b = Buffer.alloc(BITMAPINFOHEADER_SIZE);
   b.writeUInt32LE(BITMAPINFOHEADER_SIZE, 0); // 4 DWORD biSize
   b.writeInt32LE(png.width, 4); // 4 LONG  biWidth
@@ -106,7 +105,7 @@ const createBitmapInfoHeader = (png: PNG, compression: number) => {
  *
  * @see https://msdn.microsoft.com/en-us/library/ms997538.aspx
  */
-const createDirectory = (png: PNG, offset: number) => {
+const createDirectory = (png: RawImage, offset: number) => {
   const b = Buffer.alloc(ICO_DIRECTORY_SIZE);
   const size = png.data.length + BITMAPINFOHEADER_SIZE;
   const width = 256 <= png.width ? 0 : png.width;
@@ -146,12 +145,9 @@ const createFileHeader = (count: number) => {
  * @param sizes Target size of image.
  * @returns PNG data.
  */
-const readPNGs = (images: ImageInfo[], sizes: number[]): PNG[] => {
+const readPNGs = (images: ImageInfo[], sizes: number[]): Promise<RawImage[]> => {
   const targets = filterImagesBySizes(images, sizes);
-  return targets.map((image) => {
-    const data = fs.readFileSync(image.filePath);
-    return PNG.sync.read(data);
-  });
+  return Promise.all(targets.map((image) => readPNG(image.filePath)));
 };
 
 /**
@@ -159,7 +155,7 @@ const readPNGs = (images: ImageInfo[], sizes: number[]): PNG[] => {
  * @param pngs PNG data.
  * @param stream Stream to write.
  */
-const writeDirectories = (pngs: PNG[], stream: fs.WriteStream) => {
+const writeDirectories = (pngs: RawImage[], stream: fs.WriteStream) => {
   let offset = FILE_HEADER_SIZE + ICO_DIRECTORY_SIZE * pngs.length;
   for (const png of pngs) {
     const directory = createDirectory(png, offset);
@@ -173,7 +169,7 @@ const writeDirectories = (pngs: PNG[], stream: fs.WriteStream) => {
  * @param pngs PNG data.
  * @param stream Stream to write.
  */
-const writePNGs = (pngs: PNG[], stream: fs.WriteStream) => {
+const writePNGs = (pngs: RawImage[], stream: fs.WriteStream) => {
   for (const png of pngs) {
     const header = createBitmapInfoHeader(png, BI_RGB);
     stream.write(header, "binary");
@@ -189,7 +185,7 @@ const writePNGs = (pngs: PNG[], stream: fs.WriteStream) => {
  * @param filePath The path of the output destination file.
  * @return Asynchronous task.
  */
-const createIconFile = (pngs: PNG[], filePath: string): Promise<void> => {
+const createIconFile = (pngs: RawImage[], filePath: string): Promise<void> => {
   return new Promise((resolve, reject) => {
     if (pngs.length === 0) {
       return reject(new Error("There was no PNG file matching the specified size."));
@@ -234,10 +230,11 @@ const generateICO = async (
 
   const dest = path.join(dir, opt.name + FILE_EXTENSION);
   try {
-    const pngs = readPNGs(images, opt.sizes);
+    const pngs = await readPNGs(images, opt.sizes);
     await createIconFile(pngs, dest);
   } catch (err) {
-    fs.unlinkSync(dest);
+    // The file may not exist yet when reading the PNG files fails
+    fs.rmSync(dest, { force: true });
     throw err;
   }
 

@@ -51,14 +51,12 @@
   },
   "dependencies": {
     "commander": "^15.1.0",
-    "pngjs": "^7.0.0",
     "sharp": "^0.35.5"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.6.8",
     "@tsconfig/node24": "^24.0.6",
     "@types/node": "^24.19.2",
-    "@types/pngjs": "^6.0.5",
     "typescript": "^7.0.2",
     "vitest": "^5.1.1"
   }
