@@ -1,0 +1,30 @@
+name: Release Drafter
+
+# Keeps the draft of the next release up to date.
+# - push: every merge into main regenerates the draft
+# - workflow_dispatch: run manually after changing labels of merged pull
+#   requests, because label changes alone do not trigger this workflow
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+
+jobs:
+  update-release-draft:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      # Create and update the draft release
+      contents: write
+      # Read merged pull requests and their labels
+      pull-requests: read
+    steps:
+      - uses: release-drafter/release-drafter@d1a19e60e81a7e650d00a7de9277f87e439117ea # v7.11.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
