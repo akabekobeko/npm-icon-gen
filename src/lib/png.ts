@@ -1,15 +1,15 @@
-import fs from 'fs'
-import path from 'path'
-import sharp from 'sharp'
-import Logger from './logger'
+import fs from "node:fs";
+import path from "node:path";
+import sharp from "sharp";
+import type Logger from "./logger.js";
 
 /** Image file information. */
 export type ImageInfo = {
   /** Image size (width/height). */
-  size: number
+  size: number;
   /** Path of an image file. */
-  filePath: string
-}
+  filePath: string;
+};
 
 /**
  * Filter by size to the specified image information.
@@ -17,17 +17,10 @@ export type ImageInfo = {
  * @param sizes  Required sizes.
  * @return Filtered image information.
  */
-export const filterImagesBySizes = (images: ImageInfo[], sizes: number[]) => {
-  return images
-    .filter((image) => {
-      return sizes.some((size) => {
-        return image.size === size
-      })
-    })
-    .sort((a, b) => {
-      return a.size - b.size
-    })
-}
+export const filterImagesBySizes = (images: ImageInfo[], sizes: number[]) =>
+  images
+    .filter((image) => sizes.some((size) => image.size === size))
+    .sort((a, b) => a.size - b.size);
 
 /**
  * Generate the PNG file.
@@ -41,21 +34,21 @@ const generate = async (
   svg: Buffer,
   size: number,
   dir: string,
-  logger: Logger
+  logger: Logger,
 ): Promise<ImageInfo> => {
-  const dest = path.join(dir, size + '.png')
-  logger.log('  Create: ' + dest)
+  const dest = path.join(dir, `${size}.png`);
+  logger.log(`  Create: ${dest}`);
 
   await sharp(svg)
     .png({ compressionLevel: 9 })
     .resize(size, size, {
-      fit: 'contain',
-      background: { r: 0, g: 0, b: 0, alpha: 0 }
+      fit: "contain",
+      background: { r: 0, g: 0, b: 0, alpha: 0 },
     })
-    .toFile(dest)
+    .toFile(dest);
 
-  return { size: size, filePath: dest }
-}
+  return { size: size, filePath: dest };
+};
 
 /**
  * Generate the PNG files.
@@ -68,17 +61,17 @@ export const generatePNG = async (
   src: string,
   dir: string,
   sizes: number[],
-  logger: Logger
+  logger: Logger,
 ): Promise<ImageInfo[]> => {
-  logger.log('SVG to PNG:')
+  logger.log("SVG to PNG:");
 
-  const svg = fs.readFileSync(src)
-  const images: ImageInfo[] = []
+  const svg = fs.readFileSync(src);
+  const images: ImageInfo[] = [];
   for (const size of sizes) {
-    images.push(await generate(svg, size, dir, logger))
+    images.push(await generate(svg, size, dir, logger));
   }
 
-  return images
-}
+  return images;
+};
 
-export default generatePNG
+export default generatePNG;

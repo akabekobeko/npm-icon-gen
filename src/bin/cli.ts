@@ -1,78 +1,86 @@
-import { Command } from 'commander'
-import generateIcon, { ICONOptions } from '../lib/index'
+import fs from "node:fs";
+import { Command, type OptionValues } from "commander";
+import generateIcon, { type ICONOptions } from "../lib/index.js";
 
 /** Options of command line interface. */
 type CLIOptions = {
   /** Path of the SVG file or PNG file directory. */
-  input: string
+  input: string;
   /** Path of the output directory. */
-  output: string
+  output: string;
   /** Options of the icon generation. */
-  icon: ICONOptions
-}
+  icon: ICONOptions;
+};
 
 /**
  * Parse the part related to icon generation from options obtained by commander.
  * @param opts Options obtained by commander.
  * @returns Options of the icon generation.
  */
-const parseIconOptions = (opts: any): ICONOptions => {
-  const results: ICONOptions = { report: !!opts.report }
+const parseIconOptions = (opts: OptionValues): ICONOptions => {
+  const results: ICONOptions = { report: !!opts.report };
   if (opts.ico) {
-    results.ico = {}
+    results.ico = {};
     if (opts.icoName) {
-      results.ico.name = opts.icoName
+      results.ico.name = opts.icoName;
     }
 
     if (opts.icoSizes) {
-      results.ico.sizes = opts.icoSizes
+      results.ico.sizes = opts.icoSizes;
     }
   }
 
   if (opts.icns) {
-    results.icns = {}
+    results.icns = {};
     if (opts.icnsName) {
-      results.icns.name = opts.icnsName
+      results.icns.name = opts.icnsName;
     }
 
     if (opts.icnsSizes) {
-      results.icns.sizes = opts.icnsSizes
+      results.icns.sizes = opts.icnsSizes;
     }
   }
 
   if (opts.favicon) {
-    results.favicon = {}
+    results.favicon = {};
     if (opts.faviconName) {
-      results.favicon.name = opts.faviconName
+      results.favicon.name = opts.faviconName;
     }
 
     if (opts.faviconPngSizes) {
-      results.favicon.pngSizes = opts.faviconPngSizes
+      results.favicon.pngSizes = opts.faviconPngSizes;
     }
 
     if (opts.faviconIcoSizes) {
-      results.favicon.icoSizes = opts.faviconIcoSizes
+      results.favicon.icoSizes = opts.faviconIcoSizes;
     }
   }
 
   // Generate all with default settings
   if (!(results.ico || results.icns || results.favicon)) {
-    results.ico = {}
-    results.icns = {}
-    results.favicon = {}
+    results.ico = {};
+    results.icns = {};
+    results.favicon = {};
   }
 
-  return results
-}
+  return results;
+};
+
+/**
+ * Read the version of this package from `package.json`.
+ * @returns Version string.
+ */
+const readVersion = (): string => {
+  const url = new URL("../../package.json", import.meta.url);
+  return JSON.parse(fs.readFileSync(url, "utf8")).version;
+};
 
 /**
  * Parse the sizes specification.
  * @param arg Argument of command line interface.
  * @returns Size of PNG images.
  */
-const parseSizes = (arg: string): number[] => {
-  return arg.split(',').map((n) => Number(n))
-}
+const parseSizes = (arg: string): number[] => arg.split(",").map((n) => Number(n));
 
 /**
  * Parse the arguments of command line interface.
@@ -80,56 +88,35 @@ const parseSizes = (arg: string): number[] => {
  * @returns Parsed options.
  */
 export const parseArgv = (argv: string[]): CLIOptions => {
-  const program = new Command()
+  const program = new Command();
   program
-    .usage('icon-gen [options]')
+    .usage("icon-gen [options]")
     .description(
-      'Generate an icon from the SVG or PNG file.\nIf "--ico", "--icns", "--favicon" is not specified, everything is output in the standard setting.'
+      'Generate an icon from the SVG or PNG file.\nIf "--ico", "--icns", "--favicon" is not specified, everything is output in the standard setting.',
     )
-    .option('-i, --input <Path>', 'Path of the SVG file or PNG file directory.')
-    .option('-o, --output <Path>', 'Path of the output directory.')
-    .option('-r, --report', 'Display the process reports, default is disable.')
+    .option("-i, --input <Path>", "Path of the SVG file or PNG file directory.")
+    .option("-o, --output <Path>", "Path of the output directory.")
+    .option("-r, --report", "Display the process reports, default is disable.")
+    .option("--ico", 'Output ICO file with default settings, option is "--ico-*".')
+    .option("--ico-name <Name>", "ICO file name to output.")
+    .option("--ico-sizes [Sizes]", "PNG size list to structure ICO file", parseSizes)
+    .option("--icns", 'Output ICNS file with default settings, option is "--icns-*".')
+    .option("--icns-name <Name>", "ICO file name to output.")
+    .option("--icns-sizes [Sizes]", "PNG size list to structure ICNS file", parseSizes)
+    .option("--favicon", 'Output Favicon files with default settings, option is "--favicon-*".')
     .option(
-      '--ico',
-      'Output ICO file with default settings, option is "--ico-*".'
+      "--favicon-name <Name>",
+      'prefix of the PNG file. Start with the alphabet, can use "-" and "_"',
     )
-    .option('--ico-name <Name>', 'ICO file name to output.')
+    .option("--favicon-png-sizes [Sizes]", "Sizes of the Favicon PNG files", parseSizes)
     .option(
-      '--ico-sizes [Sizes]',
-      'PNG size list to structure ICO file',
-      parseSizes
+      "--favicon-ico-sizes [Sizes]",
+      "PNG size list to structure Favicon ICO file",
+      parseSizes,
     )
-    .option(
-      '--icns',
-      'Output ICNS file with default settings, option is "--icns-*".'
-    )
-    .option('--icns-name <Name>', 'ICO file name to output.')
-    .option(
-      '--icns-sizes [Sizes]',
-      'PNG size list to structure ICNS file',
-      parseSizes
-    )
-    .option(
-      '--favicon',
-      'Output Favicon files with default settings, option is "--favicon-*".'
-    )
-    .option(
-      '--favicon-name <Name>',
-      'prefix of the PNG file. Start with the alphabet, can use "-" and "_"'
-    )
-    .option(
-      '--favicon-png-sizes [Sizes]',
-      'Sizes of the Favicon PNG files',
-      parseSizes
-    )
-    .option(
-      '--favicon-ico-sizes [Sizes]',
-      'PNG size list to structure Favicon ICO file',
-      parseSizes
-    )
-    .version(require('../../package.json').version, '-v, --version')
+    .version(readVersion(), "-v, --version");
 
-  program.on('--help', () => {
+  program.on("--help", () => {
     console.log(`
 Examples:
   $ icon-gen -i sample.svg -o ./dist -r
@@ -140,22 +127,22 @@ Examples:
   $ icon-gen -i sample.svg -o ./dist --favicon --favicon-name=favicon- --favicon-png-sizes 16,32,128 --favicon-ico-sizes 16,32
 
 See also:
-  https://github.com/akabekobeko/npm-icon-gen`)
-  })
+  https://github.com/akabekobeko/npm-icon-gen`);
+  });
 
   // Print help and exit if there are no arguments
   if (argv.length < 3) {
-    program.help()
+    program.help();
   }
 
-  program.parse(argv)
-  const opts = program.opts()
+  program.parse(argv);
+  const opts = program.opts();
   return {
     input: opts.input,
     output: opts.output,
-    icon: parseIconOptions(opts)
-  }
-}
+    icon: parseIconOptions(opts),
+  };
+};
 
 /**
  * Run the tool based on command line arguments.
@@ -163,8 +150,8 @@ See also:
  * @returns Path of generated files.
  */
 const exec = (argv: string[]): Promise<string[]> => {
-  const options = parseArgv(argv)
-  return generateIcon(options.input, options.output, options.icon)
-}
+  const options = parseArgv(argv);
+  return generateIcon(options.input, options.output, options.icon);
+};
 
-export default exec
+export default exec;

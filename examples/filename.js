@@ -1,22 +1,22 @@
-const icongen = require('icon-gen')
+import icongen from "icon-gen";
 
 const options = {
   ico: {
-    name: 'foo'
+    name: "foo",
   },
   icns: {
-    name: 'bar'
+    name: "bar",
   },
   favicon: {
-    name: 'icon-'
+    name: "icon-",
   },
-  report: true
-}
+  report: true,
+};
 
-icongen('./data/sample.svg', './icons', options)
-  .then((results) => {
-    console.log('Completed!!')
+icongen("./data/sample.svg", "./icons", options)
+  .then((_results) => {
+    console.log("Completed!!");
   })
   .catch((err) => {
-    console.error(err)
-  })
+    console.error(err);
+  });

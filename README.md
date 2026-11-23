@@ -2,7 +2,7 @@
 
 [![Support Node of LTS](https://img.shields.io/badge/node-LTS-brightgreen.svg)](https://nodejs.org/)
 [![npm version](https://badge.fury.io/js/icon-gen.svg)](https://badge.fury.io/js/icon-gen)
-![test](https://github.com/akabekobeko/npm-icon-gen/workflows/test/badge.svg)
+![test](https://github.com/akabekobeko/npm-icon-gen/actions/workflows/test.yml/badge.svg)
 
 Generate an icon files from the **SVG** or **PNG** files.
 
@@ -22,6 +22,8 @@ Supported the output format of the icon are following.
 $ npm install icon-gen
 ```
 
+Requires **Node.js 24** or later. This package is **ESM only**; use `import` instead of `require`.
+
 ## Usage
 
 SVG and PNG are automatically selected from the `input` path. If the path indicates a file **SVG**, if it is a directory it will be a **PNG** folder.
@@ -31,15 +33,15 @@ SVG and PNG are automatically selected from the `input` path. If the path indica
 SVG files are rendering to PNG file in [sharp](https://www.npmjs.com/package/sharp). Rendering files is output to a temporary directory of the each OS.
 
 ```js
-const icongen = require('icon-gen')
+import icongen from "icon-gen";
 
-icongen('./sample.svg', './icons', { report: true })
+icongen("./sample.svg", "./icons", { report: true })
   .then((results) => {
-    console.log(results)
+    console.log(results);
   })
   .catch((err) => {
-    console.error(err)
-  })
+    console.error(err);
+  });
 ```
 
 Stopped using [svg2png](https://www.npmjs.com/package/svg2png) because of its dependency on [phantomjs](https://www.npmjs.com/package/phantomjs), which is deprecated.
@@ -57,15 +59,15 @@ In the future, I may add SVG to PNG conversion by Chromium via [puppeteer-core](
 Generate an icon files from the directory of PNG files.
 
 ```js
-const icongen = require('icon-gen')
+import icongen from "icon-gen";
 
-icongen('./images', './icons', { report: true })
+icongen("./images", "./icons", { report: true })
   .then((results) => {
-    console.log(results)
+    console.log(results);
   })
   .catch((err) => {
-    console.error(err)
-  })
+    console.error(err);
+  });
 ```
 
 Required PNG files is below. Favicon outputs both the ICO and PNG files (see: [audreyr/favicon-cheat-sheet](https://github.com/audreyr/favicon-cheat-sheet)).
@@ -112,19 +114,19 @@ _Options:_
 const options = {
   report: true,
   ico: {
-    name: 'app',
-    sizes: [16, 24, 32, 48, 64, 128, 256]
+    name: "app",
+    sizes: [16, 24, 32, 48, 64, 128, 256],
   },
   icns: {
-    name: 'app',
-    sizes: [16, 32, 64, 128, 256, 512, 1024]
+    name: "app",
+    sizes: [16, 32, 64, 128, 256, 512, 1024],
   },
   favicon: {
-    name: 'favicon-',
+    name: "favicon-",
     pngSizes: [32, 57, 72, 96, 120, 128, 144, 152, 195, 228],
-    icoSizes: [16, 24, 32, 48, 64]
-  }
-}
+    icoSizes: [16, 24, 32, 48, 64],
+  },
+};
 ```
 
 If all image options (`ico`,`icns`, `favicon`) are omitted, all images are output with their default settings.
@@ -132,8 +134,8 @@ If all image options (`ico`,`icns`, `favicon`) are omitted, all images are outpu
 ```js
 // Output an all images with default settings
 const options = {
-  report: true
-}
+  report: true,
+};
 ```
 
 If individual image option is omitted, default setting is used. If there is a format that you do not want to output, specify others and omit that image.
@@ -205,6 +207,27 @@ Examples:
 See also:
   https://github.com/akabekobeko/npm-icon-gen
 ```
+
+## Development
+
+Tools are managed by [mise](https://mise.jdx.dev/). Node.js and [pnpm](https://pnpm.io/) are installed based on `mise.toml`.
+
+```
+$ mise install
+$ pnpm install
+$ pnpm build
+$ pnpm test
+$ pnpm check
+```
+
+| Script           | Description                                            |
+| ---------------- | ------------------------------------------------------ |
+| `pnpm build`     | Compile TypeScript to `dist`.                          |
+| `pnpm typecheck` | Type check without emitting files.                     |
+| `pnpm test`      | Run unit tests by [Vitest](https://vitest.dev/).       |
+| `pnpm lint`      | Lint by [Biome](https://biomejs.dev/).                 |
+| `pnpm format`    | Format by Biome.                                       |
+| `pnpm check`     | Lint, format and organize imports by Biome (auto fix). |
 
 # ChangeLog
 

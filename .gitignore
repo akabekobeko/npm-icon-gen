@@ -42,5 +42,4 @@ examples/icons/*.ico
 examples/icons/*.png
 package-lock.json
 !.gitignore
-!.prettierrc
 !.github/

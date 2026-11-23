@@ -1,15 +1,17 @@
-const icongen = require('icon-gen')
-require('./clean')('./icons')
+import icongen from "icon-gen";
+import clean from "./clean.js";
+
+clean("./icons");
 
 const options = {
-  report: true
-}
+  report: true,
+};
 
-icongen('./data', './icons', options)
+icongen("./data", "./icons", options)
   .then((results) => {
-    console.log(results)
-    console.log('Completed!!')
+    console.log(results);
+    console.log("Completed!!");
   })
   .catch((err) => {
-    console.error(err)
-  })
+    console.error(err);
+  });

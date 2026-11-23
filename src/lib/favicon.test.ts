@@ -1,12 +1,12 @@
-import { test, expect } from 'vitest'
-import path from 'node:path'
-import fs from 'node:fs'
-import Logger from './logger'
+import fs from "node:fs";
+import path from "node:path";
+import { expect, test } from "vitest";
 import generateFavicon, {
+  generatePNG,
   REQUIRED_IMAGE_SIZES,
   REQUIRED_PNG_SIZES,
-  generatePNG
-} from './favicon'
+} from "./favicon.js";
+import Logger from "./logger.js";
 
 /**
  * Delete a files.
@@ -15,46 +15,42 @@ import generateFavicon, {
 const deleteFiles = (paths: string[]) => {
   paths.forEach((path) => {
     try {
-      const stat = fs.statSync(path)
-      if (stat && stat.isFile()) {
-        fs.unlinkSync(path)
+      const stat = fs.statSync(path);
+      if (stat?.isFile()) {
+        fs.unlinkSync(path);
       }
     } catch (err) {
-      console.error(err)
+      console.error(err);
     }
-  })
-}
+  });
+};
 
-test('generateFavicon', () => {
+test("generateFavicon", () => {
   const images = REQUIRED_IMAGE_SIZES.map((size) => {
-    const filePath = path.join('./examples/data', size + '.png')
-    return { size, filePath }
-  })
+    const filePath = path.join("./examples/data", `${size}.png`);
+    return { size, filePath };
+  });
 
-  return generateFavicon(images, './examples/data', new Logger(), {
-    name: '',
+  return generateFavicon(images, "./examples/data", new Logger(), {
+    name: "",
     pngSizes: [],
-    icoSizes: []
+    icoSizes: [],
   }).then((results) => {
-    expect(results.length).toBe(11)
-    deleteFiles(results)
-  })
-})
+    expect(results.length).toBe(11);
+    deleteFiles(results);
+  });
+});
 
-test('generatePNG', () => {
+test("generatePNG", () => {
   const images = REQUIRED_PNG_SIZES.map((size) => {
-    const filePath = path.join('./examples/data', size + '.png')
-    return { size, filePath }
-  })
+    const filePath = path.join("./examples/data", `${size}.png`);
+    return { size, filePath };
+  });
 
-  return generatePNG(
-    images,
-    './examples/data',
-    'favicon-',
-    REQUIRED_PNG_SIZES,
-    new Logger()
-  ).then((results) => {
-    expect(results.length).toBe(10)
-    deleteFiles(results)
-  })
-})
+  return generatePNG(images, "./examples/data", "favicon-", REQUIRED_PNG_SIZES, new Logger()).then(
+    (results) => {
+      expect(results.length).toBe(10);
+      deleteFiles(results);
+    },
+  );
+});
