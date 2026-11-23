@@ -1,20 +1,20 @@
-const fs = require('fs')
-const path = require('path')
+import fs from "node:fs";
+import path from "node:path";
 
 const clean = (dir) => {
-  const items = fs.readdirSync(dir)
+  const items = fs.readdirSync(dir);
   for (const item of items) {
     switch (path.extname(item)) {
-      case '.ico':
-      case '.icns':
-      case '.png':
-        fs.unlinkSync(path.join(dir, item))
-        break
+      case ".ico":
+      case ".icns":
+      case ".png":
+        fs.unlinkSync(path.join(dir, item));
+        break;
 
       default:
-        break
+        break;
     }
   }
-}
+};
 
-module.exports = clean
+export default clean;

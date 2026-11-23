@@ -5,16 +5,14 @@
   "version": "1.0.0",
   "author": "akabeko (http://akabeko.me/)",
   "license": "MIT",
-  "main": "index.js",
+  "type": "module",
   "scripts": {
     "js:svg": "node from-svg.js",
     "js:png": "node from-png.js",
-    "ts:svg": "ts-node from-svg.ts",
-    "ts:png": "ts-node from-png.ts"
+    "ts:svg": "node from-svg.ts",
+    "ts:png": "node from-png.ts"
   },
   "dependencies": {
-    "icon-gen": "^5.0.0",
-    "ts-node": "^10.9.2",
-    "typescript": "^5.5.3"
+    "icon-gen": "^5.0.0"
   }
 }

@@ -8,7 +8,7 @@ $ npm install
 
 ## Usage
 
-`js` is JavaScript. `ts` is TypeScript on `ts-node`.
+`js` is JavaScript. `ts` is TypeScript, executed directly by Node.js (type stripping, Node.js 24 or later).
 
 Generate from SVG.
 

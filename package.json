@@ -5,19 +5,6 @@
   "author": "akabeko (http://akabeko.me/)",
   "license": "MIT",
   "homepage": "https://github.com/akabekobeko/npm-icon-gen#readme",
-  "engines": {
-    "node": ">= 20"
-  },
-  "volta": {
-    "node": "20.15.1"
-  },
-  "main": "dist/lib/index.js",
-  "bin": {
-    "icon-gen": "dist/bin/index.js"
-  },
-  "files": [
-    "dist"
-  ],
   "keywords": [
     "Icon",
     "Generator",
@@ -31,23 +18,48 @@
   "bugs": {
     "url": "https://github.com/akabekobeko/npm-icon-gen/issues"
   },
+  "packageManager": "pnpm@12.22.0",
+  "engines": {
+    "node": ">=24"
+  },
+  "type": "module",
+  "main": "./dist/lib/index.js",
+  "types": "./dist/lib/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/lib/index.d.ts",
+      "default": "./dist/lib/index.js"
+    }
+  },
+  "bin": {
+    "icon-gen": "./dist/bin/index.js"
+  },
+  "files": [
+    "dist",
+    "!dist/**/*.tsbuildinfo"
+  ],
   "scripts": {
-    "test": "vitest",
-    "start": "npm run watch",
-    "tsc": "tsc --noEmit",
-    "build": "tsc",
-    "watch": "tsc -w",
-    "prepare": "npm run build"
+    "build": "tsc -p tsconfig.build.json",
+    "prepublishOnly": "pnpm clean && pnpm build && pnpm test",
+    "clean": "rm -rf dist",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "biome lint .",
+    "format": "biome format --write .",
+    "check": "biome check --write ."
   },
   "dependencies": {
-    "commander": "^12.1.0",
+    "commander": "^15.1.0",
     "pngjs": "^7.0.0",
-    "sharp": "^0.33.4"
+    "sharp": "^0.35.5"
   },
   "devDependencies": {
-    "@types/node": "^20.14.10",
+    "@biomejs/biome": "^2.6.8",
+    "@tsconfig/node24": "^24.0.6",
+    "@types/node": "^24.19.2",
     "@types/pngjs": "^6.0.5",
-    "typescript": "^5.5.3",
-    "vitest": "^2.0.3"
+    "typescript": "^7.0.2",
+    "vitest": "^5.1.1"
   }
 }
