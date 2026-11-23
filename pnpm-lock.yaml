@@ -178,9 +178,6 @@ importers:
       commander:
         specifier: ^15.1.0
         version: 15.1.0
-      pngjs:
-        specifier: ^7.0.0
-        version: 7.0.0
       sharp:
         specifier: ^0.35.5
         version: 0.35.5(@types/node@24.19.2)
@@ -194,9 +191,6 @@ importers:
       '@types/node':
         specifier: ^24.19.2
         version: 24.19.2
-      '@types/pngjs':
-        specifier: ^6.0.5
-        version: 6.0.5
       typescript:
         specifier: ^7.0.2
         version: 7.0.2
@@ -591,9 +585,6 @@ packages:
   '@types/node@24.19.2':
     resolution: {integrity: sha512-93d49wCWJkCyN87MxLpNN6KXPCwFw7bVUg79mGUV1OS40JGWwVCr8n61DXCSqz7CV6/VfPkb7xec7uP2M+QHWQ==}
 
-  '@types/pngjs@6.0.5':
-    resolution: {integrity: sha512-0k5eKfrA83JOZPppLtS2C7OUtyNAl2wKNxfyYl9Q5g9lPkgBl/9hNyAu6HuEH2J4XmIv2znEpkDd0SaZVxW6iQ==}
-
   '@typescript/typescript-aix-ppc64@7.0.2':
     resolution: {integrity: sha512-MTKKkWB7p/0E9xi1d1tHtZ5PiLkGEMIq88pK2CubZjOsLtYTLqhgIgi6zepFa+9GHZ6h05NMCkQxGKiPXMxXtQ==}
     engines: {node: '>=16.20.0'}
@@ -860,10 +851,6 @@ packages:
   picomatch@4.0.7:
     resolution: {integrity: sha512-qcJu88Q2IWqJsDD529JKMdwGm/dvInW4HvQnRwiH9JtihJvzGOscDtHE3x1pBKeUOTysQ8kVmLnJ2kJu7yhcGA==}
     engines: {node: '>=12'}
-
-  pngjs@7.0.0:
-    resolution: {integrity: sha512-LKWqWJRhstyYo9pGvgor/ivk2w94eSjE3RGVuzLGlr3NmD8bf7RcYGze1mNdEHRP6TRP6rMuDHk5t44hnTRyow==}
-    engines: {node: '>=14.19.0'}
 
   postcss@8.5.33:
     resolution: {integrity: sha512-RVHEU9/Pp1Fnjr/MpAJsZoADukCKhfIi15OunEYiGktIkYLkPVvC1sioWolGDS7XByMTx9m/IGbro0Js13zhnQ==}
@@ -1271,10 +1258,6 @@ snapshots:
     dependencies:
       undici-types: 7.24.6
 
-  '@types/pngjs@6.0.5':
-    dependencies:
-      '@types/node': 24.19.2
-
   '@typescript/typescript-aix-ppc64@7.0.2':
     optional: true
 
@@ -1429,8 +1412,6 @@ snapshots:
   picocolors@1.1.1: {}
 
   picomatch@4.0.7: {}
-
-  pngjs@7.0.0: {}
 
   postcss@8.5.33:
     dependencies:

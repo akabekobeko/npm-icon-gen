@@ -11,6 +11,33 @@ export type ImageInfo = {
   filePath: string;
 };
 
+/** Decoded PNG image. */
+export type RawImage = {
+  /** Pixels in 8bit RGBA, the coordinate structure is the Top/Left to Bottom/Right. */
+  data: Buffer;
+  /** Width of the image in pixels. */
+  width: number;
+  /** Height of the image in pixels. */
+  height: number;
+};
+
+/**
+ * Decode a PNG file to 8bit RGBA pixels.
+ * Regardless of the color type (palette, grayscale, without alpha) and the bit depth of the file,
+ * the result is always normalized to 4 channels of 8bit.
+ * @param filePath Path of a PNG file.
+ * @return Decoded image.
+ */
+export const readPNG = async (filePath: string): Promise<RawImage> => {
+  // sharp outputs 8bit sRGB by default, so only the alpha channel has to be added explicitly
+  const { data, info } = await sharp(filePath)
+    .ensureAlpha()
+    .raw()
+    .toBuffer({ resolveWithObject: true });
+
+  return { data, width: info.width, height: info.height };
+};
+
 /**
  * Filter by size to the specified image information.
  * @param images Image file information.
