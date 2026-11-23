@@ -1,13 +1,13 @@
 /** Display the log message for the stdout. */
 export default class Logger {
-  private _available: boolean;
+  #available: boolean;
 
   /**
    * Initialize instance.
    * @param available - "true" to display the report, default is "false".
    */
   constructor(available: boolean = false) {
-    this._available = available;
+    this.#available = available;
   }
 
   /**
@@ -15,7 +15,7 @@ export default class Logger {
    * @param args - Message arguments.
    */
   log(...args: unknown[]) {
-    if (this._available) {
+    if (this.#available) {
       console.log(...args);
     }
   }
@@ -25,7 +25,7 @@ export default class Logger {
    * @param args - Message arguments.
    */
   error(...args: unknown[]) {
-    if (this._available) {
+    if (this.#available) {
       console.error(...args);
     }
   }
