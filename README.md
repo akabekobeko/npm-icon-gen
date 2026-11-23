@@ -229,9 +229,21 @@ $ pnpm check
 | `pnpm format`    | Format by Biome.                                       |
 | `pnpm check`     | Lint, format and organize imports by Biome (auto fix). |
 
+### Release
+
+Release notes are drafted automatically by [Release Drafter](https://github.com/release-drafter/release-drafter) every time a pull request is merged into `main`.
+
+- Pull requests are labeled from the branch name prefix (`feat/`, `fix/`, `refactor/`, `docs/`, `chore/`) and grouped by that label in the release notes.
+- The next version is a patch update by default. Add the `release:minor` label to a pull request to make it a minor update.
+- A pull request with breaking changes must have the `release:major` label, which makes the next version a major update.
+
+1. Update `version` in `package.json` to match the draft.
+2. Publish the draft in [Releases](https://github.com/akabekobeko/npm-icon-gen/releases). The tag is created at the same time.
+3. Run `pnpm publish`.
+
 # ChangeLog
 
-- [CHANGELOG](CHANGELOG.md)
+- [Releases](https://github.com/akabekobeko/npm-icon-gen/releases)
 
 # License
 

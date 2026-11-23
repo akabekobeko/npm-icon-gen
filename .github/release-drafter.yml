@@ -1,0 +1,65 @@
+# Release Drafter configuration
+# Shared by the drafter (release-drafter.yml workflow) and the autolabeler
+# (autolabeler.yml workflow).
+# https://github.com/release-drafter/release-drafter
+
+name-template: "v$RESOLVED_VERSION"
+tag-template: "v$RESOLVED_VERSION"
+
+# Categories group merged pull requests in the release notes by label and
+# decide the next version. The "changelog" categories bump patch by default.
+# The "version-resolver" categories bump major or minor when a release:* label
+# is present, and the last one without "when" is the fallback (patch).
+categories:
+  - title: "🚀 New Features"
+    when:
+      label: "feat"
+  - title: "🐛 Bug Fixes"
+    when:
+      label: "fix"
+  - title: "♻️ Refactoring"
+    when:
+      label: "refactor"
+  - title: "📝 Documentation"
+    when:
+      label: "docs"
+  - title: "🔧 Maintenance"
+    when:
+      label: "chore"
+  - type: "version-resolver"
+    semver-increment: "major"
+    when:
+      label: "release:major"
+  - type: "version-resolver"
+    semver-increment: "minor"
+    when:
+      label: "release:minor"
+  - type: "version-resolver"
+    semver-increment: "patch"
+
+change-template: "- $TITLE (#$NUMBER)"
+change-title-escapes: '\<*_&'
+
+# Labels applied to pull requests by the autolabeler based on the branch name
+# prefix. The labels match the categories above.
+autolabeler:
+  - label: feat
+    branch:
+      - '/^feat\//'
+  - label: fix
+    branch:
+      - '/^fix\//'
+  - label: refactor
+    branch:
+      - '/^refactor\//'
+  - label: docs
+    branch:
+      - '/^docs\//'
+  - label: chore
+    branch:
+      - '/^chore\//'
+
+template: |
+  ## Changes
+
+  $CHANGES
