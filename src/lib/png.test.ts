@@ -101,16 +101,16 @@ describe("readPNG", () => {
 
   /**
    * Replace the alpha of all pixels with opaque.
-   * @param pixels RGBA pixels.
+   * @param pixels - RGBA pixels.
    * @returns Opaque RGBA pixels.
    */
   const opaque = (pixels: number[]) => pixels.map((value, i) => (i % 4 === 3 ? 255 : value));
 
   /**
    * Encode pixels to a PNG file, and check that the file has the intended format.
-   * @param pixels RGBA pixels.
-   * @param encode Function to encode the image to the PNG of the target format.
-   * @param format Expected format of the PNG file.
+   * @param pixels - RGBA pixels.
+   * @param encode - Function to encode the image to the PNG of the target format.
+   * @param format - Expected format of the PNG file.
    * @returns Path of the PNG file.
    */
   const writePNG = async (

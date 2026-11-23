@@ -29,7 +29,7 @@ afterEach(() => {
 
 /**
  * Parse an ICNS file into icon blocks, with validation of the header and sizes.
- * @param icns Binary of ICNS file.
+ * @param icns - Binary of ICNS file.
  * @returns Icon blocks.
  */
 const parseICNS = (icns: Buffer): Block[] => {
@@ -55,7 +55,7 @@ const parseICNS = (icns: Buffer): Block[] => {
 /**
  * Decompress the ICNS RLE.
  * This is intentionally written independently of the implementation under test.
- * @param src Compressed binary.
+ * @param src - Compressed binary.
  * @returns Decompressed binary.
  * @see https://en.wikipedia.org/wiki/Apple_Icon_Image_format#Compression
  */
@@ -82,8 +82,8 @@ const unpackICNS = (src: Buffer): number[] => {
 
 /**
  * Find an icon block by type.
- * @param blocks Icon blocks.
- * @param type Type of the icon.
+ * @param blocks - Icon blocks.
+ * @param type - Type of the icon.
  * @returns Body of the block.
  */
 const bodyOf = (blocks: Block[], type: string): Buffer => {

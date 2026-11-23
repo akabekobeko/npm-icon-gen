@@ -28,8 +28,8 @@ afterEach(() => {
 /**
  * Convert RGBA pixels (Top/Left origin) to the BGRA pixels (Bottom/Left origin) of DIB.
  * This is intentionally written independently of the implementation under test.
- * @param rgba RGBA pixels.
- * @param size Width and height of the image.
+ * @param rgba - RGBA pixels.
+ * @param size - Width and height of the image.
  * @returns BGRA pixels.
  */
 const toDIB = (rgba: Buffer, size: number): Buffer => {

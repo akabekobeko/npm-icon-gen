@@ -4,7 +4,7 @@ export default class Logger {
 
   /**
    * Initialize instance.
-   * @param available "true" to display the report, default is "false".
+   * @param available - "true" to display the report, default is "false".
    */
   constructor(available: boolean = false) {
     this._available = available;
@@ -12,7 +12,7 @@ export default class Logger {
 
   /**
    * Display a log message for the stdout.
-   * @param args Message arguments.
+   * @param args - Message arguments.
    */
   log(...args: unknown[]) {
     if (this._available) {
@@ -22,7 +22,7 @@ export default class Logger {
 
   /**
    * Display an error message for the stdout.
-   * @param args Message arguments.
+   * @param args - Message arguments.
    */
   error(...args: unknown[]) {
     if (this._available) {

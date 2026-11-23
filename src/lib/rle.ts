@@ -3,11 +3,11 @@ const MAX_LITERAL_LENGTH = 127;
 
 /**
  * Copies the array to the target array at the specified position and size.
- * @param src Byte array of copy source.
- * @param srcBegin  Copying start position of source.
- * @param dest Byte array of copy destination.
- * @param destBegin Writing start position of destination.
- * @param size Size of copy bytes.
+ * @param src - Byte array of copy source.
+ * @param srcBegin - Copying start position of source.
+ * @param dest - Byte array of copy destination.
+ * @param destBegin - Writing start position of destination.
+ * @param size - Size of copy bytes.
  */
 const arrayCopy = (
   src: number[],
@@ -32,23 +32,23 @@ const arrayCopy = (
 
 /**
  * Convert a 8bit signed value to unsigned value.
- * @param value 8bit signed value (-127 to 127)
- * @return Unsigned value (0 to 255).
+ * @param value - 8bit signed value (-127 to 127)
+ * @returns Unsigned value (0 to 255).
  */
 const toUInt8 = (value: number) => value & 0xff;
 
 /**
  * Convert a 8bit unsigned value to signed value.
- * @param value 8bit unsigned value (0 to 255).
- * @return Signed value (-127 to 127).
+ * @param value - 8bit unsigned value (0 to 255).
+ * @returns Signed value (-127 to 127).
  * @see https://github.com/inexorabletash/polyfill/blob/master/typedarray.js
  */
 const toInt8 = (value: number) => (value << 24) >> 24;
 
 /**
  * Convert PackBits literals to results.
- * @param literals PackBits literals.
- * @return Converted literals.
+ * @param literals - PackBits literals.
+ * @returns Converted literals.
  */
 export const packBitsLiteralToResult = (literals: number[]) =>
   literals.length === 0 ? [] : [toUInt8(literals.length - 1)].concat(literals);
@@ -56,8 +56,8 @@ export const packBitsLiteralToResult = (literals: number[]) =>
 /**
  * Decompress PackBits compressed binary.
  * This method port Geeks with Blogs code (Apache License v2.0) to Node.
- * @param src Source binary.
- * @return Decompressed binary.
+ * @param src - Source binary.
+ * @returns Decompressed binary.
  * @see https://en.wikipedia.org/wiki/PackBits
  * @see http://geekswithblogs.net/rakker/archive/2015/12/14/packbits-in-c.aspx
  */
@@ -89,8 +89,8 @@ export const unpackBits = (src: number[]) => {
 
 /**
  * Compress binary with ICNS RLE.
- * @param src Source binary.
- * @return Compressed binary.
+ * @param src - Source binary.
+ * @returns Compressed binary.
  * @see https://github.com/fiji/IO/blob/master/src/main/java/sc/fiji/io/icns/RunLengthEncoding.java
  */
 export const packICNS = (src: number[]) => {
@@ -163,8 +163,8 @@ export const packICNS = (src: number[]) => {
 /**
  * Compress binary with PackBits.
  * This method port Geeks with Blogs code (Apache License v2.0) to Node.
- * @param src Source binary.
- * @return Compressed binary.
+ * @param src - Source binary.
+ * @returns Compressed binary.
  * @see https://en.wikipedia.org/wiki/PackBits
  * @see http://geekswithblogs.net/rakker/archive/2015/12/14/packbits-in-c.aspx
  */

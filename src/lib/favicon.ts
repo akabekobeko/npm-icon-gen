@@ -33,11 +33,11 @@ const PNG_FILE_NAME_PREFIX = "favicon-";
 
 /**
  * Copy to image.
- * @param image Image information.
- * @param dir Output destination The path of directory.
- * @param prefix Prefix of an output PNG files. Start with the alphabet, can use `-` and `_`. This option is for PNG. The name of the ICO file is always `favicon.ico`.
- * @param logger Logger.
- * @return Path of generated PNG file.
+ * @param image - Image information.
+ * @param dir - Output destination The path of directory.
+ * @param prefix - Prefix of an output PNG files. Start with the alphabet, can use `-` and `_`. This option is for PNG. The name of the ICO file is always `favicon.ico`.
+ * @param logger - Logger.
+ * @returns Path of generated PNG file.
  */
 const copyImage = (
   image: ImageInfo,
@@ -66,12 +66,12 @@ const copyImage = (
 
 /**
  * Generate the FAVICON PNG file from the PNG images.
- * @param images File information for the PNG files generation.
- * @param dir Output destination the path of directory.
- * @param prefix Prefix of an output PNG files. Start with the alphabet, can use `-` and `_`. This option is for PNG. The name of the ICO file is always `favicon.ico`.
- * @param sizes Size structure of PNG files to output.
- * @param logger Logger.
- * @return Path of the generated files.
+ * @param images - File information for the PNG files generation.
+ * @param dir - Output destination the path of directory.
+ * @param prefix - Prefix of an output PNG files. Start with the alphabet, can use `-` and `_`. This option is for PNG. The name of the ICO file is always `favicon.ico`.
+ * @param sizes - Size structure of PNG files to output.
+ * @param logger - Logger.
+ * @returns Path of the generated files.
  */
 export const generatePNG = async (
   images: ImageInfo[],
@@ -93,11 +93,11 @@ export const generatePNG = async (
 
 /**
  * Generate a FAVICON image files (ICO and PNG) from the PNG images.
- * @param images File information for the PNG files generation.
- * @param dir Output destination the path of directory.
- * @param logger Logger.
- * @param options Options.
- * @return Path of the generated files.
+ * @param images - File information for the PNG files generation.
+ * @param dir - Output destination the path of directory.
+ * @param logger - Logger.
+ * @param options - Options.
+ * @returns Path of the generated files.
  */
 const generateFavicon = async (
   images: ImageInfo[],

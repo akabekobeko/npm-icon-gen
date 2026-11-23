@@ -10,7 +10,7 @@ import Logger from "./logger.js";
 
 /**
  * Delete a files.
- * @param paths File paths.
+ * @param paths - File paths.
  */
 const deleteFiles = (paths: string[]) => {
   paths.forEach((path) => {
